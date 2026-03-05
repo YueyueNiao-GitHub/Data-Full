@@ -1,0 +1,3865 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Data Fill</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 11px;
+      color: #0f172a;
+      background: #ffffff;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部区域 */
+    .header {
+      padding: 12px 16px 0;
+      background: #ffffff;
+    }
+
+    /* Tab 切换 */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 6px 12px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748b;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab:hover {
+      color: #334155;
+    }
+
+    .tab.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    /* 搜索和新建区域 */
+    .search-bar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .search-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 7px 32px 7px 12px;
+      font-size: 11px;
+      color: #0f172a;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      outline: none;
+      transition: all 0.15s ease;
+      user-select: text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+    }
+
+    .search-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .search-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #cbd5e1;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 10px;
+      color: #fff;
+      padding: 0;
+    }
+
+    .search-input:not(:placeholder-shown)+.search-clear {
+      display: flex;
+    }
+
+    .search-clear:hover {
+      background: #94a3b8;
+    }
+
+    .new-button {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 7px 12px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748b;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .new-button:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .new-button svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* 内容区域 */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 6px 16px 16px;
+    }
+
+    /* 自定义滚动条 */
+    .content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    .content::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Firefox 滚动条样式 */
+    .content {
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
+    }
+
+    /* 提示信息 */
+    .hint {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 0;
+      font-size: 11px;
+      color: #94a3b8;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+    }
+
+    .hint svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* 底部信息栏 */
+    .footer {
+      padding: 12px 16px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-logo {
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #7c3aed 0%, #692cd2 100%);
+      border-radius: 4px;
+    }
+
+    .footer-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: #0f172a;
+    }
+
+    .trial-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #6366f1;
+      background: #ede9fe;
+      border-radius: 12px;
+    }
+
+    .trial-badge svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .language-button {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      font-size: 10px;
+      color: #64748b;
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .language-button:hover {
+      background: #f8fafc;
+    }
+
+    .language-button svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* 文件夹 */
+    .folder {
+      margin-bottom: 8px;
+    }
+
+    .folder-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 25px;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 6px;
+      padding: 0 8px;
+      transition: background 0.15s;
+    }
+
+    .folder-header:hover {
+      background: #f1f5f9;
+    }
+
+    .folder-header:hover .folder-name {
+      color: #0f172a;
+    }
+
+    .folder-header:hover .folder-toggle {
+      color: #0f172a;
+    }
+
+    .folder-toggle {
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      transition: color 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .folder-toggle svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .folder.collapsed .folder-toggle {
+      /* 不需要旋转，SVG图标已经处理 */
+    }
+
+    .folder-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748b;
+      transition: color 0.15s ease;
+    }
+
+    .folder-add-btn {
+      margin-left: auto;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      color: #94a3b8;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+
+    .folder-header:hover .folder-add-btn,
+    .folder-header:hover .folder-delete-btn {
+      opacity: 1;
+    }
+
+    .folder-add-btn:hover {
+      background: #eaf2ff;
+      color: #2563eb;
+    }
+
+    .folder-add-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* 文件夹删除按钮 */
+    .folder-delete-btn {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      color: #94a3b8;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+
+    .folder-delete-btn:hover {
+      background: #feecec;
+      color: #ef4444;
+    }
+
+    .folder-delete-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .folder-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .folder.collapsed .folder-content {
+      display: none;
+    }
+
+    /* 字段卡片 */
+    .field-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: #f8fafc;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .field-card:hover {
+      background: #f1f5f9;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .field-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .field-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .field-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .field-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .field-tags {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .field-tag {
+      white-space: nowrap;
+    }
+
+    .field-tag:not(:last-child)::after {
+      content: '·';
+      margin-left: 4px;
+      color: #cbd5e1;
+    }
+
+    /* 占位符（临时） */
+    .placeholder {
+      padding: 40px 20px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    /* 配置面板 */
+    .config-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+    }
+
+    .config-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .config-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 8px;
+      width: 280px;
+      max-height: 400px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .config-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .config-header h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .config-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .config-close:hover {
+      color: #0f172a;
+    }
+
+    .config-body {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .config-field {
+      margin-bottom: 16px;
+    }
+
+    .config-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .config-label {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .config-input,
+    .config-select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+      box-sizing: border-box;
+      user-select: text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+    }
+
+    .config-input:focus,
+    .config-select:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
+
+    .config-range-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .config-range-group .config-input {
+      flex: 1;
+    }
+
+    .config-range-separator {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .config-footer {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .config-cancel,
+    .config-save {
+      flex: 1;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .config-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .config-cancel:hover {
+      background: #e2e8f0;
+    }
+
+    .config-save {
+      background: #2563eb;
+      color: white;
+    }
+
+    .config-save:hover {
+      background: #2059d7;
+    }
+
+    /* 字段卡片配置按钮 */
+    .field-card {
+      position: relative;
+    }
+
+    .field-config-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .field-config-btn:hover {
+      color: #2563eb;
+      background: #eaf2ff;
+    }
+
+    .field-config-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* 编辑按钮样式 */
+    .field-edit-btn,
+    .field-delete-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .field-edit-btn:hover {
+      color: #2563eb;
+      background: #eaf2ff;
+    }
+
+    .field-edit-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .field-delete-btn:hover {
+      color: #ef4444;
+      background: #feecec;
+    }
+
+    .field-delete-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* 字段操作按钮组 */
+    .field-actions {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .field-card:hover .field-actions {
+      opacity: 1;
+    }
+
+    /* 配置面板 - 单选按钮组 */
+    .config-radio-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .config-radio {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 12px;
+      color: #64748b;
+      background: white;
+    }
+
+    .config-radio input[type="radio"] {
+      display: none;
+    }
+
+    .config-radio input[type="radio"]:checked+span {
+      color: #2563eb;
+      font-weight: 500;
+    }
+
+    .config-radio:has(input[type="radio"]:checked) {
+      border-color: #2563eb;
+      background: #f0f7ff;
+    }
+
+    .config-radio:hover {
+      border-color: #2563eb;
+    }
+
+    .config-sublabel {
+      display: block;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+
+    /* ==================== 新建功能样式 ==================== */
+
+    /* 新建菜单 */
+    .add-menu {
+      position: absolute;
+      top: 100px;
+      right: 16px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 4px;
+      min-width: 140px;
+      z-index: 1000;
+    }
+
+    .add-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #0f172a;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+
+    .add-menu-item:hover {
+      background: #f1f5f9;
+    }
+
+    .menu-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .menu-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 模态对话框 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      position: relative;
+      background: white;
+      border-radius: 12px;
+      width: 320px;
+      max-width: 90%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      animation: modalSlideIn 0.2s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-header h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .modal-close {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #999;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+
+    .modal-close:hover {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .form-field {
+      margin-bottom: 16px;
+    }
+
+    .form-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .form-field input[type="text"],
+    .form-field textarea {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #1a1a1a;
+      background: white;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+
+    .form-field input[type="text"]:focus,
+    .form-field textarea:focus {
+      border-color: #6366f1;
+    }
+
+    .form-field textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: #999;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 8px;
+      padding: 16px 20px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .btn-secondary,
+    .btn-primary {
+      flex: 1;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2059d7;
+    }
+
+    .btn-primary:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #d22727;
+    }
+
+    /* 文件夹选择器 */
+    .folder-selector-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .folder-selector-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #333;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.15s;
+      margin-bottom: 4px;
+    }
+
+    .folder-selector-item:hover {
+      background: #f5f5f5;
+    }
+
+    .folder-selector-item:active {
+      background: #e8e8e8;
+    }
+
+    .folder-icon {
+      font-size: 16px;
+    }
+
+    /* Toast 提示 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(26, 26, 26, 0.9);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 3000;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-message {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- SVG 图标库 -->
+  <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- AI 图标 -->
+      <symbol id="icon-ai" viewBox="0 0 24 24">
+        <g clip-path="url(#clip0_81_561)">
+          <path d="M4.7134 7.12811L4.46682 7.69379C4.28637 8.10792 3.71357 8.10792 3.53312 7.69379L3.28656 7.12811C2.84706 6.11947 2.05545 5.31641 1.06767 4.87708L0.308047 4.53922C-0.102682 4.35653 -0.102682 3.75881 0.308047 3.57612L1.0252 3.25714C2.03838 2.80651 2.84417 1.97373 3.27612 0.930828L3.52932 0.319534C3.70578 -0.106511 4.29417 -0.106511 4.47063 0.319534L4.72382 0.930828C5.15577 1.97373 5.96158 2.80651 6.9748 3.25714L7.69188 3.57612C8.10271 3.75881 8.10271 4.35653 7.69188 4.53922L6.93228 4.87708C5.94451 5.31641 5.15288 6.11947 4.7134 7.12811ZM6.33421 15.8154C6.51032 15.233 6.7072 14.6562 6.93912 14.0327C8.99484 8.50636 12.4197 5.08172 18.0129 4.21479C17.5 5.35838 17.0151 6.15301 16.5858 6.58237C16.2521 6.91603 15.9185 7.24993 15.5848 7.58407L14.1721 8.99878L15.6279 10.4535C14.4976 12.5384 12.2652 14.1979 9.75193 14.512C8.43544 14.6766 7.29345 15.1188 6.33421 15.8154ZM18 9.99658L17 8.99728C17.3331 8.66372 17.6662 8.33039 18.0027 7.99391C19.0018 6.99303 20.0009 4.99392 21 1.99658C6.31105 1.99658 4.08854 15.422 3.06361 21.6132C3.0419 21.7443 3.02074 21.8722 3 21.9966H4.99824C5.66421 18.6635 7.33146 16.8301 10 16.4966C14 15.9966 17 12.9966 18 9.99658Z" fill="currentColor"/>
+        </g>
+      </symbol>
+      
+      <!-- 人物图标 -->
+      <symbol id="icon-person" viewBox="0 0 24 24">
+        <path d="M20 22H18V20C18 18.3431 16.6569 17 15 17H9C7.34315 17 6 18.3431 6 20V22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13ZM12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 日期时间图标 -->
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <path d="M7 3V1H9V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V9H20V5H17V7H15V5H9V7H7V5H4V19H10V21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7ZM17 12C14.7909 12 13 13.7909 13 16C13 18.2091 14.7909 20 17 20C19.2091 20 21 18.2091 21 16C21 13.7909 19.2091 12 17 12ZM11 16C11 12.6863 13.6863 10 17 10C20.3137 10 23 12.6863 23 16C23 19.3137 20.3137 22 17 22C13.6863 22 11 19.3137 11 16ZM16 13V16.4142L18.2929 18.7071L19.7071 17.2929L18 15.5858V13H16Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 数字图标 -->
+      <symbol id="icon-number" viewBox="0 0 24 24">
+        <path d="M7.78428 14L8.2047 10H4V8H8.41491L8.94043 3H10.9514L10.4259 8H14.4149L14.9404 3H16.9514L16.4259 8H20V10H16.2157L15.7953 14H20V16H15.5851L15.0596 21H13.0486L13.5741 16H9.58509L9.05957 21H7.04855L7.57407 16H4V14H7.78428ZM9.7953 14H13.7843L14.2047 10H10.2157L9.7953 14Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 排列序号图标 -->
+      <symbol id="icon-sequence" viewBox="0 0 24 24">
+        <path d="M4.86837 11H2.66602L5.99952 3H7.99952L11.3329 11H9.13065L8.72082 10H5.27821L4.86837 11ZM6.09788 8H7.90115L6.99952 5.8L6.09788 8ZM18.9994 16V3H16.9994V16H13.9994L17.9994 21L21.9994 16H18.9994ZM10.9994 13H2.99944V15H7.85366L2.99944 19V21H10.9994V19H6.14557L10.9994 15V13Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 手机号码图标 -->
+      <symbol id="icon-phone" viewBox="0 0 24 24">
+        <path d="M9.36556 10.6821C10.302 12.3288 11.6712 13.698 13.3179 14.6344L14.2024 13.3961C14.4965 12.9845 15.0516 12.8573 15.4956 13.0998C16.9024 13.8683 18.4571 14.3353 20.0789 14.4637C20.599 14.5049 21 14.9389 21 15.4606V19.9234C21 20.4361 20.6122 20.8657 20.1022 20.9181C19.5723 20.9726 19.0377 21 18.5 21C9.93959 21 3 14.0604 3 5.5C3 4.96227 3.02742 4.42771 3.08189 3.89776C3.1343 3.38775 3.56394 3 4.07665 3H8.53942C9.0611 3 9.49513 3.40104 9.5363 3.92109C9.66467 5.54288 10.1317 7.09764 10.9002 8.50444C11.1427 8.9484 11.0155 9.50354 10.6039 9.79757L9.36556 10.6821ZM6.84425 10.0252L8.7442 8.66809C8.20547 7.50514 7.83628 6.27183 7.64727 5H5.00907C5.00303 5.16632 5 5.333 5 5.5C5 12.9558 11.0442 19 18.5 19C18.667 19 18.8337 18.997 19 18.9909V16.3527C17.7282 16.1637 16.4949 15.7945 15.3319 15.2558L13.9748 17.1558C13.4258 16.9425 12.8956 16.6915 12.3874 16.4061L12.3293 16.373C10.3697 15.2587 8.74134 13.6303 7.627 11.6707L7.59394 11.6126C7.30849 11.1044 7.05754 10.5742 6.84425 10.0252Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 电子邮箱图标 -->
+      <symbol id="icon-email" viewBox="0 0 24 24">
+        <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 所属部门图标 -->
+      <symbol id="icon-department" viewBox="0 0 24 24">
+        <path d="M15 3C15.5523 3 16 3.44772 16 4V8C16 8.55228 15.5523 9 15 9H13V11H17C17.5523 11 18 11.4477 18 12V15H20C20.5523 15 21 15.4477 21 16V20C21 20.5523 20.5523 21 20 21H14C13.4477 21 13 20.5523 13 20V16C13 15.4477 13.4477 15 14 15H16V13H8V15H10C10.5523 15 11 15.4477 11 16V20C11 20.5523 10.5523 21 10 21H4C3.44772 21 3 20.5523 3 20V16C3 15.4477 3.44772 15 4 15H6V12C6 11.4477 6.44772 11 7 11H11V9H9C8.44772 9 8 8.55228 8 8V4C8 3.44772 8.44772 3 9 3H15ZM9 17H5V19H9V17ZM19 17H15V19H19V17ZM14 5H10V7H14V5Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 所属地址图标 -->
+      <symbol id="icon-location" viewBox="0 0 24 24">
+        <path d="M2 5L9 2L15 5L21.303 2.2987C21.5569 2.18992 21.8508 2.30749 21.9596 2.56131C21.9862 2.62355 22 2.69056 22 2.75827V19L15 22L9 19L2.69696 21.7013C2.44314 21.8101 2.14921 21.6925 2.04043 21.4387C2.01375 21.3765 2 21.3094 2 21.2417V5ZM16 19.3955L20 17.6812V5.03308L16 6.74736V19.3955ZM14 19.2639V6.73607L10 4.73607V17.2639L14 19.2639ZM8 17.2526V4.60451L4 6.31879V18.9669L8 17.2526Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 财务图标 -->
+      <symbol id="icon-finance" viewBox="0 0 24 24">
+        <path d="M18.0049 7H21.0049C21.5572 7 22.0049 7.44771 22.0049 8V20C22.0049 20.5523 21.5572 21 21.0049 21H3.00488C2.4526 21 2.00488 20.5523 2.00488 20V4C2.00488 3.44771 2.4526 3 3.00488 3H18.0049V7ZM4.00488 9V19H20.0049V9H4.00488ZM4.00488 5V7H16.0049V5H4.00488ZM15.0049 13H18.0049V15H15.0049V13Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 账户图标 -->
+      <symbol id="icon-account" viewBox="0 0 24 24">
+        <path d="M15 4H5V20H19V8H15V4ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918ZM12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9C14.5 10.3807 13.3807 11.5 12 11.5ZM7.52746 17C7.77619 14.75 9.68372 13 12 13C14.3163 13 16.2238 14.75 16.4725 17H7.52746Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 购物车图标 -->
+      <symbol id="icon-cart" viewBox="0 0 24 24">
+        <path d="M4.00488 16V4H2.00488V2H5.00488C5.55717 2 6.00488 2.44772 6.00488 3V15H18.4433L20.4433 7H8.00488V5H21.7241C22.2764 5 22.7241 5.44772 22.7241 6C22.7241 6.08176 22.7141 6.16322 22.6942 6.24254L20.1942 16.2425C20.083 16.6877 19.683 17 19.2241 17H5.00488C4.4526 17 4.00488 16.5523 4.00488 16ZM6.00488 23C4.90031 23 4.00488 22.1046 4.00488 21C4.00488 19.8954 4.90031 19 6.00488 19C7.10945 19 8.00488 19.8954 8.00488 21C8.00488 22.1046 7.10945 23 6.00488 23ZM18.0049 23C16.9003 23 16.0049 22.1046 16.0049 21C16.0049 19.8954 16.9003 19 18.0049 19C19.1095 19 20.0049 19.8954 20.0049 21C20.0049 22.1046 19.1095 23 18.0049 23Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 文本图标 -->
+      <symbol id="icon-text" viewBox="0 0 24 24">
+        <path d="M3 4H21V6H3V4ZM3 19H17V21H3V19ZM3 14H21V16H3V14ZM3 9H17V11H3V9Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 文件夹图标 -->
+      <symbol id="icon-folder" viewBox="0 0 24 24">
+        <path d="M4 5V19H20V7H11.5858L9.58579 5H4ZM12.4142 5H21C21.5523 5 22 5.44772 22 6V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H10.4142L12.4142 5Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 展开图标 -->
+      <symbol id="icon-chevron-down" viewBox="0 0 24 24">
+        <path d="M11.9997 13.1714L16.9495 8.22168L18.3637 9.63589L11.9997 15.9999L5.63574 9.63589L7.04995 8.22168L11.9997 13.1714Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 收起图标 -->
+      <symbol id="icon-chevron-right" viewBox="0 0 24 24">
+        <path d="M13.0601 12.1107L8.11035 7.1609L9.52456 5.7467L15.8886 12.1107L9.52456 18.4746L8.11035 17.0604L13.0601 12.1107Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 新建图标 -->
+      <symbol id="icon-add" viewBox="0 0 24 24">
+        <path d="M11 11V7H13V11H17V13H13V17H11V13H7V11H11ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 关闭图标 -->
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 删除图标 -->
+      <symbol id="icon-delete" viewBox="0 0 24 24">
+        <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 编辑图标 -->
+      <symbol id="icon-edit" viewBox="0 0 24 24">
+        <path d="M5 18.89H6.41421L15.7279 9.57628L14.3137 8.16207L5 17.4758V18.89ZM21 20.89H3V16.6473L16.435 3.21232C16.8256 2.8218 17.4587 2.8218 17.8492 3.21232L20.6777 6.04075C21.0682 6.43127 21.0682 7.06444 20.6777 7.45496L9.24264 18.89H21V20.89ZM15.7279 6.74786L17.1421 8.16207L18.5563 6.74786L17.1421 5.33364L15.7279 6.74786Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 更多图标 -->
+      <symbol id="icon-more" viewBox="0 0 24 24">
+        <path d="M4.5 10.5C3.675 10.5 3 11.175 3 12C3 12.825 3.675 13.5 4.5 13.5C5.325 13.5 6 12.825 6 12C6 11.175 5.325 10.5 4.5 10.5ZM19.5 10.5C18.675 10.5 18 11.175 18 12C18 12.825 18.675 13.5 19.5 13.5C20.325 13.5 21 12.825 21 12C21 11.175 20.325 10.5 19.5 10.5ZM12 10.5C11.175 10.5 10.5 11.175 10.5 12C10.5 12.825 11.175 13.5 12 13.5C12.825 13.5 13.5 12.825 13.5 12C13.5 11.175 12.825 10.5 12 10.5Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 提示图标 -->
+      <symbol id="icon-info" viewBox="0 0 24 24">
+        <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 7H13V9H11V7ZM11 11H13V17H11V11Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 成功图标 -->
+      <symbol id="icon-success" viewBox="0 0 24 24">
+        <path d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM17.4571 9.45711L16.0429 8.04289L11 13.0858L8.20711 10.2929L6.79289 11.7071L11 15.9142L17.4571 9.45711Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 沙漏图标 -->
+      <symbol id="icon-hourglass" viewBox="0 0 24 24">
+        <path d="M6 4H4V2H20V4H18V6C18 7.61543 17.1838 8.91468 16.1561 9.97667C15.4532 10.703 14.598 11.372 13.7309 12C14.598 12.628 15.4532 13.297 16.1561 14.0233C17.1838 15.0853 18 16.3846 18 18V20H20V22H4V20H6V18C6 16.3846 6.81616 15.0853 7.8439 14.0233C8.54682 13.297 9.40202 12.628 10.2691 12C9.40202 11.372 8.54682 10.703 7.8439 9.97667C6.81616 8.91468 6 7.61543 6 6V4ZM8 4V6C8 6.88457 8.43384 7.71032 9.2811 8.58583C10.008 9.33699 10.9548 10.0398 12 10.7781C13.0452 10.0398 13.992 9.33699 14.7189 8.58583C15.5662 7.71032 16 6.88457 16 6V4H8ZM12 13.2219C10.9548 13.9602 10.008 14.663 9.2811 15.4142C8.43384 16.2897 8 17.1154 8 18V20H16V18C16 17.1154 15.5662 16.2897 14.7189 15.4142C13.992 14.663 13.0452 13.9602 12 13.2219Z" fill="currentColor"/>
+      </symbol>
+      
+      <!-- 中英切换图标 -->
+      <symbol id="icon-language" viewBox="0 0 24 24">
+        <path d="M5 15V17C5 18.0544 5.81588 18.9182 6.85074 18.9945L7 19H10V21H7C4.79086 21 3 19.2091 3 17V15H5ZM18 10L22.4 21H20.245L19.044 18H14.954L13.755 21H11.601L16 10H18ZM17 12.8852L15.753 16H18.245L17 12.8852ZM8 2V4H12V11H8V14H6V11H2V4H6V2H8ZM17 3C19.2091 3 21 4.79086 21 7V9H19V7C19 5.89543 18.1046 5 17 5H14V3H17ZM6 6H4V9H6V6ZM10 6H8V9H10V6Z" fill="currentColor"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div id="app">
+    <!-- 顶部区域 -->
+    <div class="header">
+      <!-- Tab 切换 -->
+      <div class="tabs">
+        <button class="tab active" data-tab="text">文本填充</button>
+        <button class="tab" data-tab="image">图片填充</button>
+      </div>
+
+      <!-- 搜索和新建 -->
+      <div class="search-bar">
+        <div class="search-input-wrapper">
+          <input type="text" class="search-input" placeholder="搜索字段" id="searchInput">
+          <button class="search-clear" id="searchClear">×</button>
+        </div>
+        <button class="new-button" id="newButton">
+          <svg><use href="#icon-add"></use></svg>
+          新建
+        </button>
+      </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content" id="content">
+      <!-- 提示信息 -->
+      <div class="hint">
+        <svg><use href="#icon-info"></use></svg>
+        <span id="hintText">选中文本图层,点击字段,即时填充</span>
+      </div>
+
+      <!-- 字段列表 -->
+      <div id="fieldsList"></div>
+    </div>
+
+    <!-- 配置面板（隐藏） -->
+    <div id="configPanel" class="config-panel" style="display: none;">
+      <div class="config-overlay"></div>
+      <div class="config-content">
+        <div class="config-header">
+          <h3 id="configTitle">字段配置</h3>
+          <button class="config-close" id="configClose">×</button>
+        </div>
+        <div class="config-body" id="configBody">
+          <!-- 配置选项将动态插入这里 -->
+        </div>
+        <div class="config-footer">
+          <button class="config-cancel" id="configCancel">取消</button>
+          <button class="config-save" id="configSave">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新建菜单（下拉菜单） -->
+    <div id="addMenu" class="add-menu" style="display: none;">
+      <div class="add-menu-item" data-action="add-field">
+        <svg class="menu-icon"><use href="#icon-text"></use></svg>
+        <span>新建字段</span>
+      </div>
+      <div class="add-menu-item" data-action="add-ai-field">
+        <svg class="menu-icon"><use href="#icon-ai"></use></svg>
+        <span>新建 AI 字段</span>
+      </div>
+      <div class="add-menu-item" data-action="add-folder">
+        <svg class="menu-icon"><use href="#icon-folder"></use></svg>
+        <span>新建文件夹</span>
+      </div>
+    </div>
+
+    <!-- 新建字段对话框 -->
+    <div id="addFieldModal" class="modal" style="display: none;">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>新建字段</h3>
+          <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-field">
+            <label>字段标题</label>
+            <input type="text" id="fieldTitle" placeholder="请输入字段标题" maxlength="20">
+          </div>
+          <div class="form-field">
+            <label>示例内容</label>
+            <textarea id="fieldContent" placeholder="每行一个值，填充时随机选择" rows="4" maxlength="500"></textarea>
+            <div class="form-hint">支持多行输入，每行一个值，填充时会随机选择其中一行</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary modal-cancel">取消</button>
+          <button class="btn-primary modal-confirm">确认</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新建 AI 字段对话框 -->
+    <div id="addAIFieldModal" class="modal" style="display: none;">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>新建 AI 字段</h3>
+          <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-field">
+            <label>字段标题</label>
+            <input type="text" id="aiFieldTitle" placeholder="请输入字段标题" maxlength="20">
+          </div>
+          <div class="form-field">
+            <label>AI 提示词</label>
+            <textarea id="aiFieldPrompt" placeholder="请输入 AI 提示词，描述你想要生成的内容..." rows="4" maxlength="200"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary modal-cancel">取消</button>
+          <button class="btn-primary modal-confirm">确认</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新建文件夹对话框 -->
+    <div id="addFolderModal" class="modal" style="display: none;">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>新建文件夹</h3>
+          <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-field">
+            <label>文件夹名称</label>
+            <input type="text" id="folderName" placeholder="请输入文件夹名称" maxlength="15">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary modal-cancel">取消</button>
+          <button class="btn-primary modal-confirm">确认</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 文件夹选择器 -->
+    <div id="folderSelectorModal" class="modal" style="display: none;">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>选择文件夹</h3>
+          <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="folderList" class="folder-selector-list">
+            <!-- 动态生成文件夹列表 -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast">
+      <span class="toast-message"></span>
+    </div>
+
+    <!-- 删除确认对话框 -->
+    <div id="deleteConfirmModal" class="modal" style="display: none;">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="deleteConfirmTitle">确认删除</h3>
+          <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <p id="deleteConfirmMessage" style="color: #666; font-size: 13px; line-height: 1.6;">确认要删除吗？此操作无法撤销。</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary modal-cancel">取消</button>
+          <button class="btn-danger modal-confirm" id="deleteConfirmBtn">确认删除</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 底部信息栏 -->
+    <div class="footer">
+      <div class="footer-left">
+        <div class="footer-logo"></div>
+        <span class="footer-name">Data Fill</span>
+        <span class="trial-badge">
+          <svg><use href="#icon-hourglass"></use></svg>
+          七天试用中
+        </span>
+      </div>
+      <button class="language-button">
+        <svg><use href="#icon-language"></use></svg>
+        English
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ==================== fields-data.js ====================
+    // Data Fill - 默认字段数据
+    const DEFAULT_FIELDS = {
+      // AI 字段
+      aiFields: [
+        {
+          id: 'ai_new_title',
+          name: '新闻标题',
+          type: 'text',
+          method: 'ai',
+          icon: '⚡',
+          iconBg: '#f3e8ff',
+          iconColor: '#9333ea',
+          tags: ['文本', '一段可以生成新闻标题的字段']
+        },
+        {
+          id: 'ai_short_desc',
+          name: '简短描述',
+          type: 'text',
+          method: 'ai',
+          icon: '⚡',
+          iconBg: '#f3e8ff',
+          iconColor: '#9333ea',
+          tags: ['文本', '一段可以生成简短描述的字段']
+        }
+      ],
+
+      // 默认字段
+      defaultFields: [
+        {
+          id: 'person_name',
+          name: '人员姓名',
+          type: 'text',
+          method: 'random',
+          icon: '👤',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['文本', '随机', '可重复']
+        },
+        {
+          id: 'date_time',
+          name: '日期时间',
+          type: 'date',
+          method: 'random',
+          icon: '📅',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['日期', '顺序', 'YYYY-MM-DD']
+        },
+        {
+          id: 'number_value',
+          name: '数字数值',
+          type: 'number',
+          method: 'random',
+          icon: '#',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['数字', '随机', '范围']
+        },
+        {
+          id: 'serial_number',
+          name: '排列序号',
+          type: 'number',
+          method: 'sequence',
+          icon: '🔢',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['数字', '顺序', '自增']
+        },
+        {
+          id: 'contact_phone', // 原 phone_number
+          name: '手机号码',
+          type: 'text',
+          method: 'random',
+          icon: '📱',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['文本', '随机', '手机号']
+        },
+        {
+          id: 'account_email', // 原 email_address
+          name: '电子邮箱',
+          type: 'text',
+          method: 'random',
+          icon: '✉️',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['文本', '随机', '邮箱']
+        },
+        {
+          id: 'company_department', // 原 department
+          name: '所属部门',
+          type: 'text',
+          method: 'random',
+          icon: '🏢',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['文本', '随机', '部门']
+        },
+        {
+          id: 'location_address', // 原 address
+          name: '所属地址',
+          type: 'text',
+          method: 'random',
+          icon: '📍',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['文本', '随机', '地址']
+        }
+      ],
+
+      // 人事领域 (HR)
+      // 人事领域 (HR)
+      hrFields: [
+        {
+          id: 'hr_employee_id',
+          name: '员工编号',
+          configType: 'serial_number',
+          prefix: 'EMP', // 默认前缀
+          icon: '🆔',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['文本', '顺序']
+        },
+        {
+          id: 'hr_name',
+          name: '员工姓名',
+          configType: 'person_name',
+          icon: '👤',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'hr_gender',
+          name: '员工性别',
+          configType: 'enum',
+          options: ['男', '女'],
+          icon: '⚧️',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'hr_age',
+          name: '员工年龄',
+          configType: 'number_value',
+          min: 20, max: 60,
+          icon: '🎂',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['数字', '随机']
+        },
+        {
+          id: 'hr_entry_date',
+          name: '入职日期',
+          configType: 'date_time',
+          icon: '📅',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['日期', '随机']
+        },
+        {
+          id: 'hr_regular_date',
+          name: '转正日期',
+          configType: 'date_time',
+          icon: '📅',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['日期', '随机']
+        },
+        {
+          id: 'hr_resign_date',
+          name: '离职日期',
+          configType: 'date_time',
+          icon: '📅',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['日期', '随机']
+        },
+        {
+          id: 'hr_level',
+          name: '员工职级',
+          configType: 'enum',
+          options: ['P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'M1', 'M2'],
+          icon: '📊',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'hr_position',
+          name: '岗位名称',
+          configType: 'enum',
+          options: ['产品经理', 'UI设计师', '前端工程师', '后端工程师', '测试工程师', '运维工程师', '项目经理', '技术总监', '产品总监', '运营专员', '市场经理', '销售代表', 'HRBP', '行政专员', '财务会计'],
+          icon: '💼',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'hr_work_years',
+          name: '工作年限',
+          configType: 'number_value',
+          min: 1, max: 20,
+          icon: '⏳',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          tags: ['数字', '随机']
+        }
+      ],
+
+      // 财务领域 (Finance)
+      // 财务领域 (Finance)
+      financeFields: [
+        {
+          id: 'finance_salary_month',
+          name: '员工月薪',
+          configType: 'finance_amount',
+          icon: '💰',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_salary_year',
+          name: '员工年薪',
+          configType: 'finance_amount',
+          min: 100000, max: 1000000,
+          icon: '💰',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_bonus',
+          name: '奖金金额',
+          configType: 'finance_amount',
+          min: 5000, max: 50000,
+          icon: '🧧',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_performance',
+          name: '绩效系数',
+          configType: 'number_value',
+          min: 0, max: 5, decimals: 1,
+          icon: '📈',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['数字', '随机']
+        },
+        {
+          id: 'finance_reimbursement',
+          name: '报销金额',
+          configType: 'finance_amount',
+          icon: '🧾',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_cost',
+          name: '成本支出',
+          configType: 'finance_amount',
+          icon: '📉',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_revenue',
+          name: '收入金额',
+          configType: 'finance_amount',
+          icon: '📥',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_profit',
+          name: '利润数值',
+          configType: 'finance_amount',
+          icon: '💹',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_budget',
+          name: '预算金额',
+          configType: 'finance_amount',
+          icon: '📊',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'finance_date',
+          name: '财务日期',
+          configType: 'date_time',
+          icon: '📅',
+          iconBg: '#d1fae5',
+          iconColor: '#059669',
+          tags: ['日期', '随机']
+        }
+      ],
+
+      // 用户账户领域 (Account / User)
+      // 用户账户领域 (Account / User)
+      accountFields: [
+        {
+          id: 'user_id',
+          name: '用户ID',
+          configType: 'serial_number',
+          icon: '🆔',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['文本', '顺序']
+        },
+        {
+          id: 'user_nickname',
+          name: '用户昵称',
+          configType: 'person_name',
+          icon: '👤',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'user_register_date',
+          name: '注册日期',
+          configType: 'date_time',
+          icon: '📅',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['日期', '随机']
+        },
+        {
+          id: 'user_last_login',
+          name: '最近登录时间',
+          configType: 'date_time',
+          icon: '🕒',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['日期', '随机']
+        },
+        {
+          id: 'user_login_count',
+          name: '登录次数',
+          configType: 'number_value',
+          min: 1, max: 1000,
+          icon: '🔢',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['数字', '随机']
+        },
+        {
+          id: 'user_status',
+          name: '用户状态',
+          configType: 'enum',
+          options: ['正常', '冻结', '注销', '未激活'],
+          icon: '🔘',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'user_level',
+          name: '账号等级',
+          configType: 'enum',
+          options: ['LV1', 'LV2', 'LV3', 'LV4', 'LV5', 'VIP', 'SVIP'],
+          icon: '👑',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'user_vip_expire',
+          name: '会员到期时间',
+          configType: 'date_time',
+          icon: '📅',
+          iconBg: '#fce7f3',
+          iconColor: '#db2777',
+          tags: ['日期', '随机']
+        }
+      ],
+
+      // 订单/交易领域 (Order)
+      // 订单/交易领域 (Order)
+      orderFields: [
+        {
+          id: 'order_id',
+          name: '订单编号',
+          configType: 'serial_number',
+          prefix: 'ORD', // 默认前缀
+          icon: '📦',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['文本', '顺序']
+        },
+        {
+          id: 'order_status',
+          name: '订单状态',
+          configType: 'enum',
+          options: ['待支付', '待发货', '待收货', '已完成', '已取消', '退款中'],
+          icon: '🔄',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'order_create_time',
+          name: '下单时间',
+          configType: 'date_time',
+          icon: '🕒',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['日期', '随机']
+        },
+        {
+          id: 'order_pay_time',
+          name: '支付时间',
+          configType: 'date_time',
+          icon: '🕒',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['日期', '随机']
+        },
+        {
+          id: 'order_amount',
+          name: '订单金额',
+          configType: 'finance_amount',
+          icon: '💰',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'order_actual_amount',
+          name: '实付金额',
+          configType: 'finance_amount',
+          icon: '💰',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['金额', '随机']
+        },
+        {
+          id: 'order_pay_method',
+          name: '支付方式',
+          configType: 'enum',
+          options: ['微信支付', '支付宝', '银行卡', 'Apple Pay', '现金'],
+          icon: '💳',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'order_refund_status',
+          name: '退款状态',
+          configType: 'enum',
+          options: ['无退款', '申请退款', '退款中', '退款成功', '退款拒绝'],
+          icon: '💸',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['文本', '随机']
+        },
+        {
+          id: 'order_remark',
+          name: '交易备注',
+          configType: 'text', // 暂无特殊配置
+          icon: '📝',
+          iconBg: '#e0e7ff',
+          iconColor: '#4f46e5',
+          tags: ['文本', '随机']
+        }
+      ],
+
+      // 图片字段
+      imageFields: [
+        {
+          id: 'image_avatar',
+          name: '用户头像 - Avatar',
+          type: 'image',
+          method: 'random',
+          icon: '👤',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['图片', '随机', '头像']
+        },
+        {
+          id: 'image_banner',
+          name: '封面图 - Banner',
+          type: 'image',
+          method: 'random',
+          icon: '🖼️',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['图片', '随机', '封面']
+        },
+        {
+          id: 'image_placeholder',
+          name: '占位图 - Placeholder',
+          type: 'image',
+          method: 'random',
+          icon: '🖼️',
+          iconBg: '#dbeafe',
+          iconColor: '#2563eb',
+          tags: ['图片', '随机', '占位']
+        }
+      ]
+    };
+
+    // 文件夹配置
+    const FOLDERS = [
+      {
+        id: 'ai_fields',
+        name: 'AI 字段',
+        fields: 'aiFields',
+        collapsed: false
+      },
+      {
+        id: 'default_fields',
+        name: '默认字段',
+        fields: 'defaultFields',
+        collapsed: false
+      },
+      {
+        id: 'hr_fields',
+        name: '人事领域 (HR)',
+        fields: 'hrFields',
+        collapsed: false
+      },
+      {
+        id: 'finance_fields',
+        name: '财务领域 (Finance)',
+        fields: 'financeFields',
+        collapsed: false
+      },
+      {
+        id: 'account_fields',
+        name: '用户账户领域 (Account / User)',
+        fields: 'accountFields',
+        collapsed: false
+      },
+      {
+        id: 'order_fields',
+        name: '订单/交易领域 (Order)',
+        fields: 'orderFields',
+        collapsed: false
+      }
+    ];
+
+    // ==================== generators.js ====================
+    // Data Fill - 数据生成器
+
+    // 中文姓氏
+    const SURNAMES = [
+      '王', '李', '张', '刘', '陈', '杨', '黄', '赵', '周', '吴',
+      '徐', '孙', '马', '朱', '胡', '郭', '何', '林', '罗', '高',
+      '郑', '梁', '谢', '宋', '唐', '许', '韩', '冯', '邓', '曹'
+    ];
+
+    // 中文名字
+    const GIVEN_NAMES = [
+      '伟', '芳', '娜', '秀英', '敏', '静', '丽', '强', '磊', '军',
+      '洋', '勇', '艳', '杰', '涛', '明', '超', '秀兰', '霞', '平',
+      '刚', '桂英', '华', '建华', '文', '辉', '力', '波', '宁', '飞'
+    ];
+
+    // 部门列表
+    const DEPARTMENTS = [
+      '技术部', '产品部', '设计部', '市场部', '销售部', '运营部',
+      '人力资源部', '财务部', '行政部', '客服部', '研发部', '测试部'
+    ];
+
+    // 职位列表
+    const POSITIONS = [
+      '产品经理', '设计师', '工程师', '运营专员', '销售经理', '客服专员',
+      '人力资源专员', '财务专员', '行政助理', '测试工程师', '项目经理', '总监'
+    ];
+
+    // 城市列表
+    const CITIES = [
+      '北京', '上海', '广州', '深圳', '杭州', '成都', '重庆', '武汉',
+      '西安', '南京', '天津', '苏州', '长沙', '郑州', '济南', '青岛'
+    ];
+
+    // 街道后缀
+    const STREET_SUFFIXES = ['路', '街', '大道', '巷', '胡同'];
+
+    // 序号计数器
+    let sequenceCounters = {};
+
+    // 随机选择数组元素
+    function randomChoice(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    // 随机整数
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // 获取下一个序号
+    function getNextSequence(fieldId) {
+      if (!sequenceCounters[fieldId]) {
+        sequenceCounters[fieldId] = 0;
+      }
+      return ++sequenceCounters[fieldId];
+    }
+
+    // 生成随机姓名
+    function generateName() {
+      const surname = randomChoice(SURNAMES);
+      const givenName = randomChoice(GIVEN_NAMES);
+      return surname + givenName;
+    }
+
+    // 生成随机日期
+    function generateDate(format = 'YYYY-MM-DD') {
+      const year = randomInt(2020, 2026);
+      const month = String(randomInt(1, 12)).padStart(2, '0');
+      const day = String(randomInt(1, 28)).padStart(2, '0');
+
+      if (format === 'YYYY-MM-DD') {
+        return `${year}-${month}-${day}`;
+      } else if (format === 'YYYY/MM/DD') {
+        return `${year}/${month}/${day}`;
+      } else if (format === 'MM-DD') {
+        return `${month}-${day}`;
+      }
+      return `${year}-${month}-${day}`;
+    }
+
+    // 生成随机数字
+    function generateNumber(min = 0, max = 100) {
+      return randomInt(min, max);
+    }
+
+    // 生成手机号
+    function generatePhone() {
+      const prefixes = ['138', '139', '158', '159', '188', '189'];
+      const prefix = randomChoice(prefixes);
+      const suffix = String(randomInt(10000000, 99999999));
+      return prefix + suffix;
+    }
+
+    // 生成邮箱
+    function generateEmail() {
+      const domains = ['qq.com', '163.com', '126.com', 'gmail.com', 'outlook.com'];
+      const username = 'user' + randomInt(1000, 9999);
+      const domain = randomChoice(domains);
+      return `${username}@${domain}`;
+    }
+
+    // 生成部门
+    function generateDepartment() {
+      return randomChoice(DEPARTMENTS);
+    }
+
+    // 生成职位
+    function generatePosition() {
+      return randomChoice(POSITIONS);
+    }
+
+    // 生成地址
+    function generateAddress() {
+      const city = randomChoice(CITIES);
+      const district = randomChoice(['东城区', '西城区', '朝阳区', '海淀区', '丰台区']);
+      const street = randomChoice(['中山', '建国', '人民', '解放', '和平']) + randomChoice(STREET_SUFFIXES);
+      const number = randomInt(1, 999);
+      return `${city}市${district}${street}${number}号`;
+    }
+
+    // 生成员工编号
+    function generateEmployeeId(fieldId) {
+      const seq = getNextSequence(fieldId);
+      return 'EMP' + String(seq).padStart(5, '0');
+    }
+
+    // 生成金额
+    function generateAmount(min = 100, max = 10000) {
+      const amount = randomInt(min, max);
+      return '¥' + amount.toFixed(2);
+    }
+
+    // 生成发票编号
+    function generateInvoiceNumber(fieldId) {
+      const seq = getNextSequence(fieldId);
+      return 'INV' + String(seq).padStart(8, '0');
+    }
+
+    // 生成用户名
+    function generateUsername() {
+      const prefixes = ['user', 'admin', 'guest', 'member'];
+      const prefix = randomChoice(prefixes);
+      const suffix = randomInt(1000, 9999);
+      return prefix + suffix;
+    }
+
+    // 生成订单编号
+    function generateOrderId(fieldId) {
+      const seq = getNextSequence(fieldId);
+      const date = new Date();
+      const dateStr = date.getFullYear() +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        String(date.getDate()).padStart(2, '0');
+      return dateStr + String(seq).padStart(6, '0');
+    }
+
+    // 主生成函数
+    function generateFieldData(field) {
+      switch (field.id) {
+        case 'person_name':
+          return generateName();
+
+        case 'date_time':
+          return generateDate('YYYY-MM-DD');
+
+        case 'number_value':
+          return String(generateNumber(1, 1000));
+
+        case 'serial_number':
+          return String(getNextSequence(field.id));
+
+        case 'phone_number':
+          return generatePhone();
+
+        case 'email_address':
+          return generateEmail();
+
+        case 'department':
+          return generateDepartment();
+
+        case 'address':
+          return generateAddress();
+
+        case 'hr_employee_id':
+          return generateEmployeeId(field.id);
+
+        case 'hr_position':
+          return generatePosition();
+
+        case 'finance_amount':
+          return generateAmount(100, 50000);
+
+        case 'finance_invoice':
+          return generateInvoiceNumber(field.id);
+
+        case 'account_username':
+          return generateUsername();
+
+        case 'order_id':
+          return generateOrderId(field.id);
+
+        // AI 字段（暂时返回占位文本）
+        case 'ai_new_title':
+          return '这是一条由 AI 生成的新闻标题示例';
+
+        case 'ai_short_desc':
+          return '这是一段由 AI 生成的简短描述示例文本';
+
+        default:
+          return '未知字段';
+      }
+    }
+  </script>
+  <script>
+    // ==================== 试用期管理 ====================
+    const TRIAL_STORAGE_KEY = 'datafill_trial_info';
+    const TRIAL_DAYS = 7;
+
+    // 获取试用信息
+    function getTrialInfo() {
+      try {
+        const saved = localStorage.getItem(TRIAL_STORAGE_KEY);
+        if (saved) {
+          return JSON.parse(saved);
+        }
+        // 首次使用，记录开始时间
+        const trialInfo = {
+          startDate: new Date().toISOString(),
+          isPaid: false
+        };
+        localStorage.setItem(TRIAL_STORAGE_KEY, JSON.stringify(trialInfo));
+        return trialInfo;
+      } catch (e) {
+        console.error('获取试用信息失败:', e);
+        return {
+          startDate: new Date().toISOString(),
+          isPaid: false
+        };
+      }
+    }
+
+    // 计算剩余天数
+    function getRemainingDays() {
+      const trialInfo = getTrialInfo();
+      if (trialInfo.isPaid) {
+        return -1; // 已付费
+      }
+
+      const startDate = new Date(trialInfo.startDate);
+      const now = new Date();
+      const diffTime = now - startDate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const remaining = TRIAL_DAYS - diffDays;
+
+      return remaining;
+    }
+
+    // 检查是否试用期内
+    function isTrialActive() {
+      const remaining = getRemainingDays();
+      return remaining === -1 || remaining > 0;
+    }
+
+    // 更新试用状态显示
+    function updateTrialBadge() {
+      const trialBadge = document.querySelector('.trial-badge');
+      if (!trialBadge) return;
+
+      const remaining = getRemainingDays();
+
+      if (remaining === -1) {
+        trialBadge.innerHTML = `
+          <svg><use href="#icon-success"></use></svg>
+          已付费
+        `;
+        trialBadge.style.background = '#d1fae5';
+        trialBadge.style.color = '#059669';
+      } else if (remaining > 0) {
+        trialBadge.innerHTML = `
+          <svg><use href="#icon-hourglass"></use></svg>
+          试用剩余 ${remaining} 天
+        `;
+        trialBadge.style.background = '#fef3c7';
+        trialBadge.style.color = '#d97706';
+      } else {
+        trialBadge.innerHTML = `
+          <svg><use href="#icon-hourglass"></use></svg>
+          试用已到期
+        `;
+        trialBadge.style.background = '#fee2e2';
+        trialBadge.style.color = '#dc2626';
+      }
+    }
+
+    // ==================== 主逻辑 ====================
+    // 向插件主代码发送消息
+    function sendMessage(type, data = {}) {
+      parent.postMessage({
+        pluginMessage: { type, ...data }
+      }, '*');
+    }
+
+    // 当前 Tab
+    let currentTab = 'text';
+
+    // 折叠状态（存储在 localStorage）
+    const STORAGE_KEY = 'datafill_folder_states';
+    const CONFIG_STORAGE_KEY = 'datafill_field_configs';
+
+    // ==================== 配置管理 ====================
+    let currentConfigFieldId = null;
+    let fieldConfigsCache = {}; // 配置缓存
+
+    // 获取字段配置
+    function getFieldConfig(fieldId) {
+      // 从缓存中获取，如果没有则返回默认配置
+      return fieldConfigsCache[fieldId] || getDefaultConfig(fieldId);
+    }
+
+    // 获取默认配置
+    function getDefaultConfig(fieldId) {
+      const defaults = {
+        'date_time': { format: 'YYYY-MM-DD' },
+        'number_value': { min: 1, max: 1000 },
+        'serial_number': { start: 1 },
+        'finance_amount': { min: 100, max: 50000 }
+      };
+      return defaults[fieldId] || {};
+    }
+
+    // 保存字段配置
+    function saveFieldConfig(fieldId, config) {
+      // 更新缓存
+      fieldConfigsCache[fieldId] = config;
+      // 发送消息给 code.ts 保存到 clientStorage
+      sendMessage('save-config', {
+        fieldId: fieldId,
+        config: config
+      });
+      return true;
+    }
+
+    // 显示配置面板
+    function showConfigPanel(fieldId) {
+      currentConfigFieldId = fieldId;
+
+      // 查找字段信息
+      const field = getFieldById(fieldId);
+      if (!field) return;
+
+      // 设置标题
+      document.getElementById('configTitle').textContent = `${field.name} - 配置`;
+
+      // 渲染配置选项
+      const configBody = document.getElementById('configBody');
+      const currentConfig = getFieldConfig(fieldId);
+
+      // 使用 configType 或 id 来渲染配置
+      const configType = field.configType || field.id;
+      configBody.innerHTML = renderConfigOptions(configType, currentConfig, field);
+
+      // 显示面板
+      document.getElementById('configPanel').style.display = 'block';
+    }
+
+    // 渲染配置选项
+    function renderConfigOptions(fieldId, config, field) {
+      switch (fieldId) {
+        case 'enum':
+          if (!field || !field.options) return '<div class="config-field">无可用选项</div>';
+          const selectedOptions = config.options || [];
+
+          return `
+            <div class="config-field">
+              <label class="config-label">预设选项 (不勾选则全随机)</label>
+              <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                ${field.options.map(opt => `
+                  <label class="config-checkbox" style="display:flex; align-items:center; gap:4px; font-size:11px;">
+                    <input type="checkbox" name="enumOptions" value="${opt}" ${selectedOptions.includes(opt) ? 'checked' : ''}>
+                    <span>${opt}</span>
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+          `;
+
+        case 'person_name':
+          return `
+            <div class="config-field">
+              <label class="config-label">性别</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="gender" value="male" ${config.gender === 'male' ? 'checked' : ''}>
+                  <span>男性</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="gender" value="female" ${config.gender === 'female' ? 'checked' : ''}>
+                  <span>女性</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="gender" value="random" ${!config.gender || config.gender === 'random' ? 'checked' : ''}>
+                  <span>随机</span>
+                </label>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">语言</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="language" value="chinese" ${!config.language || config.language === 'chinese' ? 'checked' : ''}>
+                  <span>中文名</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="language" value="english" ${config.language === 'english' ? 'checked' : ''}>
+                  <span>英文名</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="language" value="random" ${config.language === 'random' ? 'checked' : ''}>
+                  <span>随机</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        case 'date_time':
+          return `
+            <div class="config-field">
+              <label class="config-label">时间范围</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="timeType" value="datetime" ${!config.timeType || config.timeType === 'datetime' ? 'checked' : ''}>
+                  <span>日期时间</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="timeType" value="date" ${config.timeType === 'date' ? 'checked' : ''}>
+                  <span>日期</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="timeType" value="time" ${config.timeType === 'time' ? 'checked' : ''}>
+                  <span>时间</span>
+                </label>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">日期格式</label>
+              <select class="config-select" id="configDateFormat">
+                <option value="YYYY/MM/DD" ${config.format === 'YYYY/MM/DD' ? 'selected' : ''}>2025/02/03</option>
+                <option value="YYYY-MM-DD" ${!config.format || config.format === 'YYYY-MM-DD' ? 'selected' : ''}>2026-02-03</option>
+                <option value="YYYY年MM月DD日" ${config.format === 'YYYY年MM月DD日' ? 'selected' : ''}>2026年3月4日</option>
+              </select>
+            </div>
+            <div class="config-field">
+              <label class="config-label">精确到秒</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="includeSeconds" value="yes" ${config.includeSeconds === 'yes' ? 'checked' : ''}>
+                  <span>是</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="includeSeconds" value="no" ${!config.includeSeconds || config.includeSeconds === 'no' ? 'checked' : ''}>
+                  <span>否</span>
+                </label>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">时间范围</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="order" value="asc" ${config.order === 'asc' ? 'checked' : ''}>
+                  <span>升序</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="order" value="desc" ${config.order === 'desc' ? 'checked' : ''}>
+                  <span>降序</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="order" value="random" ${!config.order || config.order === 'random' ? 'checked' : ''}>
+                  <span>随机</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        case 'number_value':
+          return `
+            <div class="config-field">
+              <label class="config-label">数值范围</label>
+              <div class="config-range-group">
+                <div style="flex: 1;">
+                  <label class="config-sublabel">最小值</label>
+                  <input type="number" class="config-input" id="configNumberMin" value="${config.min || 100}" placeholder="默认: 100">
+                </div>
+                <div style="flex: 1;">
+                  <label class="config-sublabel">最大值</label>
+                  <input type="number" class="config-input" id="configNumberMax" value="${config.max || 10000}" placeholder="默认: 10000">
+                </div>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">千位分隔符</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="thousandsSeparator" value="yes" ${config.thousandsSeparator === 'yes' ? 'checked' : ''}>
+                  <span>显示</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="thousandsSeparator" value="no" ${!config.thousandsSeparator || config.thousandsSeparator === 'no' ? 'checked' : ''}>
+                  <span>不显示</span>
+                </label>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">小数位</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="decimals" value="0" ${!config.decimals || config.decimals === '0' ? 'checked' : ''}>
+                  <span>0</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="decimals" value="2" ${config.decimals === '2' ? 'checked' : ''}>
+                  <span>2</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="decimals" value="4" ${config.decimals === '4' ? 'checked' : ''}>
+                  <span>4</span>
+                </label>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">百分比</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="percentage" value="yes" ${config.percentage === 'yes' ? 'checked' : ''}>
+                  <span>显示</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="percentage" value="no" ${!config.percentage || config.percentage === 'no' ? 'checked' : ''}>
+                  <span>不显示</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        case 'serial_number':
+          return `
+            <div class="config-field">
+              <label class="config-label">前缀字符</label>
+              <input type="text" class="config-input" id="configSerialPrefix" value="${config.prefix || ''}" placeholder="例如: NO.">
+            </div>
+            <div class="config-field">
+              <label class="config-label">后缀字符</label>
+              <input type="text" class="config-input" id="configSerialSuffix" value="${config.suffix || ''}" placeholder="例如: 号">
+            </div>
+            <div class="config-field">
+              <label class="config-label">起始序号</label>
+              <input type="number" class="config-input" id="configSerialStart" value="${config.start || 1}" placeholder="起始序号">
+            </div>
+            <div class="config-field">
+              <label class="config-label">排序方式</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="serialOrder" value="asc" ${!config.order || config.order === 'asc' ? 'checked' : ''}>
+                  <span>升序</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="serialOrder" value="desc" ${config.order === 'desc' ? 'checked' : ''}>
+                  <span>降序</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="serialOrder" value="random" ${config.order === 'random' ? 'checked' : ''}>
+                  <span>随机</span>
+                </label>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">前置补零</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="serialPadding" value="0" ${!config.padding || config.padding === '0' ? 'checked' : ''}>
+                  <span>0位</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="serialPadding" value="1" ${config.padding === '1' ? 'checked' : ''}>
+                  <span>1位</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="serialPadding" value="2" ${config.padding === '2' ? 'checked' : ''}>
+                  <span>2位</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="serialPadding" value="3" ${config.padding === '3' ? 'checked' : ''}>
+                  <span>3位</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        case 'finance_amount':
+          return `
+            <div class="config-field">
+              <label class="config-label">金额范围</label>
+              <div class="config-range-group">
+                <input type="number" class="config-input" id="configAmountMin" value="${config.min || 100}" placeholder="最小金额">
+                <span class="config-range-separator">-</span>
+                <input type="number" class="config-input" id="configAmountMax" value="${config.max || 50000}" placeholder="最大金额">
+              </div>
+            </div>
+          `;
+
+        case 'contact_phone':
+          return `
+            <div class="config-field">
+              <label class="config-label">展示格式</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="phoneFormat" value="full" ${!config.format || config.format === 'full' ? 'checked' : ''}>
+                  <span>完整</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="phoneFormat" value="masked" ${config.format === 'masked' ? 'checked' : ''}>
+                  <span>隐藏</span>
+                </label>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-sublabel">分隔符</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="phoneSeparator" value="none" ${!config.separator || config.separator === 'none' ? 'checked' : ''}>
+                  <span>无</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="phoneSeparator" value="dash" ${config.separator === 'dash' ? 'checked' : ''}>
+                  <span>短横线</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="phoneSeparator" value="space" ${config.separator === 'space' ? 'checked' : ''}>
+                  <span>空格</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        case 'location_address':
+          return `
+            <div class="config-field">
+              <label class="config-label">地址层级</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="addressLevel" value="province" ${config.level === 'province' ? 'checked' : ''}>
+                  <span>省</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="addressLevel" value="city" ${config.level === 'city' ? 'checked' : ''}>
+                  <span>省市</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="addressLevel" value="district" ${config.level === 'district' ? 'checked' : ''}>
+                  <span>省市区</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="addressLevel" value="full" ${!config.level || config.level === 'full' ? 'checked' : ''}>
+                  <span>详细</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        case 'account_email':
+          return `
+            <div class="config-field">
+              <label class="config-label">邮箱类型</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="emailType" value="overseas" ${config.type === 'overseas' ? 'checked' : ''}>
+                  <span>海外</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="emailType" value="china" ${config.type === 'china' ? 'checked' : ''}>
+                  <span>中国</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="emailType" value="random" ${!config.type || config.type === 'random' ? 'checked' : ''}>
+                  <span>随机</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        case 'company_department':
+          return `
+            <div class="config-field">
+              <label class="config-label">展示格式</label>
+              <div class="config-radio-group">
+                <label class="config-radio">
+                  <input type="radio" name="deptFormat" value="single" ${!config.format || config.format === 'single' ? 'checked' : ''}>
+                  <span>单级</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="deptFormat" value="full" ${config.format === 'full' ? 'checked' : ''}>
+                  <span>完整</span>
+                </label>
+                <label class="config-radio">
+                  <input type="radio" name="deptFormat" value="ellipsis" ${config.format === 'ellipsis' ? 'checked' : ''}>
+                  <span>省略</span>
+                </label>
+              </div>
+            </div>
+          `;
+
+        default:
+          return '<div class="config-field"><p style="color: #999; font-size: 12px;">此字段暂无可配置选项</p></div>';
+      }
+    }
+
+    // 关闭配置面板
+    function closeConfigPanel() {
+      document.getElementById('configPanel').style.display = 'none';
+      currentConfigFieldId = null;
+    }
+
+    // 保存配置
+    function saveConfig() {
+      console.log('保存配置，当前字段:', currentConfigFieldId);
+
+      if (!currentConfigFieldId) {
+        console.error('没有选中的字段');
+        return;
+      }
+
+      let config = {};
+
+      // 查找字段信息以获取 configType
+      const field = getFieldById(currentConfigFieldId);
+      const configType = field ? (field.configType || field.id) : currentConfigFieldId;
+
+      switch (configType) {
+        case 'enum':
+          const checkedOptions = Array.from(document.querySelectorAll('input[name="enumOptions"]:checked')).map(cb => cb.value);
+          if (checkedOptions.length > 0) {
+            config.options = checkedOptions;
+          }
+          console.log('Enum配置:', config);
+          break;
+
+        case 'person_name':
+          const gender = document.querySelector('input[name="gender"]:checked');
+          const language = document.querySelector('input[name="language"]:checked');
+          if (gender) config.gender = gender.value;
+          if (language) config.language = language.value;
+          console.log('人员姓名配置:', config);
+          break;
+
+        case 'date_time':
+          const timeType = document.querySelector('input[name="timeType"]:checked');
+          const dateFormat = document.getElementById('configDateFormat');
+          const includeSeconds = document.querySelector('input[name="includeSeconds"]:checked');
+          const order = document.querySelector('input[name="order"]:checked');
+          if (timeType) config.timeType = timeType.value;
+          if (dateFormat) config.format = dateFormat.value;
+          if (includeSeconds) config.includeSeconds = includeSeconds.value;
+          if (order) config.order = order.value;
+          console.log('日期时间配置:', config);
+          break;
+
+        case 'number_value':
+          const numMin = document.getElementById('configNumberMin');
+          const numMax = document.getElementById('configNumberMax');
+          const thousandsSeparator = document.querySelector('input[name="thousandsSeparator"]:checked');
+          const decimals = document.querySelector('input[name="decimals"]:checked');
+          const percentage = document.querySelector('input[name="percentage"]:checked');
+          if (numMin) config.min = parseInt(numMin.value) || 100;
+          if (numMax) config.max = parseInt(numMax.value) || 10000;
+          if (thousandsSeparator) config.thousandsSeparator = thousandsSeparator.value;
+          if (decimals) config.decimals = decimals.value;
+          if (percentage) config.percentage = percentage.value;
+          console.log('数字数值配置:', config);
+          break;
+
+        case 'serial_number':
+          const serialStart = document.getElementById('configSerialStart');
+          const serialPrefix = document.getElementById('configSerialPrefix');
+          const serialSuffix = document.getElementById('configSerialSuffix');
+          const serialOrder = document.querySelector('input[name="serialOrder"]:checked');
+          const serialPadding = document.querySelector('input[name="serialPadding"]:checked');
+
+          if (serialStart) config.start = parseInt(serialStart.value) || 1;
+          if (serialPrefix) config.prefix = serialPrefix.value;
+          if (serialSuffix) config.suffix = serialSuffix.value;
+          if (serialOrder) config.order = serialOrder.value;
+          if (serialPadding) config.padding = serialPadding.value;
+          console.log('序号配置:', config);
+          break;
+
+        case 'finance_amount':
+          const amountMin = document.getElementById('configAmountMin');
+          const amountMax = document.getElementById('configAmountMax');
+          if (amountMin && amountMax) {
+            config.min = parseInt(amountMin.value) || 100;
+            config.max = parseInt(amountMax.value) || 50000;
+            console.log('金额范围配置:', config);
+          }
+          break;
+
+        case 'contact_phone':
+          const phoneFormat = document.querySelector('input[name="phoneFormat"]:checked');
+          const phoneSeparator = document.querySelector('input[name="phoneSeparator"]:checked');
+          if (phoneFormat) config.format = phoneFormat.value;
+          if (phoneSeparator) config.separator = phoneSeparator.value;
+          console.log('手机号码配置:', config);
+          break;
+
+        case 'location_address':
+          const addressLevel = document.querySelector('input[name="addressLevel"]:checked');
+          if (addressLevel) config.level = addressLevel.value;
+          console.log('详细地址配置:', config);
+          break;
+
+        case 'account_email':
+          const emailType = document.querySelector('input[name="emailType"]:checked');
+          if (emailType) config.type = emailType.value;
+          console.log('邮箱地址配置:', config);
+          break;
+
+        case 'company_department':
+          const deptFormat = document.querySelector('input[name="deptFormat"]:checked');
+          if (deptFormat) config.format = deptFormat.value;
+          console.log('所属部门配置:', config);
+          break;
+      }
+
+      console.log('准备保存配置:', currentConfigFieldId, config);
+
+      if (saveFieldConfig(currentConfigFieldId, config)) {
+        console.log('配置保存成功');
+        closeConfigPanel();
+        // 发送配置更新消息给 code.ts
+        sendMessage('update-config', {
+          fieldId: currentConfigFieldId,
+          config: config
+        });
+      } else {
+        console.error('配置保存失败');
+      }
+    }
+
+    // 绑定配置面板事件
+    document.getElementById('configClose').addEventListener('click', closeConfigPanel);
+    document.getElementById('configCancel').addEventListener('click', closeConfigPanel);
+    document.getElementById('configSave').addEventListener('click', saveConfig);
+    document.querySelector('.config-overlay').addEventListener('click', closeConfigPanel);
+
+    function getFolderStates() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveFolderState(folderId, collapsed) {
+      try {
+        const states = getFolderStates();
+        states[folderId] = collapsed;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(states));
+      } catch (e) {
+        console.error('保存折叠状态失败:', e);
+      }
+    }
+
+    // 渲染字段卡片
+    // 根据 ID 查找字段
+    function getFieldById(fieldId) {
+      for (const category in DEFAULT_FIELDS) {
+        const field = DEFAULT_FIELDS[category].find(f => f.id === fieldId);
+        if (field) return field;
+      }
+      return null;
+    }
+
+    // 获取字段图标的SVG引用
+    function getFieldIconSVG(field) {
+      // 映射字段ID/configType到图标名称
+      const iconMap = {
+        // AI字段
+        'ai_new_title': 'ai',
+        'ai_short_desc': 'ai',
+        
+        // 默认字段
+        'person_name': 'person',
+        'date_time': 'calendar',
+        'number_value': 'number',
+        'serial_number': 'sequence',
+        'contact_phone': 'phone',
+        'account_email': 'email',
+        'company_department': 'department',
+        'location_address': 'location',
+        
+        // 人事领域
+        'hr_employee_id': 'person',
+        'hr_name': 'person',
+        'hr_gender': 'person',
+        'hr_age': 'person',
+        'hr_entry_date': 'calendar',
+        'hr_regular_date': 'calendar',
+        'hr_resign_date': 'calendar',
+        'hr_level': 'sequence',
+        'hr_position': 'department',
+        'hr_work_years': 'hourglass',
+        
+        // 财务领域
+        'finance_salary_month': 'finance',
+        'finance_salary_year': 'finance',
+        'finance_bonus': 'finance',
+        'finance_performance': 'number',
+        'finance_reimbursement': 'finance',
+        'finance_cost': 'finance',
+        'finance_revenue': 'finance',
+        'finance_profit': 'finance',
+        'finance_budget': 'finance',
+        'finance_date': 'calendar',
+        
+        // 账户领域
+        'user_id': 'account',
+        'user_nickname': 'person',
+        'user_register_date': 'calendar',
+        'user_last_login': 'calendar',
+        'user_login_count': 'number',
+        'user_status': 'account',
+        'user_level': 'account',
+        'user_vip_expire': 'calendar',
+        
+        // 订单领域
+        'order_id': 'cart',
+        'order_status': 'cart',
+        'order_create_time': 'calendar',
+        'order_pay_time': 'calendar',
+        'order_amount': 'finance',
+        'order_actual_amount': 'finance',
+        'order_pay_method': 'finance',
+        'order_refund_status': 'finance',
+        'order_logistics_no': 'cart',
+        'order_logistics_company': 'cart',
+        'order_remark': 'text'
+      };
+      
+      // 获取图标名称
+      let iconName = iconMap[field.id] || 'text';
+      
+      // 如果字段有configType，尝试映射
+      if (field.configType) {
+        const configTypeMap = {
+          'person_name': 'person',
+          'date_time': 'calendar',
+          'number_value': 'number',
+          'serial_number': 'sequence',
+          'enum': 'text',
+          'finance_amount': 'finance',
+          'text': 'text'
+        };
+        iconName = configTypeMap[field.configType] || iconName;
+      }
+      
+      return `<svg><use href="#icon-${iconName}"></use></svg>`;
+    }
+
+    // 渲染字段卡片
+    function renderFieldCard(field) {
+      // 判断字段类型
+      const isAIField = field.id && field.id.startsWith('ai_');
+      const isDefaultField = field.id && ['person_name', 'date_time', 'number_value', 'serial_number', 'contact_phone', 'account_email', 'company_department', 'location_address'].includes(field.id);
+      const isDomainField = field.id && (field.id.startsWith('hr_') || field.id.startsWith('finance_') || field.id.startsWith('user_') || field.id.startsWith('order_'));
+      const isCustomField = field.id && field.id.startsWith('custom_');
+
+      // 可配置的字段类型
+      const configurableFields = ['person_name', 'date_time', 'number_value', 'serial_number', 'finance_amount', 'contact_phone', 'location_address', 'account_email', 'company_department', 'enum'];
+      const configType = field.configType || field.id;
+      const hasConfig = configurableFields.includes(configType);
+
+      // 根据字段类型决定显示的按钮
+      // 1. AI字段：只有配置按钮
+      // 2. 默认字段：只有配置按钮
+      // 3. 领域字段：删除按钮 + 配置按钮
+      // 4. 自定义字段：删除按钮 + 编辑按钮
+
+      return `
+        <div class="field-card" data-field-id="${field.id}">
+          <div class="field-icon" style="background: ${field.iconBg}; color: ${field.iconColor};">
+            ${getFieldIconSVG(field)}
+          </div>
+          <div class="field-info">
+            <div class="field-name">${field.name}</div>
+            <div class="field-tags">
+              ${field.tags.map(tag => `<span class="field-tag">${tag}</span>`).join('')}
+            </div>
+          </div>
+          ${(() => {
+          const buttons = [];
+          
+          if (isAIField) {
+            // AI字段：只有配置按钮
+            if (hasConfig) {
+              buttons.push(`<button class="field-config-btn" data-config-field="${field.id}" title="配置"><svg><use href="#icon-edit"></use></svg></button>`);
+            }
+          } else if (isDefaultField) {
+            // 默认字段：只有配置按钮
+            if (hasConfig) {
+              buttons.push(`<button class="field-config-btn" data-config-field="${field.id}" title="配置"><svg><use href="#icon-edit"></use></svg></button>`);
+            }
+          } else if (isDomainField) {
+            // 领域字段：删除按钮 + 配置按钮
+            buttons.push(`<button class="field-delete-btn" data-delete-field="${field.id}" title="删除字段"><svg><use href="#icon-delete"></use></svg></button>`);
+            if (hasConfig) {
+              buttons.push(`<button class="field-config-btn" data-config-field="${field.id}" title="配置"><svg><use href="#icon-edit"></use></svg></button>`);
+            }
+          } else if (isCustomField) {
+            // 自定义字段：删除按钮 + 编辑按钮
+            buttons.push(`<button class="field-delete-btn" data-delete-field="${field.id}" title="删除字段"><svg><use href="#icon-delete"></use></svg></button>`);
+            buttons.push(`<button class="field-edit-btn" data-edit-field="${field.id}" title="编辑字段"><svg><use href="#icon-edit"></use></svg></button>`);
+          }
+          
+          return buttons.length > 0 ? `<div class="field-actions">${buttons.join('')}</div>` : '';
+        })()}
+        </div>
+      `;
+    }
+
+    // 渲染文件夹
+    function renderFolder(folder, fields) {
+      const folderStates = getFolderStates();
+      const isCollapsed = folderStates[folder.id] || false;
+      const collapsedClass = isCollapsed ? 'collapsed' : '';
+      // 只有自定义文件夹才能删除
+      const isCustomFolder = folder.id && folder.id.startsWith('custom_');
+
+      return `
+        <div class="folder ${collapsedClass}" data-folder-id="${folder.id}">
+          <div class="folder-header">
+            <div class="folder-toggle">
+              <svg><use href="${isCollapsed ? '#icon-chevron-right' : '#icon-chevron-down'}"></use></svg>
+            </div>
+            <div class="folder-name">${folder.name}</div>
+            ${isCustomFolder ? `<button class="folder-delete-btn" data-delete-folder="${folder.id}" title="删除文件夹"><svg><use href="#icon-delete"></use></svg></button>` : ''}
+            <button class="folder-add-btn" data-folder-id="${folder.id}" title="新建字段"><svg><use href="#icon-add"></use></svg></button>
+          </div>
+          <div class="folder-content">
+            ${fields.map(field => renderFieldCard(field)).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // 渲染字段列表
+    function renderFieldsList() {
+      const fieldsList = document.getElementById('fieldsList');
+
+      if (currentTab === 'text') {
+        // 文本填充 Tab
+        let html = FOLDERS.map(folder => {
+          const fields = DEFAULT_FIELDS[folder.fields];
+          return renderFolder(folder, fields);
+        }).join('');
+
+        // 添加自定义文件夹
+        customFolders.forEach((folder, index) => {
+          const folderData = {
+            id: 'custom_' + index,
+            name: folder.name
+          };
+          html += renderFolder(folderData, folder.fields);
+        });
+
+        fieldsList.innerHTML = html;
+      } else {
+        // 图片填充 Tab
+        const imageFields = DEFAULT_FIELDS.imageFields;
+        const html = imageFields.map(field => renderFieldCard(field)).join('');
+        fieldsList.innerHTML = html;
+      }
+
+      // 绑定文件夹折叠事件
+      document.querySelectorAll('.folder-header').forEach(header => {
+        header.addEventListener('click', (e) => {
+          // 如果点击的是按钮，不触发折叠
+          if (e.target.classList.contains('folder-add-btn') || 
+              e.target.classList.contains('folder-delete-btn') ||
+              e.target.closest('.folder-add-btn') ||
+              e.target.closest('.folder-delete-btn')) {
+            return;
+          }
+          const folder = header.closest('.folder');
+          const folderId = folder.dataset.folderId;
+          const isCollapsed = folder.classList.toggle('collapsed');
+          saveFolderState(folderId, isCollapsed);
+        });
+      });
+
+      // 绑定文件夹新建按钮事件
+      document.querySelectorAll('.folder-add-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const folderId = btn.dataset.folderId;
+          toggleAddMenu(false, folderId, btn);
+        });
+      });
+
+      // 绑定字段点击事件
+      document.querySelectorAll('.field-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          // 如果点击的是按钮，不触发填充
+          if (e.target.classList.contains('field-config-btn') || 
+              e.target.classList.contains('field-edit-btn') || 
+              e.target.classList.contains('field-delete-btn') ||
+              e.target.closest('.field-config-btn') ||
+              e.target.closest('.field-edit-btn') ||
+              e.target.closest('.field-delete-btn') ||
+              e.target.closest('.field-actions')) {
+            return;
+          }
+          const fieldId = card.dataset.fieldId;
+          handleFieldClick(fieldId);
+        });
+      });
+
+      // 绑定配置按钮事件
+      document.querySelectorAll('.field-config-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // 阻止事件冒泡
+          const fieldId = btn.dataset.configField;
+          showConfigPanel(fieldId);
+        });
+      });
+
+      // 绑定编辑按钮事件
+      document.querySelectorAll('.field-edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // 阻止事件冒泡
+          const fieldId = btn.dataset.editField;
+          showEditFieldModal(fieldId);
+        });
+      });
+
+      // 绑定字段删除按钮事件
+      document.querySelectorAll('.field-delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // 阻止事件冒泡
+          const fieldId = btn.dataset.deleteField;
+          showDeleteFieldConfirm(fieldId);
+        });
+      });
+
+      // 绑定文件夹删除按钮事件
+      document.querySelectorAll('.folder-delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // 阻止事件冒泡
+          const folderId = btn.dataset.deleteFolder;
+          showDeleteFolderConfirm(folderId);
+        });
+      });
+    }
+
+    // Tab 切换
+    const tabs = document.querySelectorAll('.tab');
+    const hintText = document.getElementById('hintText');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // 移除所有 active 状态
+        tabs.forEach(t => t.classList.remove('active'));
+        // 添加当前 active 状态
+        tab.classList.add('active');
+
+        // 更新提示文本和当前 Tab
+        currentTab = tab.dataset.tab;
+        if (currentTab === 'text') {
+          hintText.textContent = '选中文本图层，点击字段，即时填充';
+        } else {
+          hintText.textContent = '选中图片图层，点击字段，即时填充';
+        }
+
+        // 重新渲染字段列表
+        renderFieldsList();
+
+        console.log('切换到:', currentTab);
+      });
+    });
+
+
+    // 搜索框清除
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+
+    // 搜索功能
+    searchInput.addEventListener('input', (e) => {
+      const keyword = e.target.value.trim().toLowerCase();
+
+      if (keyword === '') {
+        // 清空搜索，显示所有字段
+        renderFieldsList();
+      } else {
+        // 过滤字段
+        filterFields(keyword);
+      }
+    });
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      renderFieldsList();
+      searchInput.focus();
+    });
+
+    // 过滤字段
+    function filterFields(keyword) {
+      const fieldsList = document.getElementById('fieldsList');
+      let matchedFields = [];
+
+      // 搜索所有字段
+      for (const key in DEFAULT_FIELDS) {
+        const fields = DEFAULT_FIELDS[key];
+        const matched = fields.filter(field =>
+          field.name.toLowerCase().includes(keyword) ||
+          field.tags.some(tag => tag.toLowerCase().includes(keyword))
+        );
+        matchedFields = matchedFields.concat(matched);
+      }
+
+      // 渲染搜索结果
+      if (matchedFields.length > 0) {
+        const html = matchedFields.map(field => renderFieldCard(field)).join('');
+        fieldsList.innerHTML = html;
+
+        // 绑定字段点击事件
+        document.querySelectorAll('.field-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const fieldId = card.dataset.fieldId;
+            handleFieldClick(fieldId);
+          });
+        });
+      } else {
+        fieldsList.innerHTML = '<div class="placeholder">未找到匹配的字段</div>';
+      }
+    }
+
+    // 新建按钮
+    const newButton = document.getElementById('newButton');
+    newButton.addEventListener('click', () => {
+      console.log('点击新建按钮');
+      // 后续阶段实现
+    });
+
+    // 处理字段点击
+    function handleFieldClick(fieldId) {
+      console.log('点击字段:', fieldId);
+
+      const field = getFieldById(fieldId);
+      const configType = field ? (field.configType || field.id) : fieldId;
+
+      // 获取用户配置
+      const userConfig = getFieldConfig(fieldId);
+
+      // 合并静态配置 (如 options, min, max) 和用户配置
+      // 用户配置优先级更高
+      const payloadConfig = {
+        ...field, // 包含 options, min, max 等定义在 DEFAULT_FIELDS 中的属性
+        ...userConfig
+      };
+
+      // 直接发送字段 ID，让 code.ts 生成数据
+      sendMessage('fill-text', {
+        fieldId: fieldId,
+        configType: configType,
+        dynamicConfig: payloadConfig
+      });
+    }
+
+    // 监听来自插件的消息
+    window.addEventListener('message', (event) => {
+      const msg = event.data.pluginMessage;
+      if (!msg) return;
+
+      console.log('收到插件消息:', msg);
+
+      switch (msg.type) {
+        case 'fill-result':
+          handleFillResult(msg.result, msg.message);
+          break;
+
+        case 'fill-error':
+          showError(msg.message);
+          break;
+
+        case 'configs-loaded':
+          // 配置加载完成，更新缓存
+          fieldConfigsCache = msg.configs || {};
+          console.log('配置已加载到 UI:', fieldConfigsCache);
+          break;
+      }
+    });
+
+    // 处理填充结果
+    function handleFillResult(result, message) {
+      if (result.success > 0) {
+        // 显示成功提示
+        if (message) {
+          showToast(message);
+        } else {
+          showToast(`填充成功：${result.success} 个图层`);
+        }
+        console.log(`填充成功: ${result.success} 个图层`);
+        
+        if (result.errors.length > 0) {
+          console.log('提示:', result.errors);
+        }
+      } else {
+        console.error('填充失败:', result.errors);
+        if (result.errors.length > 0) {
+          showError(result.errors[0]);
+        }
+      }
+    }
+
+    // 显示错误提示
+    function showError(message) {
+      console.error('错误:', message);
+
+      // 创建错误提示元素
+      const errorToast = document.createElement('div');
+      errorToast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-size: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideDown 0.3s ease;
+      `;
+      errorToast.textContent = message;
+
+      // 添加到页面
+      document.body.appendChild(errorToast);
+
+      // 2秒后自动消失
+      setTimeout(() => {
+        errorToast.style.animation = 'slideUp 0.3s ease';
+        setTimeout(() => {
+          document.body.removeChild(errorToast);
+        }, 300);
+      }, 2000);
+    }
+
+    // ==================== 新建功能逻辑 ====================
+
+    // 全局变量（使用内存存储）
+    let customFields = [];
+    let customFolders = [];
+    let pendingField = null; // 待分配文件夹的字段
+    let currentFolderId = null; // 当前操作的文件夹 ID
+
+    // 显示 Toast 提示
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = toast.querySelector('.toast-message');
+      toastMessage.textContent = message;
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // 显示/隐藏新建菜单
+    function toggleAddMenu(isGlobal, folderId = null, buttonElement = null) {
+      const menu = document.getElementById('addMenu');
+      const isVisible = menu.style.display === 'block';
+
+      if (isVisible) {
+        menu.style.display = 'none';
+        return;
+      }
+
+      currentFolderId = folderId;
+
+      // 如果是文件夹内新建，隐藏"新建文件夹"选项
+      const folderMenuItem = menu.querySelector('[data-action="add-folder"]');
+      if (isGlobal) {
+        folderMenuItem.style.display = 'flex';
+      } else {
+        folderMenuItem.style.display = 'none';
+      }
+
+      // 动态定位菜单
+      if (buttonElement) {
+        const rect = buttonElement.getBoundingClientRect();
+        menu.style.top = (rect.bottom + 4) + 'px';
+        menu.style.right = (window.innerWidth - rect.right) + 'px';
+      }
+
+      menu.style.display = 'block';
+    }
+
+    // 关闭所有对话框
+    function closeAllModals() {
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+      });
+      // 清空表单
+      document.getElementById('fieldTitle').value = '';
+      document.getElementById('fieldContent').value = '';
+      document.getElementById('aiFieldTitle').value = '';
+      document.getElementById('aiFieldPrompt').value = '';
+      document.getElementById('folderName').value = '';
+    }
+
+    // 显示新建字段对话框
+    function showAddFieldModal() {
+      document.getElementById('addMenu').style.display = 'none';
+      document.getElementById('addFieldModal').style.display = 'flex';
+      // 重置标题为"新建字段"
+      document.querySelector('#addFieldModal .modal-header h3').textContent = '新建字段';
+      // 清空表单
+      document.getElementById('fieldTitle').value = '';
+      document.getElementById('fieldContent').value = '';
+      // 移除编辑标记
+      document.getElementById('addFieldModal').removeAttribute('data-edit-field-id');
+    }
+
+    // 显示编辑字段对话框
+    function showEditFieldModal(fieldId) {
+      // 查找字段
+      const field = customFields.find(f => f.id === fieldId);
+      if (!field) return;
+
+      // 填充表单
+      document.getElementById('fieldTitle').value = field.name;
+      document.getElementById('fieldContent').value = field.options.join('\n');
+
+      // 修改标题为"编辑字段"
+      document.querySelector('#addFieldModal .modal-header h3').textContent = '编辑字段';
+
+      // 标记为编辑模式
+      document.getElementById('addFieldModal').setAttribute('data-edit-field-id', fieldId);
+
+      // 显示对话框
+      document.getElementById('addFieldModal').style.display = 'flex';
+    }
+
+    // 显示新建 AI 字段对话框
+    function showAddAIFieldModal() {
+      document.getElementById('addMenu').style.display = 'none';
+      document.getElementById('addAIFieldModal').style.display = 'flex';
+    }
+
+    // 显示新建文件夹对话框
+    function showAddFolderModal() {
+      document.getElementById('addMenu').style.display = 'none';
+      document.getElementById('addFolderModal').style.display = 'flex';
+    }
+
+    // 显示文件夹选择器
+    function showFolderSelector(field) {
+      pendingField = field;
+      const modal = document.getElementById('folderSelectorModal');
+      const folderList = document.getElementById('folderList');
+
+      // 渲染文件夹列表
+      let html = '';
+
+      // 默认文件夹
+      const defaultFolders = [
+        { id: 'aiFields', name: 'AI 字段', icon: '⚡' },
+        { id: 'defaultFields', name: '默认字段', icon: '📋' },
+        { id: 'hrFields', name: '人事领域', icon: '👥' },
+        { id: 'financeFields', name: '财务领域', icon: '💰' },
+        { id: 'accountFields', name: '用户账户', icon: '👤' },
+        { id: 'orderFields', name: '订单/交易', icon: '📦' }
+      ];
+
+      defaultFolders.forEach(folder => {
+        html += `
+          <div class="folder-selector-item" data-folder-id="${folder.id}">
+            <span class="folder-icon">${folder.icon}</span>
+            <span>${folder.name}</span>
+          </div>
+        `;
+      });
+
+      // 自定义文件夹
+      customFolders.forEach((folder, index) => {
+        html += `
+          <div class="folder-selector-item" data-folder-id="custom_${index}">
+            <span class="folder-icon">📁</span>
+            <span>${folder.name}</span>
+          </div>
+        `;
+      });
+
+      folderList.innerHTML = html;
+      modal.style.display = 'flex';
+    }
+
+    // 创建自定义字段
+    function createCustomField(title, content, folderId) {
+      // 将多行内容按行分割为数组
+      const options = content.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+      const field = {
+        id: 'custom_' + Date.now(),
+        name: title,
+        configType: 'enum', // 使用 enum 类型以复用现有逻辑
+        options: options,
+        icon: '📝',
+        iconBg: '#e0e7ff',
+        iconColor: '#4f46e5',
+        tags: ['自定义']
+      };
+
+      // 添加到对应文件夹
+      if (folderId && folderId.startsWith('custom_')) {
+        const index = parseInt(folderId.replace('custom_', ''));
+        customFolders[index].fields.push(field);
+      } else if (folderId) {
+        // 添加到默认文件夹
+        if (!DEFAULT_FIELDS[folderId]) {
+          DEFAULT_FIELDS[folderId] = [];
+        }
+        DEFAULT_FIELDS[folderId].push(field);
+      }
+
+      customFields.push(field);
+      saveCustomData();
+      renderFieldsList();
+      showToast(`字段"${title}"创建成功`);
+    }
+
+    // 创建自定义 AI 字段
+    function createCustomAIField(title, prompt, folderId) {
+      const field = {
+        id: 'ai_custom_' + Date.now(),
+        name: title,
+        type: 'text',
+        method: 'ai',
+        prompt: prompt,
+        icon: '⚡',
+        iconBg: '#f3e8ff',
+        iconColor: '#9333ea',
+        tags: ['AI', '自定义']
+      };
+
+      // 添加到对应文件夹
+      if (folderId && folderId.startsWith('custom_')) {
+        const index = parseInt(folderId.replace('custom_', ''));
+        customFolders[index].fields.push(field);
+      } else if (folderId) {
+        if (!DEFAULT_FIELDS[folderId]) {
+          DEFAULT_FIELDS[folderId] = [];
+        }
+        DEFAULT_FIELDS[folderId].push(field);
+      }
+
+      customFields.push(field);
+      saveCustomData();
+      renderFieldsList();
+      showToast(`AI 字段"${title}"创建成功`);
+    }
+
+    // 更新自定义字段
+    function updateCustomField(fieldId, title, content) {
+      // 将多行内容按行分割为数组
+      const options = content.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+      // 更新 customFields 数组中的字段
+      const fieldIndex = customFields.findIndex(f => f.id === fieldId);
+      if (fieldIndex !== -1) {
+        customFields[fieldIndex].name = title;
+        customFields[fieldIndex].options = options;
+      }
+
+      // 更新 DEFAULT_FIELDS 中的字段
+      for (const key in DEFAULT_FIELDS) {
+        const index = DEFAULT_FIELDS[key].findIndex(f => f.id === fieldId);
+        if (index !== -1) {
+          DEFAULT_FIELDS[key][index].name = title;
+          DEFAULT_FIELDS[key][index].options = options;
+          break;
+        }
+      }
+
+      // 更新 customFolders 中的字段
+      customFolders.forEach(folder => {
+        const index = folder.fields.findIndex(f => f.id === fieldId);
+        if (index !== -1) {
+          folder.fields[index].name = title;
+          folder.fields[index].options = options;
+        }
+      });
+
+      renderFieldsList();
+      showToast(`字段"${title}"已更新`);
+    }
+
+    // 创建自定义文件夹
+    function createCustomFolder(name) {
+      const folder = {
+        name: name,
+        fields: []
+      };
+
+      customFolders.push(folder);
+      saveCustomData();
+      renderFieldsList();
+      showToast(`文件夹"${name}"创建成功`);
+    }
+
+    // 保存自定义数据（暂时不实现持久化）
+    function saveCustomData() {
+      // TODO: 使用 Figma clientStorage 或 pluginData 实现持久化
+      console.log('自定义数据已更新（内存中）');
+    }
+
+    // 加载自定义数据（暂时不实现）
+    function loadCustomData() {
+      // TODO: 从 Figma clientStorage 或 pluginData 加载
+      console.log('加载自定义数据（当前为空）');
+    }
+
+    // ==================== 删除功能 ====================
+    let deleteTarget = null; // { type: 'field' | 'folder', id: string, name: string }
+
+    // 显示删除字段确认对话框
+    function showDeleteFieldConfirm(fieldId) {
+      // 查找字段信息
+      let field = null;
+      let folderIndex = -1;
+      let fieldIndexInFolder = -1;
+      let isDomainField = false;
+      let domainCategory = null;
+      let domainFieldIndex = -1;
+
+      // 判断是否为领域字段
+      if (fieldId.startsWith('hr_') || fieldId.startsWith('finance_') || 
+          fieldId.startsWith('user_') || fieldId.startsWith('order_')) {
+        isDomainField = true;
+        
+        // 确定所属领域
+        if (fieldId.startsWith('hr_')) domainCategory = 'hrFields';
+        else if (fieldId.startsWith('finance_')) domainCategory = 'financeFields';
+        else if (fieldId.startsWith('user_')) domainCategory = 'accountFields';
+        else if (fieldId.startsWith('order_')) domainCategory = 'orderFields';
+        
+        // 在DEFAULT_FIELDS中查找
+        domainFieldIndex = DEFAULT_FIELDS[domainCategory].findIndex(f => f.id === fieldId);
+        if (domainFieldIndex !== -1) {
+          field = DEFAULT_FIELDS[domainCategory][domainFieldIndex];
+        }
+      } else {
+        // 在自定义字段中查找
+        const customFieldIndex = customFields.findIndex(f => f.id === fieldId);
+        if (customFieldIndex !== -1) {
+          field = customFields[customFieldIndex];
+        } else {
+          // 在自定义文件夹中查找
+          for (let i = 0; i < customFolders.length; i++) {
+            const idx = customFolders[i].fields.findIndex(f => f.id === fieldId);
+            if (idx !== -1) {
+              field = customFolders[i].fields[idx];
+              folderIndex = i;
+              fieldIndexInFolder = idx;
+              break;
+            }
+          }
+        }
+      }
+
+      if (!field) {
+        showToast('未找到该字段');
+        return;
+      }
+
+      // 保存删除目标
+      const customFieldIndex = customFields.findIndex(f => f.id === fieldId);
+      deleteTarget = {
+        type: 'field',
+        id: fieldId,
+        name: field.name,
+        customFieldIndex,
+        folderIndex,
+        fieldIndexInFolder,
+        isDomainField,
+        domainCategory,
+        domainFieldIndex
+      };
+
+      // 显示确认对话框
+      document.getElementById('deleteConfirmTitle').textContent = '确认删除字段？';
+      document.getElementById('deleteConfirmMessage').textContent = `确认要删除字段"${field.name}"吗？此操作无法撤销。`;
+      document.getElementById('deleteConfirmModal').style.display = 'flex';
+    }
+
+    // 显示删除文件夹确认对话框
+    function showDeleteFolderConfirm(folderId) {
+      const folderIndex = parseInt(folderId.replace('custom_', ''));
+      const folder = customFolders[folderIndex];
+
+      if (!folder) {
+        showToast('未找到该文件夹');
+        return;
+      }
+
+      // 保存删除目标
+      deleteTarget = {
+        type: 'folder',
+        id: folderId,
+        name: folder.name,
+        folderIndex,
+        fieldCount: folder.fields.length
+      };
+
+      // 显示确认对话框
+      const fieldCountText = folder.fields.length > 0 ? `（包含 ${folder.fields.length} 个字段）` : '';
+      document.getElementById('deleteConfirmTitle').textContent = '确认删除文件夹？';
+      document.getElementById('deleteConfirmMessage').textContent = `确认要删除文件夹"${folder.name}"${fieldCountText}吗？此操作无法撤销。`;
+      document.getElementById('deleteConfirmModal').style.display = 'flex';
+    }
+
+    // 执行删除操作
+    function executeDelete() {
+      if (!deleteTarget) return;
+
+      if (deleteTarget.type === 'field') {
+        // 删除字段
+        if (deleteTarget.isDomainField && deleteTarget.domainFieldIndex !== -1) {
+          // 从领域字段中删除
+          DEFAULT_FIELDS[deleteTarget.domainCategory].splice(deleteTarget.domainFieldIndex, 1);
+        } else if (deleteTarget.customFieldIndex !== -1) {
+          // 从 customFields 中删除
+          customFields.splice(deleteTarget.customFieldIndex, 1);
+        } else if (deleteTarget.folderIndex !== -1 && deleteTarget.fieldIndexInFolder !== -1) {
+          // 从文件夹中删除
+          customFolders[deleteTarget.folderIndex].fields.splice(deleteTarget.fieldIndexInFolder, 1);
+        }
+
+        saveCustomData();
+        renderFieldsList();
+        showToast(`字段"${deleteTarget.name}"已删除`);
+      } else if (deleteTarget.type === 'folder') {
+        // 删除文件夹
+        customFolders.splice(deleteTarget.folderIndex, 1);
+        saveCustomData();
+        renderFieldsList();
+        showToast(`文件夹"${deleteTarget.name}"已删除`);
+      }
+
+      // 关闭对话框并清空删除目标
+      document.getElementById('deleteConfirmModal').style.display = 'none';
+      deleteTarget = null;
+    }
+
+    // 绑定删除确认对话框事件
+    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+    const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+
+    deleteConfirmModal.querySelectorAll('.modal-close, .modal-cancel').forEach(btn => {
+      btn.addEventListener('click', () => {
+        deleteConfirmModal.style.display = 'none';
+        deleteTarget = null;
+      });
+    });
+
+    deleteConfirmModal.querySelector('.modal-overlay').addEventListener('click', () => {
+      deleteConfirmModal.style.display = 'none';
+      deleteTarget = null;
+    });
+
+    deleteConfirmBtn.addEventListener('click', () => {
+      executeDelete();
+    });
+
+    // 初始化
+    console.log('Data Fill UI 已加载');
+    loadCustomData(); // 加载自定义数据
+    updateTrialBadge(); // 更新试用状态
+    renderFieldsList();
+
+    // ==================== 新建功能事件监听 ====================
+
+    // 全局新建按钮
+    document.getElementById('newButton').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const button = e.currentTarget;
+      toggleAddMenu(true, null, button);
+    });
+
+    // 新建菜单项点击
+    document.querySelectorAll('.add-menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const action = item.dataset.action;
+        if (action === 'add-field') {
+          showAddFieldModal();
+        } else if (action === 'add-ai-field') {
+          showAddAIFieldModal();
+        } else if (action === 'add-folder') {
+          showAddFolderModal();
+        }
+      });
+    });
+
+    // 关闭对话框
+    document.querySelectorAll('.modal-close, .modal-cancel').forEach(btn => {
+      btn.addEventListener('click', closeAllModals);
+    });
+
+    // 点击遮罩关闭
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', closeAllModals);
+    });
+
+    // 新建/编辑字段确认
+    document.querySelector('#addFieldModal .modal-confirm').addEventListener('click', () => {
+      const title = document.getElementById('fieldTitle').value.trim();
+      const content = document.getElementById('fieldContent').value.trim();
+
+      if (!title) {
+        showToast('请输入字段标题');
+        return;
+      }
+
+      if (!content) {
+        showToast('请输入示例内容');
+        return;
+      }
+
+      const modal = document.getElementById('addFieldModal');
+      const editFieldId = modal.getAttribute('data-edit-field-id');
+
+      closeAllModals();
+
+      if (editFieldId) {
+        // 编辑模式
+        updateCustomField(editFieldId, title, content);
+      } else {
+        // 新建模式
+        if (currentFolderId) {
+          createCustomField(title, content, currentFolderId);
+        } else {
+          showFolderSelector({ title, content, type: 'field' });
+        }
+      }
+    });
+
+    // 新建 AI 字段确认
+    document.querySelector('#addAIFieldModal .modal-confirm').addEventListener('click', () => {
+      const title = document.getElementById('aiFieldTitle').value.trim();
+      const prompt = document.getElementById('aiFieldPrompt').value.trim();
+
+      if (!title) {
+        showToast('请输入字段标题');
+        return;
+      }
+
+      if (!prompt) {
+        showToast('请输入 AI 提示词');
+        return;
+      }
+
+      closeAllModals();
+
+      // 如果是文件夹内新建，直接创建
+      if (currentFolderId) {
+        createCustomAIField(title, prompt, currentFolderId);
+      } else {
+        // 全局新建，显示文件夹选择器
+        showFolderSelector({ title, prompt, type: 'ai-field' });
+      }
+    });
+
+    // 新建文件夹确认
+    document.querySelector('#addFolderModal .modal-confirm').addEventListener('click', () => {
+      const name = document.getElementById('folderName').value.trim();
+
+      if (!name) {
+        showToast('请输入文件夹名称');
+        return;
+      }
+
+      closeAllModals();
+      createCustomFolder(name);
+    });
+
+    // 文件夹选择器点击
+    document.getElementById('folderList').addEventListener('click', (e) => {
+      const item = e.target.closest('.folder-selector-item');
+      if (!item) return;
+
+      const folderId = item.dataset.folderId;
+      closeAllModals();
+
+      if (pendingField) {
+        if (pendingField.type === 'field') {
+          createCustomField(pendingField.title, pendingField.content, folderId);
+        } else if (pendingField.type === 'ai-field') {
+          createCustomAIField(pendingField.title, pendingField.prompt, folderId);
+        }
+        pendingField = null;
+      }
+    });
+
+    // 点击其他地方关闭菜单
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('addMenu');
+      if (menu.style.display === 'block' && !e.target.closest('#addMenu') && !e.target.closest('#newButton')) {
+        menu.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+
+</html>

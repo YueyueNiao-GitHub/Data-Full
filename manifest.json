@@ -1,0 +1,18 @@
+{
+  "name": "Data Full",
+  "id": "1600482096810661957",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
+}
