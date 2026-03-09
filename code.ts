@@ -1,3 +1,5 @@
+import { PACKED_IMAGE_ASSETS, PackedImageAsset } from './image-assets';
+
 // Data Fill - Figma 字段化数据填充插件
 // 主代码文件：处理 Figma 文档操作和与 UI 的通信
 
@@ -63,6 +65,9 @@ const EMAIL_DOMAINS_OVERSEAS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmai
 
 let sequenceCounters: { [key: string]: number } = {};
 let fieldConfigs: { [key: string]: any } = {};
+let imageHashCache: { [key: string]: string } = {};
+
+type ImageFillTargetNode = SceneNode & MinimalFillsMixin;
 
 function padStart(str: string, targetLength: number, padString: string): string {
   while (str.length < targetLength) {
@@ -84,6 +89,49 @@ function getNextSequence(fieldId: string): number {
     sequenceCounters[fieldId] = 0;
   }
   return ++sequenceCounters[fieldId];
+}
+
+function isImageField(fieldId: string): boolean {
+  return fieldId === 'image_avatar' || fieldId === 'image_banner' || fieldId === 'image_placeholder';
+}
+
+function isImageFillTarget(node: SceneNode): node is ImageFillTargetNode {
+  if (node.type === 'TEXT') {
+    return false;
+  }
+
+  return 'fills' in node;
+}
+
+function randomAsset(assets: PackedImageAsset[]): PackedImageAsset {
+  return assets[Math.floor(Math.random() * assets.length)];
+}
+
+function getPackedAsset(fieldId: string): PackedImageAsset | null {
+  if (fieldId === 'image_avatar') {
+    return randomAsset(PACKED_IMAGE_ASSETS.avatars);
+  }
+
+  if (fieldId === 'image_banner') {
+    return randomAsset(PACKED_IMAGE_ASSETS.banners);
+  }
+
+  if (fieldId === 'image_placeholder') {
+    return randomAsset(PACKED_IMAGE_ASSETS.placeholders);
+  }
+
+  return null;
+}
+
+function getImageHashForAsset(asset: PackedImageAsset): string {
+  const cacheKey = `${asset.name}:${asset.base64.length}`;
+
+  if (!imageHashCache[cacheKey]) {
+    const bytes = figma.base64Decode(asset.base64);
+    imageHashCache[cacheKey] = figma.createImage(bytes).hash;
+  }
+
+  return imageHashCache[cacheKey];
 }
 
 // 生成字段数据
@@ -411,7 +459,7 @@ figma.ui.onmessage = (msg: PluginMessage) => {
 
   switch (msg.type) {
     case 'fill-text':
-      handleTextFill(msg.fieldId, msg.configType, msg.dynamicConfig);
+      void handleFill(msg.fieldId, msg.configType, msg.dynamicConfig);
       break;
 
     case 'update-config':
@@ -434,9 +482,10 @@ figma.ui.onmessage = (msg: PluginMessage) => {
   }
 };
 
-// 处理文本填充
-function handleTextFill(fieldId: string, configType?: string, dynamicConfig: any = {}) {
+// 处理字段填充
+async function handleFill(fieldId: string, configType?: string, dynamicConfig: any = {}) {
   const selection = figma.currentPage.selection;
+  const fillingImages = isImageField(fieldId);
 
   // 检查是否有选中的图层
   if (selection.length === 0) {
@@ -455,14 +504,13 @@ function handleTextFill(fieldId: string, configType?: string, dynamicConfig: any
 
   // 收集所有文本图层和图片图层
   const textNodes: TextNode[] = [];
-  const imageNodes: SceneNode[] = [];
+  const imageNodes: ImageFillTargetNode[] = [];
 
   // 递归遍历选中的图层及其子图层
   function collectNodes(node: SceneNode) {
     if (node.type === 'TEXT') {
       textNodes.push(node as TextNode);
-    } else if (node.type === 'RECTANGLE' || node.type === 'ELLIPSE') {
-      // 可以填充图片的图层类型
+    } else if (isImageFillTarget(node)) {
       imageNodes.push(node);
     }
 
@@ -488,54 +536,79 @@ function handleTextFill(fieldId: string, configType?: string, dynamicConfig: any
     return;
   }
 
-  // 批量生成数据（用于排序）
-  const config = fieldConfigs[fieldId] || {};
-  const dataList: string[] = [];
-
-  // 为文本图层生成数据
-  for (let i = 0; i < textNodes.length; i++) {
-    dataList.push(generateFieldData(fieldId, configType, dynamicConfig));
-  }
-
-  // 如果是日期时间字段且配置了排序，则进行排序
-  const effectiveType = configType || fieldId;
-  if (effectiveType === 'date_time' && config.order && config.order !== 'random') {
-    if (config.order === 'asc') {
-      // 升序排序
-      dataList.sort((a, b) => a.localeCompare(b));
-    } else if (config.order === 'desc') {
-      // 降序排序
-      dataList.sort((a, b) => b.localeCompare(a));
-    }
-  }
-
-  // 填充文本图层
-  for (let i = 0; i < textNodes.length; i++) {
-    try {
-      fillTextNode(textNodes[i], dataList[i]);
-      result.success++;
-    } catch (error) {
-      result.failed++;
-      result.errors.push(`填充失败: ${error}`);
-    }
-  }
-
-  // 如果有图片图层，提示暂不支持
-  if (imageNodes.length > 0) {
-    result.errors.push(`识别到${imageNodes.length}个图片图层，图片填充功能暂未实现`);
-  }
-
-  // 构建提示消息
   let message = '';
-  if (textNodes.length > 0) {
-    message = `识别到${textNodes.length}个文本图层并填充成功`;
-  }
-  if (imageNodes.length > 0) {
-    if (message) {
-      message += `，${imageNodes.length}个图片图层暂不支持`;
-    } else {
-      message = `识别到${imageNodes.length}个图片图层，暂不支持填充`;
+
+  if (fillingImages) {
+    if (imageNodes.length === 0) {
+      figma.ui.postMessage({
+        type: 'fill-error',
+        message: '未找到可填充的图片图层'
+      });
+      return;
     }
+
+    for (let i = 0; i < imageNodes.length; i++) {
+      try {
+        await fillImageNode(imageNodes[i], fieldId);
+        result.success++;
+      } catch (error) {
+        result.failed++;
+        result.errors.push(`图片填充失败: ${error}`);
+      }
+    }
+
+    if (textNodes.length > 0) {
+      result.failed += textNodes.length;
+      result.errors.push(`跳过${textNodes.length}个文本图层：当前字段仅支持图片填充`);
+    }
+
+    message = `已填充${result.success}个图片图层`;
+  } else {
+    if (textNodes.length === 0) {
+      figma.ui.postMessage({
+        type: 'fill-error',
+        message: '未找到可填充的文本图层'
+      });
+      return;
+    }
+
+    // 批量生成数据（用于排序）
+    const config = fieldConfigs[fieldId] || {};
+    const dataList: string[] = [];
+
+    for (let i = 0; i < textNodes.length; i++) {
+      dataList.push(generateFieldData(fieldId, configType, dynamicConfig));
+    }
+
+    const effectiveType = configType || fieldId;
+    if (effectiveType === 'date_time' && config.order && config.order !== 'random') {
+      if (config.order === 'asc') {
+        dataList.sort((a, b) => a.localeCompare(b));
+      } else if (config.order === 'desc') {
+        dataList.sort((a, b) => b.localeCompare(a));
+      }
+    }
+
+    for (let i = 0; i < textNodes.length; i++) {
+      try {
+        await fillTextNode(textNodes[i], dataList[i]);
+        result.success++;
+      } catch (error) {
+        result.failed++;
+        result.errors.push(`文本填充失败: ${error}`);
+      }
+    }
+
+    if (imageNodes.length > 0) {
+      result.failed += imageNodes.length;
+      result.errors.push(`跳过${imageNodes.length}个图片图层：当前字段仅支持文本填充`);
+    }
+
+    message = `已填充${result.success}个文本图层`;
+  }
+
+  if (result.failed > 0) {
+    message += `，跳过或失败${result.failed}个图层`;
   }
 
   // 发送结果给 UI
@@ -553,4 +626,21 @@ async function fillTextNode(node: TextNode, text: string) {
 
   // 填充文本
   node.characters = text;
+}
+
+async function fillImageNode(node: ImageFillTargetNode, fieldId: string) {
+  const asset = getPackedAsset(fieldId);
+
+  if (!asset) {
+    throw new Error('未找到内置图片素材');
+  }
+
+  const imageHash = getImageHashForAsset(asset);
+  const imagePaint: ImagePaint = {
+    type: 'IMAGE',
+    imageHash: imageHash,
+    scaleMode: 'FILL'
+  };
+
+  node.fills = [imagePaint];
 }
