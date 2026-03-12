@@ -1,0 +1,16 @@
+{
+  "name": "data-fill-ai-proxy",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "tsc -p tsconfig.json",
+    "generate:license": "node scripts/generate-license.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "wrangler": "^4.7.0"
+  }
+}

@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "module": "none",
+    "outFile": "code.js",
     "lib": ["es6"],
     "strict": true,
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules/@figma"
     ]
-  }
+  },
+  "exclude": [
+    "ai-proxy"
+  ]
 }

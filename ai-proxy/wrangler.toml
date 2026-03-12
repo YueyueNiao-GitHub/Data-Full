@@ -1,0 +1,14 @@
+name = "data-fill-ai-proxy"
+main = "src/index.ts"
+compatibility_date = "2026-03-12"
+
+[observability]
+enabled = true
+
+[vars]
+DEEPSEEK_MODEL = "deepseek-chat"
+ENABLE_LICENSE_CHECK = "true"
+
+[[kv_namespaces]]
+binding = "LICENSES"
+id = "974b9052bb2a403f8aec32759fe8a20f"

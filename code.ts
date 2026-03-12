@@ -1,5 +1,3 @@
-import { PACKED_IMAGE_ASSETS, PackedImageAsset } from './image-assets';
-
 // Data Fill - Figma 字段化数据填充插件
 // 主代码文件：处理 Figma 文档操作和与 UI 的通信
 
@@ -24,6 +22,62 @@ interface FillResult {
   success: number;
   failed: number;
   errors: string[];
+}
+
+interface CustomDataPayload {
+  customFields: any[];
+  customFolders: any[];
+}
+
+interface AISettings {
+  provider: 'deepseek';
+  apiKey: string;
+  model: string;
+  temperature: number;
+  maxTokens: number;
+  endpoint: string;
+}
+
+interface AIFieldConfig {
+  prompt?: string;
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+  provider?: 'deepseek';
+  method?: string;
+}
+
+interface LicenseState {
+  key: string;
+  status: 'valid' | 'invalid' | 'unknown';
+  plan?: string;
+  expiresAt?: string;
+  lastValidatedAt?: string;
+}
+
+interface UsageState {
+  freeFillLimit: number;
+  fillCount: number;
+}
+
+interface PackedImageAsset {
+  name: string;
+  mimeType: string;
+  base64: string;
+}
+
+interface PackedImageAssetMap {
+  avatarReal: PackedImageAsset[];
+  avatarCartoon: PackedImageAsset[];
+  banner16x9: PackedImageAsset[];
+  banner4x3: PackedImageAsset[];
+}
+
+interface BuiltInImageFieldSpec {
+  fieldId: 'image_avatar_real' | 'image_avatar_cartoon' | 'image_banner_16_9' | 'image_banner_4_3';
+  assetKey: keyof PackedImageAssetMap;
+  label: string;
+  targetKind: 'avatar' | 'banner16x9' | 'banner4x3';
 }
 
 // ==================== 数据生成器 ====================
@@ -66,8 +120,64 @@ const EMAIL_DOMAINS_OVERSEAS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmai
 let sequenceCounters: { [key: string]: number } = {};
 let fieldConfigs: { [key: string]: any } = {};
 let imageHashCache: { [key: string]: string } = {};
+let aiPreviewCache: { [key: string]: { content: string; expiresAt: number } } = {};
 
 type ImageFillTargetNode = SceneNode & MinimalFillsMixin;
+
+const BUILT_IN_IMAGE_LIBRARY_SOURCE = 'built-in';
+const AI_SETTINGS_STORAGE_KEY = 'ai_settings';
+const LICENSE_STORAGE_KEY = 'license_state';
+const USAGE_STORAGE_KEY = 'usage_state';
+const FREE_FILL_LIMIT = 20;
+const FORCE_DEFAULT_ACCESS_STATE = true;
+const AI_PROXY_ENDPOINT = 'https://data-fill-ai-proxy.yueyueniao-xuyp.workers.dev/api/ai/generate';
+const DEFAULT_AI_SETTINGS: AISettings = {
+  provider: 'deepseek',
+  apiKey: '',
+  model: 'deepseek-chat',
+  temperature: 0.8,
+  maxTokens: 256,
+  endpoint: AI_PROXY_ENDPOINT
+};
+let aiSettingsCache: AISettings = DEFAULT_AI_SETTINGS;
+let licenseStateCache: LicenseState = {
+  key: '',
+  status: 'unknown',
+  plan: '',
+  expiresAt: '',
+  lastValidatedAt: ''
+};
+let usageStateCache: UsageState = {
+  freeFillLimit: FREE_FILL_LIMIT,
+  fillCount: 0
+};
+let usageStateLoaded = false;
+const BUILT_IN_IMAGE_FIELD_SPECS: BuiltInImageFieldSpec[] = [
+  {
+    fieldId: 'image_avatar_real',
+    assetKey: 'avatarReal',
+    label: '真人头像',
+    targetKind: 'avatar'
+  },
+  {
+    fieldId: 'image_avatar_cartoon',
+    assetKey: 'avatarCartoon',
+    label: '卡通头像',
+    targetKind: 'avatar'
+  },
+  {
+    fieldId: 'image_banner_16_9',
+    assetKey: 'banner16x9',
+    label: '16:9 封面',
+    targetKind: 'banner16x9'
+  },
+  {
+    fieldId: 'image_banner_4_3',
+    assetKey: 'banner4x3',
+    label: '4:3 封面',
+    targetKind: 'banner4x3'
+  }
+];
 
 function padStart(str: string, targetLength: number, padString: string): string {
   while (str.length < targetLength) {
@@ -92,7 +202,7 @@ function getNextSequence(fieldId: string): number {
 }
 
 function isImageField(fieldId: string): boolean {
-  return fieldId === 'image_avatar' || fieldId === 'image_banner' || fieldId === 'image_placeholder';
+  return BUILT_IN_IMAGE_FIELD_SPECS.some(spec => spec.fieldId === fieldId);
 }
 
 function isImageFillTarget(node: SceneNode): node is ImageFillTargetNode {
@@ -100,27 +210,493 @@ function isImageFillTarget(node: SceneNode): node is ImageFillTargetNode {
     return false;
   }
 
-  return 'fills' in node;
+  if (!('fills' in node) || node.fills === figma.mixed) {
+    return false;
+  }
+
+  return Array.isArray(node.fills) && node.fills.some(fill => fill.type === 'IMAGE');
 }
 
 function randomAsset(assets: PackedImageAsset[]): PackedImageAsset {
   return assets[Math.floor(Math.random() * assets.length)];
 }
 
+function getBuiltInImageFieldSpec(fieldId: string): BuiltInImageFieldSpec | null {
+  return BUILT_IN_IMAGE_FIELD_SPECS.find(spec => spec.fieldId === fieldId) || null;
+}
+
 function getPackedAsset(fieldId: string): PackedImageAsset | null {
-  if (fieldId === 'image_avatar') {
-    return randomAsset(PACKED_IMAGE_ASSETS.avatars);
+  const fieldSpec = getBuiltInImageFieldSpec(fieldId);
+  if (!fieldSpec) {
+    return null;
   }
 
-  if (fieldId === 'image_banner') {
-    return randomAsset(PACKED_IMAGE_ASSETS.banners);
+  const assets = PACKED_IMAGE_ASSETS[fieldSpec.assetKey];
+  if (!assets || assets.length === 0) {
+    return null;
   }
 
-  if (fieldId === 'image_placeholder') {
-    return randomAsset(PACKED_IMAGE_ASSETS.placeholders);
+  return randomAsset(assets);
+}
+
+function normalizeAISettings(raw: Partial<AISettings> | null | undefined): AISettings {
+  const temperature = Number(raw?.temperature);
+  const maxTokens = Number(raw?.maxTokens);
+
+  return {
+    provider: 'deepseek',
+    apiKey: typeof raw?.apiKey === 'string' ? raw.apiKey.trim() : '',
+    model: typeof raw?.model === 'string' && raw.model.trim() ? raw.model.trim() : DEFAULT_AI_SETTINGS.model,
+    temperature: Number.isFinite(temperature) ? Math.min(Math.max(temperature, 0), 2) : DEFAULT_AI_SETTINGS.temperature,
+    maxTokens: Number.isFinite(maxTokens) ? Math.max(1, Math.floor(maxTokens)) : DEFAULT_AI_SETTINGS.maxTokens,
+    endpoint: typeof raw?.endpoint === 'string' && raw.endpoint.trim() ? raw.endpoint.trim() : DEFAULT_AI_SETTINGS.endpoint
+  };
+}
+
+function buildAIFieldPrompt(userPrompt: string, count: number): string {
+  const safeCount = Math.max(1, count);
+  const candidateCount = Math.min(Math.max(safeCount * 3, 12), 40);
+  return [
+    '你正在为 Figma 插件 Data Fill 生成字段值。',
+    `请返回 ${candidateCount} 条候选结果，每条独立占一行。`,
+    '尽量保证内容多样，不要连续重复。',
+    '不要输出编号、标题、解释、代码块、前后缀标记。',
+    '用户提示词如下：',
+    userPrompt
+  ].join('\n');
+}
+
+function buildAIPreviewPrompt(userPrompt: string): string {
+  return [
+    '你正在为 Figma 插件做预览。',
+    '请快速返回 6 条示例结果，每条独立占一行。',
+    '只输出结果，不要解释，不要编号。',
+    userPrompt
+  ].join('\n');
+}
+
+function normalizeLicenseState(raw: Partial<LicenseState> | null | undefined): LicenseState {
+  return {
+    key: typeof raw?.key === 'string' ? raw.key.trim() : '',
+    status: raw?.status === 'valid' || raw?.status === 'invalid' ? raw.status : 'unknown',
+    plan: typeof raw?.plan === 'string' ? raw.plan : '',
+    expiresAt: typeof raw?.expiresAt === 'string' ? raw.expiresAt : '',
+    lastValidatedAt: typeof raw?.lastValidatedAt === 'string' ? raw.lastValidatedAt : ''
+  };
+}
+
+function normalizeUsageState(raw: Partial<UsageState> | null | undefined): UsageState {
+  const freeFillLimit = Number(raw?.freeFillLimit);
+  const fillCount = Number(raw?.fillCount);
+
+  return {
+    freeFillLimit: Number.isFinite(freeFillLimit) ? Math.max(0, Math.floor(freeFillLimit)) : FREE_FILL_LIMIT,
+    fillCount: Number.isFinite(fillCount) ? Math.max(0, Math.floor(fillCount)) : 0
+  };
+}
+
+function isLicenseActivated(license: LicenseState = licenseStateCache): boolean {
+  return license.status === 'valid';
+}
+
+function getRemainingFreeFillCount(usage: UsageState = usageStateCache): number {
+  return Math.max(usage.freeFillLimit - usage.fillCount, 0);
+}
+
+function buildUsageStatePayload(usage: UsageState = usageStateCache) {
+  const remainingFillCount = getRemainingFreeFillCount(usage);
+  const isPaid = isLicenseActivated();
+  return {
+    ...usage,
+    remainingFillCount,
+    isPaid,
+    isBlocked: !isPaid && remainingFillCount <= 0
+  };
+}
+
+function postUsageState(type: 'usage-state-loaded' | 'usage-state-saved') {
+  figma.ui.postMessage({
+    type,
+    usage: buildUsageStatePayload()
+  });
+}
+
+function createPaywallMessage(actionLabel: string): string {
+  return `${actionLabel}免费额度已用完。未付费用户最多可填充 20 次，AI 能力包含在内；继续使用请先付费激活。`;
+}
+
+function shuffleArray(values: string[]): string[] {
+  const next = values.slice();
+  for (let i = next.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = next[i];
+    next[i] = next[j];
+    next[j] = temp;
+  }
+  return next;
+}
+
+function pickRandomAIValues(lines: string[], count: number): string[] {
+  const uniquePool = Array.from(new Set(lines.filter(Boolean)));
+  const pool = uniquePool.length > 0 ? uniquePool : lines.filter(Boolean);
+
+  if (pool.length === 0) {
+    return [];
   }
 
-  return null;
+  const shuffled = shuffleArray(pool);
+  const results: string[] = [];
+
+  for (let i = 0; i < count; i++) {
+    results.push(shuffled[i % shuffled.length]);
+  }
+
+  return shuffleArray(results);
+}
+
+async function warmUpAIService(settings: AISettings) {
+  if (!settings.endpoint || settings.endpoint.includes('YOUR_WORKER_SUBDOMAIN')) {
+    return;
+  }
+
+  try {
+    const origin = settings.endpoint.replace(/\/api\/ai\/generate$/, '');
+    await fetch(`${origin}/health`, { method: 'GET' });
+  } catch (error) {
+    console.warn('AI 服务预热失败:', error);
+  }
+}
+
+async function loadAISettings(): Promise<AISettings> {
+  try {
+    const settings = await figma.clientStorage.getAsync(AI_SETTINGS_STORAGE_KEY);
+    const normalized = normalizeAISettings(settings);
+    aiSettingsCache = normalized;
+    void warmUpAIService(normalized);
+    figma.ui.postMessage({
+      type: 'ai-settings-loaded',
+      settings: {
+        ...normalized,
+        apiKey: normalized.apiKey
+      }
+    });
+    return normalized;
+  } catch (error) {
+    console.error('加载 AI 设置失败:', error);
+    const fallback = normalizeAISettings(null);
+    aiSettingsCache = fallback;
+    void warmUpAIService(fallback);
+    figma.ui.postMessage({
+      type: 'ai-settings-loaded',
+      settings: fallback
+    });
+    return fallback;
+  }
+}
+
+async function saveAISettings(settings: Partial<AISettings>) {
+  const normalized = normalizeAISettings(settings);
+  aiSettingsCache = normalized;
+  await figma.clientStorage.setAsync(AI_SETTINGS_STORAGE_KEY, normalized);
+  figma.ui.postMessage({
+    type: 'ai-settings-saved',
+    settings: normalized
+  });
+  return normalized;
+}
+
+async function loadLicenseState(): Promise<LicenseState> {
+  if (FORCE_DEFAULT_ACCESS_STATE) {
+    const fallback = normalizeLicenseState(null);
+    licenseStateCache = fallback;
+    await figma.clientStorage.setAsync(LICENSE_STORAGE_KEY, fallback);
+    figma.ui.postMessage({
+      type: 'license-state-loaded',
+      license: fallback
+    });
+    return fallback;
+  }
+
+  try {
+    const license = await figma.clientStorage.getAsync(LICENSE_STORAGE_KEY);
+    const normalized = normalizeLicenseState(license);
+    licenseStateCache = normalized;
+    figma.ui.postMessage({
+      type: 'license-state-loaded',
+      license: normalized
+    });
+    return normalized;
+  } catch (error) {
+    console.error('加载授权失败:', error);
+    const fallback = normalizeLicenseState(null);
+    licenseStateCache = fallback;
+    figma.ui.postMessage({
+      type: 'license-state-loaded',
+      license: fallback
+    });
+    return fallback;
+  }
+}
+
+async function saveLicenseState(license: Partial<LicenseState>) {
+  const normalized = normalizeLicenseState(license);
+  licenseStateCache = normalized;
+  await figma.clientStorage.setAsync(LICENSE_STORAGE_KEY, normalized);
+  figma.ui.postMessage({
+    type: 'license-state-saved',
+    license: normalized
+  });
+  return normalized;
+}
+
+async function loadUsageState(): Promise<UsageState> {
+  if (FORCE_DEFAULT_ACCESS_STATE) {
+    const fallback = normalizeUsageState(null);
+    usageStateCache = fallback;
+    usageStateLoaded = true;
+    await figma.clientStorage.setAsync(USAGE_STORAGE_KEY, fallback);
+    postUsageState('usage-state-loaded');
+    return fallback;
+  }
+
+  try {
+    const usage = await figma.clientStorage.getAsync(USAGE_STORAGE_KEY);
+    const normalized = normalizeUsageState(usage);
+    usageStateCache = normalized;
+    usageStateLoaded = true;
+    postUsageState('usage-state-loaded');
+    return normalized;
+  } catch (error) {
+    console.error('加载使用额度失败:', error);
+    const fallback = normalizeUsageState(null);
+    usageStateCache = fallback;
+    usageStateLoaded = true;
+    postUsageState('usage-state-loaded');
+    return fallback;
+  }
+}
+
+async function saveUsageState(usage: Partial<UsageState>) {
+  const normalized = normalizeUsageState({
+    ...usageStateCache,
+    ...usage
+  });
+  usageStateCache = normalized;
+  usageStateLoaded = true;
+  await figma.clientStorage.setAsync(USAGE_STORAGE_KEY, normalized);
+  postUsageState('usage-state-saved');
+  return normalized;
+}
+
+async function incrementFillUsage() {
+  if (isLicenseActivated()) {
+    return usageStateCache;
+  }
+
+  const usage = usageStateLoaded ? usageStateCache : await loadUsageState();
+  return saveUsageState({
+    ...usage,
+    fillCount: usage.fillCount + 1
+  });
+}
+
+async function assertCanUseFeature(actionLabel: string) {
+  const license = licenseStateCache.key || licenseStateCache.status !== 'unknown'
+    ? licenseStateCache
+    : await loadLicenseState();
+  if (isLicenseActivated(license)) {
+    return;
+  }
+
+  const usage = usageStateLoaded ? usageStateCache : await loadUsageState();
+  if (getRemainingFreeFillCount(usage) > 0) {
+    return;
+  }
+
+  const message = createPaywallMessage(actionLabel);
+  figma.ui.postMessage({
+    type: 'paywall-required',
+    message
+  });
+  throw new Error(message);
+}
+
+async function requestLicenseValidation(settings: AISettings, licenseKey: string): Promise<LicenseState> {
+  if (!settings.endpoint || settings.endpoint.includes('YOUR_WORKER_SUBDOMAIN')) {
+    throw new Error('AI 服务未配置');
+  }
+
+  const origin = settings.endpoint.replace(/\/api\/ai\/generate$/, '');
+  const response = await fetch(`${origin}/api/license/validate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-License-Key': licenseKey.trim()
+    }
+  });
+
+  const data = await response.json() as {
+    valid?: boolean;
+    plan?: string;
+    expiresAt?: string;
+    error?: string;
+  };
+
+  if (!response.ok || !data.valid) {
+    throw new Error(data.error || '授权校验失败');
+  }
+
+  return normalizeLicenseState({
+    key: licenseKey,
+    status: 'valid',
+    plan: data.plan,
+    expiresAt: data.expiresAt,
+    lastValidatedAt: new Date().toISOString()
+  });
+}
+
+async function validateAndPersistLicense(licenseKey: string): Promise<LicenseState> {
+  const settings = aiSettingsCache.endpoint ? aiSettingsCache : await loadAISettings();
+  const validated = await requestLicenseValidation(settings, licenseKey);
+  return saveLicenseState(validated);
+}
+
+async function requestAIProxyContent(settings: AISettings, prompt: string, count: number, preview: boolean, licenseKey: string, forceRefresh = false): Promise<string> {
+  if (!settings.endpoint || settings.endpoint.includes('YOUR_WORKER_SUBDOMAIN')) {
+    throw new Error('AI 服务未配置。发布版不要在插件里直连 DeepSeek，请改为调用你自己的服务端代理。');
+  }
+
+  const trimmedLicenseKey = licenseKey.trim();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+  if (trimmedLicenseKey) {
+    headers['X-License-Key'] = trimmedLicenseKey;
+  }
+
+  const response = await fetch(settings.endpoint, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      provider: settings.provider,
+      model: settings.model,
+      temperature: settings.temperature,
+      maxTokens: settings.maxTokens,
+      prompt,
+      count,
+      preview,
+      noCache: forceRefresh
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`AI 服务请求失败（${response.status}）: ${errorText || response.statusText}`);
+  }
+
+  const data = await response.json() as {
+    content?: string;
+    error?: string;
+  };
+  const content = data.content?.trim();
+
+  if (!content) {
+    throw new Error(data.error || 'AI 服务未返回可用内容');
+  }
+
+  return content;
+}
+
+function parseAIResponseToLines(content: string): string[] {
+  return content
+    .split('\n')
+    .map(line => line.replace(/^\s*(?:[-*•]|\d+[.)、])\s*/, '').trim())
+    .filter(Boolean);
+}
+
+async function generateAIFieldValues(config: AIFieldConfig, count: number): Promise<string[]> {
+  const prompt = config.prompt?.trim();
+  if (!prompt) {
+    throw new Error('AI 字段缺少提示词');
+  }
+
+  await assertCanUseFeature('字段填充');
+
+  const storedSettings = aiSettingsCache.endpoint ? aiSettingsCache : await loadAISettings();
+  const mergedSettings = normalizeAISettings({
+    ...storedSettings,
+    provider: 'deepseek',
+    model: config.model || storedSettings.model,
+    temperature: config.temperature ?? storedSettings.temperature,
+    maxTokens: config.maxTokens ?? storedSettings.maxTokens
+  });
+
+  const license = licenseStateCache.key || licenseStateCache.status !== 'unknown'
+    ? licenseStateCache
+    : await loadLicenseState();
+  const content = await requestAIProxyContent(mergedSettings, buildAIFieldPrompt(prompt, count), count, false, license.key);
+  const lines = parseAIResponseToLines(content);
+
+  if (lines.length === 0) {
+    throw new Error('AI 未生成有效内容');
+  }
+
+  const values = pickRandomAIValues(lines, count);
+  if (values.length === 0) {
+    throw new Error('AI 未生成足够的候选内容');
+  }
+
+  return values;
+}
+
+async function handleAIPreview(field: { prompt?: string; aiConfig?: Partial<AISettings>; forceRefresh?: boolean }) {
+  try {
+    const prompt = field.prompt?.trim();
+    if (!prompt) {
+      throw new Error('请输入 AI 提示词');
+    }
+
+    await assertCanUseFeature('AI 功能');
+
+    const settings = normalizeAISettings(field.aiConfig);
+    const license = licenseStateCache.key || licenseStateCache.status !== 'unknown'
+      ? licenseStateCache
+      : await loadLicenseState();
+    const previewCacheKey = JSON.stringify({
+      prompt,
+      model: settings.model,
+      temperature: settings.temperature
+    });
+    const shouldForceRefresh = field.forceRefresh === true;
+    const cachedPreview = aiPreviewCache[previewCacheKey];
+    if (!shouldForceRefresh && cachedPreview && cachedPreview.expiresAt > Date.now()) {
+      figma.ui.postMessage({
+        type: 'ai-preview-result',
+        preview: cachedPreview.content
+      });
+      return;
+    }
+
+    const previewSettings = normalizeAISettings({
+      ...settings,
+      temperature: Math.min(settings.temperature, 0.6),
+      maxTokens: Math.min(settings.maxTokens, 96)
+    });
+    const content = await requestAIProxyContent(previewSettings, buildAIPreviewPrompt(prompt), 6, true, license.key, shouldForceRefresh);
+    aiPreviewCache[previewCacheKey] = {
+      content,
+      expiresAt: Date.now() + 2 * 60 * 1000
+    };
+    figma.ui.postMessage({
+      type: 'ai-preview-result',
+      preview: content
+    });
+  } catch (error) {
+    figma.ui.postMessage({
+      type: 'ai-preview-error',
+      message: error instanceof Error ? error.message : String(error)
+    });
+  }
 }
 
 function getImageHashForAsset(asset: PackedImageAsset): string {
@@ -132,6 +708,35 @@ function getImageHashForAsset(asset: PackedImageAsset): string {
   }
 
   return imageHashCache[cacheKey];
+}
+
+function matchesImageFieldTarget(node: SceneNode, fieldId: string): boolean {
+  const fieldSpec = getBuiltInImageFieldSpec(fieldId);
+  if (!fieldSpec || !('width' in node) || !('height' in node)) {
+    return false;
+  }
+
+  const width = node.width;
+  const height = node.height;
+  if (!width || !height) {
+    return false;
+  }
+
+  const ratio = width / height;
+
+  if (fieldSpec.targetKind === 'avatar') {
+    return ratio >= 0.75 && ratio <= 1.25;
+  }
+
+  if (fieldSpec.targetKind === 'banner16x9') {
+    return Math.abs(ratio - 16 / 9) <= 0.35;
+  }
+
+  if (fieldSpec.targetKind === 'banner4x3') {
+    return Math.abs(ratio - 4 / 3) <= 0.22;
+  }
+
+  return false;
 }
 
 // 生成字段数据
@@ -453,6 +1058,37 @@ async function saveConfig(fieldId: string, config: any) {
   }
 }
 
+async function loadCustomData() {
+  try {
+    const customData = await figma.clientStorage.getAsync('custom_data');
+    figma.ui.postMessage({
+      type: 'custom-data-loaded',
+      data: customData || { customFields: [], customFolders: [] }
+    });
+  } catch (e) {
+    console.error('加载自定义数据失败:', e);
+    figma.ui.postMessage({
+      type: 'custom-data-loaded',
+      data: { customFields: [], customFolders: [] }
+    });
+  }
+}
+
+async function saveCustomData(data: CustomDataPayload) {
+  try {
+    await figma.clientStorage.setAsync('custom_data', data);
+    figma.ui.postMessage({
+      type: 'custom-data-saved'
+    });
+  } catch (e) {
+    console.error('保存自定义数据失败:', e);
+    figma.ui.postMessage({
+      type: 'fill-error',
+      message: '保存字段数据失败'
+    });
+  }
+}
+
 // 监听来自 UI 的消息
 figma.ui.onmessage = (msg: PluginMessage) => {
   console.log('收到消息:', msg);
@@ -473,6 +1109,50 @@ figma.ui.onmessage = (msg: PluginMessage) => {
       saveConfig(msg.fieldId, msg.config);
       break;
 
+    case 'load-custom-data':
+      void loadCustomData();
+      break;
+
+    case 'save-custom-data':
+      void saveCustomData(msg.data);
+      break;
+
+    case 'load-ai-settings':
+      void loadAISettings();
+      break;
+
+    case 'save-ai-settings':
+      void saveAISettings(msg.settings);
+      break;
+
+    case 'load-license-state':
+      void loadLicenseState();
+      break;
+
+    case 'load-usage-state':
+      void loadUsageState();
+      break;
+
+    case 'activate-license':
+      void validateAndPersistLicense(msg.licenseKey)
+        .then((license) => {
+          figma.ui.postMessage({
+            type: 'license-activated',
+            license
+          });
+        })
+        .catch((error) => {
+          figma.ui.postMessage({
+            type: 'license-error',
+            message: error instanceof Error ? error.message : String(error)
+          });
+        });
+      break;
+
+    case 'preview-ai-field':
+      void handleAIPreview(msg.field || {});
+      break;
+
     case 'close':
       figma.closePlugin();
       break;
@@ -486,6 +1166,7 @@ figma.ui.onmessage = (msg: PluginMessage) => {
 async function handleFill(fieldId: string, configType?: string, dynamicConfig: any = {}) {
   const selection = figma.currentPage.selection;
   const fillingImages = isImageField(fieldId);
+  const fillingAI = dynamicConfig?.method === 'ai';
 
   // 检查是否有选中的图层
   if (selection.length === 0) {
@@ -536,20 +1217,30 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
     return;
   }
 
+  try {
+    await assertCanUseFeature('字段填充');
+  } catch {
+    return;
+  }
+
   let message = '';
 
   if (fillingImages) {
-    if (imageNodes.length === 0) {
+    const matchedImageNodes = imageNodes.filter(node => matchesImageFieldTarget(node, fieldId));
+
+    if (matchedImageNodes.length === 0) {
+      const fieldSpec = getBuiltInImageFieldSpec(fieldId);
+      const targetLabel = fieldSpec ? fieldSpec.label : '图片';
       figma.ui.postMessage({
         type: 'fill-error',
-        message: '未找到可填充的图片图层'
+        message: `未找到可填充的${targetLabel}图层，请先选中已有图片填充且比例匹配的图层`
       });
       return;
     }
 
-    for (let i = 0; i < imageNodes.length; i++) {
+    for (let i = 0; i < matchedImageNodes.length; i++) {
       try {
-        await fillImageNode(imageNodes[i], fieldId);
+        await fillImageNode(matchedImageNodes[i], fieldId);
         result.success++;
       } catch (error) {
         result.failed++;
@@ -562,6 +1253,12 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
       result.errors.push(`跳过${textNodes.length}个文本图层：当前字段仅支持图片填充`);
     }
 
+    const unmatchedImageCount = imageNodes.length - matchedImageNodes.length;
+    if (unmatchedImageCount > 0) {
+      result.failed += unmatchedImageCount;
+      result.errors.push(`跳过${unmatchedImageCount}个图片图层：尺寸比例与当前图片分类不匹配`);
+    }
+
     message = `已填充${result.success}个图片图层`;
   } else {
     if (textNodes.length === 0) {
@@ -572,12 +1269,27 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
       return;
     }
 
-    // 批量生成数据（用于排序）
+    // 批量生成数据（用于排序或 AI 多条生成）
     const config = fieldConfigs[fieldId] || {};
-    const dataList: string[] = [];
+    let dataList: string[] = [];
 
-    for (let i = 0; i < textNodes.length; i++) {
-      dataList.push(generateFieldData(fieldId, configType, dynamicConfig));
+    if (fillingAI) {
+      try {
+        dataList = await generateAIFieldValues({
+          ...config,
+          ...dynamicConfig
+        }, textNodes.length);
+      } catch (error) {
+        figma.ui.postMessage({
+          type: 'fill-error',
+          message: error instanceof Error ? error.message : String(error)
+        });
+        return;
+      }
+    } else {
+      for (let i = 0; i < textNodes.length; i++) {
+        dataList.push(generateFieldData(fieldId, configType, dynamicConfig));
+      }
     }
 
     const effectiveType = configType || fieldId;
@@ -611,6 +1323,10 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
     message += `，跳过或失败${result.failed}个图层`;
   }
 
+  if (result.success > 0) {
+    await incrementFillUsage();
+  }
+
   // 发送结果给 UI
   figma.ui.postMessage({
     type: 'fill-result',
@@ -629,10 +1345,11 @@ async function fillTextNode(node: TextNode, text: string) {
 }
 
 async function fillImageNode(node: ImageFillTargetNode, fieldId: string) {
+  const fieldSpec = getBuiltInImageFieldSpec(fieldId);
   const asset = getPackedAsset(fieldId);
 
-  if (!asset) {
-    throw new Error('未找到内置图片素材');
+  if (!fieldSpec || !asset) {
+    throw new Error('未找到可用的内置图片素材');
   }
 
   const imageHash = getImageHashForAsset(asset);
@@ -643,4 +1360,5 @@ async function fillImageNode(node: ImageFillTargetNode, fieldId: string) {
   };
 
   node.fills = [imagePaint];
+  console.log(`已使用${BUILT_IN_IMAGE_LIBRARY_SOURCE}素材库填充${fieldSpec.label}:`, asset.name);
 }

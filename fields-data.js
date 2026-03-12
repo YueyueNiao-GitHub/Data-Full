@@ -189,34 +189,44 @@ const DEFAULT_FIELDS = {
     // 图片字段
     imageFields: [
         {
-            id: 'image_avatar',
-            name: '用户头像 - Avatar',
+            id: 'image_avatar_real',
+            name: '真人头像 - Avatar',
             type: 'image',
             method: 'random',
             icon: '👤',
             iconBg: '#dbeafe',
             iconColor: '#2563eb',
-            tags: ['图片', '随机', '头像']
+            tags: ['图片', '随机', '真人头像']
         },
         {
-            id: 'image_banner',
-            name: '封面图 - Banner',
+            id: 'image_avatar_cartoon',
+            name: '卡通头像 - Avatar',
+            type: 'image',
+            method: 'random',
+            icon: '👤',
+            iconBg: '#fce7f3',
+            iconColor: '#db2777',
+            tags: ['图片', '随机', '卡通头像']
+        },
+        {
+            id: 'image_banner_16_9',
+            name: '封面图 16:9 - Banner',
             type: 'image',
             method: 'random',
             icon: '🖼️',
             iconBg: '#dbeafe',
             iconColor: '#2563eb',
-            tags: ['图片', '随机', '封面']
+            tags: ['图片', '随机', '16:9']
         },
         {
-            id: 'image_placeholder',
-            name: '占位图 - Placeholder',
+            id: 'image_banner_4_3',
+            name: '封面图 4:3 - Banner',
             type: 'image',
             method: 'random',
             icon: '🖼️',
-            iconBg: '#dbeafe',
-            iconColor: '#2563eb',
-            tags: ['图片', '随机', '占位']
+            iconBg: '#d1fae5',
+            iconColor: '#059669',
+            tags: ['图片', '随机', '4:3']
         }
     ]
 };

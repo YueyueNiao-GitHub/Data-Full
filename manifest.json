@@ -12,7 +12,10 @@
   "ui": "ui.html",
   "networkAccess": {
     "allowedDomains": [
-      "none"
+      "https://*.workers.dev"
+    ],
+    "devAllowedDomains": [
+      "http://localhost:8787"
     ]
   }
 }
