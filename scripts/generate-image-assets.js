@@ -229,9 +229,14 @@ function ensureGeneratedSources() {
     { background: '#bbf7d0', halo: '#14b8a6', skin: '#f5c9a8', shirt: '#ea580c', hair: '#111827' },
   ];
 
-  avatarPalettes.forEach((palette, index) => {
-    generateCartoonAvatar(path.join(CARTOON_AVATAR_DIR, `cartoon-avatar-${index + 1}.png`), palette);
-  });
+  const existingCartoonFiles = fs.readdirSync(CARTOON_AVATAR_DIR)
+    .filter((fileName) => /\.(png|jpe?g|webp)$/i.test(fileName));
+
+  if (existingCartoonFiles.length === 0) {
+    avatarPalettes.forEach((palette, index) => {
+      generateCartoonAvatar(path.join(CARTOON_AVATAR_DIR, `cartoon-avatar-${index + 1}.png`), palette);
+    });
+  }
 
   const banner169Palettes = [
     { top: '#0f172a', bottom: '#1d4ed8', card: '#0ea5e9' },

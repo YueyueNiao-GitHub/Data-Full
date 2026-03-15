@@ -45,6 +45,7 @@ interface AIFieldConfig {
   maxTokens?: number;
   provider?: 'deepseek';
   method?: string;
+  previewContent?: string;
 }
 
 interface LicenseState {
@@ -87,6 +88,11 @@ const MALE_SURNAMES = ['王', '李', '张', '刘', '陈', '杨', '黄', '赵', '
 const MALE_GIVEN_NAMES = ['伟', '强', '磊', '军', '涛', '明', '刚', '建国', '志强'];
 const FEMALE_SURNAMES = ['王', '李', '张', '刘', '陈', '杨', '黄', '赵', '周', '吴'];
 const FEMALE_GIVEN_NAMES = ['芳', '娜', '秀英', '敏', '静', '丽', '洁', '婷', '玉'];
+const COMPOUND_SURNAMES = ['欧阳', '司马', '上官', '诸葛', '夏侯', '东方', '尉迟', '慕容'];
+const MALE_GIVEN_NAME_SINGLE = ['伟', '强', '磊', '军', '涛', '明', '刚', '鹏', '超', '勇', '浩', '博'];
+const FEMALE_GIVEN_NAME_SINGLE = ['芳', '娜', '敏', '静', '丽', '洁', '婷', '玉', '颖', '倩', '雪', '琳'];
+const MALE_GIVEN_NAME_DOUBLE = ['建国', '志强', '俊杰', '子轩', '浩然', '嘉豪', '宇航', '文博', '凯文', '景川'];
+const FEMALE_GIVEN_NAME_DOUBLE = ['秀英', '雅雯', '欣怡', '雨桐', '梦瑶', '佳宁', '诗涵', '嘉怡', '可欣', '心妍'];
 const ENGLISH_FIRST_NAMES_MALE = ['James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph'];
 const ENGLISH_FIRST_NAMES_FEMALE = ['Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth', 'Barbara', 'Susan', 'Jessica'];
 const ENGLISH_LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
@@ -116,6 +122,8 @@ const DEPT_LEVEL_4 = ['综合支持事业部', '业务协同中心', '质量保�
 // 新增：邮箱域名
 const EMAIL_DOMAINS_CHINA = ['qq.com', '163.com', '126.com', 'sina.com', 'sohu.com', 'aliyun.com'];
 const EMAIL_DOMAINS_OVERSEAS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'icloud.com'];
+const EMAIL_WORD_PARTS = ['studio', 'design', 'product', 'market', 'team', 'works', 'digital', 'cloud', 'data', 'lab', 'media', 'trade'];
+const EMAIL_PINYIN_PARTS = ['chen', 'lin', 'wang', 'li', 'zhou', 'yang', 'hao', 'ting', 'jun', 'yu', 'xin', 'wen', 'jia', 'ning'];
 
 let sequenceCounters: { [key: string]: number } = {};
 let fieldConfigs: { [key: string]: any } = {};
@@ -128,8 +136,12 @@ const BUILT_IN_IMAGE_LIBRARY_SOURCE = 'built-in';
 const AI_SETTINGS_STORAGE_KEY = 'ai_settings';
 const LICENSE_STORAGE_KEY = 'license_state';
 const USAGE_STORAGE_KEY = 'usage_state';
+const INSTALL_ID_STORAGE_KEY = 'install_id';
 const FREE_FILL_LIMIT = 20;
-const FORCE_DEFAULT_ACCESS_STATE = true;
+const MONETIZATION_CONFIG = {
+  enabled: false,
+  freeFillLimit: FREE_FILL_LIMIT
+} as const;
 const AI_PROXY_ENDPOINT = 'https://data-fill-ai-proxy.yueyueniao-xuyp.workers.dev/api/ai/generate';
 const DEFAULT_AI_SETTINGS: AISettings = {
   provider: 'deepseek',
@@ -148,10 +160,11 @@ let licenseStateCache: LicenseState = {
   lastValidatedAt: ''
 };
 let usageStateCache: UsageState = {
-  freeFillLimit: FREE_FILL_LIMIT,
+  freeFillLimit: MONETIZATION_CONFIG.freeFillLimit,
   fillCount: 0
 };
 let usageStateLoaded = false;
+let installIdCache = '';
 const BUILT_IN_IMAGE_FIELD_SPECS: BuiltInImageFieldSpec[] = [
   {
     fieldId: 'image_avatar_real',
@@ -192,6 +205,61 @@ function randomChoice(array: string[]): string {
 
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomChance(): number {
+  return Math.random();
+}
+
+function generateChineseNameByDistribution(gender: 'male' | 'female'): string {
+  const surnamePool = gender === 'male' ? MALE_SURNAMES : FEMALE_SURNAMES;
+  const singlePool = gender === 'male' ? MALE_GIVEN_NAME_SINGLE : FEMALE_GIVEN_NAME_SINGLE;
+  const doublePool = gender === 'male' ? MALE_GIVEN_NAME_DOUBLE : FEMALE_GIVEN_NAME_DOUBLE;
+  const roll = randomChance();
+
+  if (roll < 0.2) {
+    return randomChoice(surnamePool) + randomChoice(singlePool);
+  }
+
+  if (roll < 0.9) {
+    return randomChoice(surnamePool) + randomChoice(doublePool);
+  }
+
+  return randomChoice(COMPOUND_SURNAMES) + randomChoice(doublePool);
+}
+
+function generateRealisticEmail(domainList: string[]): string {
+  const mode = randomInt(1, 6);
+  const domain = randomChoice(domainList);
+  const yearSuffix = String(randomInt(80, 99));
+  const shortYearNumber = randomInt(0, 24);
+  const shortYear = shortYearNumber < 10 ? `0${shortYearNumber}` : String(shortYearNumber);
+  const serial = String(randomInt(12, 999));
+
+  let username = '';
+
+  switch (mode) {
+    case 1:
+      username = `${randomChoice(EMAIL_PINYIN_PARTS)}.${randomChoice(EMAIL_PINYIN_PARTS)}${shortYear}`;
+      break;
+    case 2:
+      username = `${randomChoice(EMAIL_PINYIN_PARTS)}_${randomChoice(EMAIL_PINYIN_PARTS)}${serial}`;
+      break;
+    case 3:
+      username = `${randomChoice(EMAIL_PINYIN_PARTS)}${randomChoice(EMAIL_PINYIN_PARTS)}${yearSuffix}`;
+      break;
+    case 4:
+      username = `${randomChoice(EMAIL_WORD_PARTS)}${randomChoice(EMAIL_WORD_PARTS)}${randomInt(1, 88)}`;
+      break;
+    case 5:
+      username = `${randomChoice(EMAIL_PINYIN_PARTS)}${randomChoice(EMAIL_WORD_PARTS)}${shortYear}`;
+      break;
+    default:
+      username = `${randomChoice(EMAIL_PINYIN_PARTS).charAt(0)}${randomChoice(EMAIL_PINYIN_PARTS)}${randomChoice(EMAIL_PINYIN_PARTS)}${serial}`;
+      break;
+  }
+
+  return `${username.toLowerCase()}@${domain}`;
 }
 
 function getNextSequence(fieldId: string): number {
@@ -290,9 +358,38 @@ function normalizeUsageState(raw: Partial<UsageState> | null | undefined): Usage
   const fillCount = Number(raw?.fillCount);
 
   return {
-    freeFillLimit: Number.isFinite(freeFillLimit) ? Math.max(0, Math.floor(freeFillLimit)) : FREE_FILL_LIMIT,
+    freeFillLimit: Number.isFinite(freeFillLimit) ? Math.max(0, Math.floor(freeFillLimit)) : MONETIZATION_CONFIG.freeFillLimit,
     fillCount: Number.isFinite(fillCount) ? Math.max(0, Math.floor(fillCount)) : 0
   };
+}
+
+function createInstallId(): string {
+  const maybeCrypto = typeof globalThis !== 'undefined'
+    ? (globalThis as { crypto?: { randomUUID?: () => string } }).crypto
+    : undefined;
+
+  if (maybeCrypto && typeof maybeCrypto.randomUUID === 'function') {
+    return maybeCrypto.randomUUID();
+  }
+
+  return `install_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+}
+
+async function loadInstallId(): Promise<string> {
+  if (installIdCache) {
+    return installIdCache;
+  }
+
+  const stored = await figma.clientStorage.getAsync(INSTALL_ID_STORAGE_KEY);
+  if (typeof stored === 'string' && stored.trim()) {
+    installIdCache = stored.trim();
+    return installIdCache;
+  }
+
+  const created = createInstallId();
+  installIdCache = created;
+  await figma.clientStorage.setAsync(INSTALL_ID_STORAGE_KEY, created);
+  return created;
 }
 
 function isLicenseActivated(license: LicenseState = licenseStateCache): boolean {
@@ -304,6 +401,15 @@ function getRemainingFreeFillCount(usage: UsageState = usageStateCache): number 
 }
 
 function buildUsageStatePayload(usage: UsageState = usageStateCache) {
+  if (!MONETIZATION_CONFIG.enabled) {
+    return {
+      ...usage,
+      remainingFillCount: Number.MAX_SAFE_INTEGER,
+      isPaid: true,
+      isBlocked: false
+    };
+  }
+
   const remainingFillCount = getRemainingFreeFillCount(usage);
   const isPaid = isLicenseActivated();
   return {
@@ -406,10 +512,9 @@ async function saveAISettings(settings: Partial<AISettings>) {
 }
 
 async function loadLicenseState(): Promise<LicenseState> {
-  if (FORCE_DEFAULT_ACCESS_STATE) {
+  if (!MONETIZATION_CONFIG.enabled) {
     const fallback = normalizeLicenseState(null);
     licenseStateCache = fallback;
-    await figma.clientStorage.setAsync(LICENSE_STORAGE_KEY, fallback);
     figma.ui.postMessage({
       type: 'license-state-loaded',
       license: fallback
@@ -439,6 +544,16 @@ async function loadLicenseState(): Promise<LicenseState> {
 }
 
 async function saveLicenseState(license: Partial<LicenseState>) {
+  if (!MONETIZATION_CONFIG.enabled) {
+    const normalized = normalizeLicenseState(null);
+    licenseStateCache = normalized;
+    figma.ui.postMessage({
+      type: 'license-state-saved',
+      license: normalized
+    });
+    return normalized;
+  }
+
   const normalized = normalizeLicenseState(license);
   licenseStateCache = normalized;
   await figma.clientStorage.setAsync(LICENSE_STORAGE_KEY, normalized);
@@ -450,11 +565,10 @@ async function saveLicenseState(license: Partial<LicenseState>) {
 }
 
 async function loadUsageState(): Promise<UsageState> {
-  if (FORCE_DEFAULT_ACCESS_STATE) {
+  if (!MONETIZATION_CONFIG.enabled) {
     const fallback = normalizeUsageState(null);
     usageStateCache = fallback;
     usageStateLoaded = true;
-    await figma.clientStorage.setAsync(USAGE_STORAGE_KEY, fallback);
     postUsageState('usage-state-loaded');
     return fallback;
   }
@@ -477,6 +591,14 @@ async function loadUsageState(): Promise<UsageState> {
 }
 
 async function saveUsageState(usage: Partial<UsageState>) {
+  if (!MONETIZATION_CONFIG.enabled) {
+    const normalized = normalizeUsageState(null);
+    usageStateCache = normalized;
+    usageStateLoaded = true;
+    postUsageState('usage-state-saved');
+    return normalized;
+  }
+
   const normalized = normalizeUsageState({
     ...usageStateCache,
     ...usage
@@ -489,6 +611,10 @@ async function saveUsageState(usage: Partial<UsageState>) {
 }
 
 async function incrementFillUsage() {
+  if (!MONETIZATION_CONFIG.enabled) {
+    return usageStateCache;
+  }
+
   if (isLicenseActivated()) {
     return usageStateCache;
   }
@@ -501,6 +627,10 @@ async function incrementFillUsage() {
 }
 
 async function assertCanUseFeature(actionLabel: string) {
+  if (!MONETIZATION_CONFIG.enabled) {
+    return;
+  }
+
   const license = licenseStateCache.key || licenseStateCache.status !== 'unknown'
     ? licenseStateCache
     : await loadLicenseState();
@@ -556,6 +686,10 @@ async function requestLicenseValidation(settings: AISettings, licenseKey: string
 }
 
 async function validateAndPersistLicense(licenseKey: string): Promise<LicenseState> {
+  if (!MONETIZATION_CONFIG.enabled) {
+    throw new Error('当前版本未开启付费功能');
+  }
+
   const settings = aiSettingsCache.endpoint ? aiSettingsCache : await loadAISettings();
   const validated = await requestLicenseValidation(settings, licenseKey);
   return saveLicenseState(validated);
@@ -570,6 +704,10 @@ async function requestAIProxyContent(settings: AISettings, prompt: string, count
   const headers: Record<string, string> = {
     'Content-Type': 'application/json'
   };
+  const installId = await loadInstallId();
+  if (installId) {
+    headers['X-Install-Id'] = installId;
+  }
   if (trimmedLicenseKey) {
     headers['X-License-Key'] = trimmedLicenseKey;
   }
@@ -621,6 +759,14 @@ async function generateAIFieldValues(config: AIFieldConfig, count: number): Prom
   }
 
   await assertCanUseFeature('字段填充');
+
+  const previewLines = parseAIResponseToLines(config.previewContent || '');
+  if (previewLines.length > 0) {
+    const previewValues = pickRandomAIValues(previewLines, count);
+    if (previewValues.length > 0) {
+      return previewValues;
+    }
+  }
 
   const storedSettings = aiSettingsCache.endpoint ? aiSettingsCache : await loadAISettings();
   const mergedSettings = normalizeAISettings({
@@ -749,7 +895,7 @@ function generateFieldData(fieldId: string, configType?: string, dynamicConfig: 
   // 确定用于 switch 的类型
   // 特殊字段如 ai_new_title 需要保留 ID 匹配
   // 其他字段一律优先使用 configType
-  const specialIds = ['ai_new_title', 'ai_short_desc'];
+  const specialIds = ['ai_new_title'];
   const effectiveType = specialIds.indexOf(fieldId) !== -1 ? fieldId : (configType || fieldId);
 
   switch (effectiveType) {
@@ -800,14 +946,7 @@ function generateFieldData(fieldId: string, configType?: string, dynamicConfig: 
         const lastName = randomChoice(ENGLISH_LAST_NAMES);
         return `${firstName} ${lastName}`;
       } else {
-        // 中文名
-        const surname = gender === 'male'
-          ? randomChoice(MALE_SURNAMES)
-          : randomChoice(FEMALE_SURNAMES);
-        const givenName = gender === 'male'
-          ? randomChoice(MALE_GIVEN_NAMES)
-          : randomChoice(FEMALE_GIVEN_NAMES);
-        return surname + givenName;
+        return generateChineseNameByDistribution(gender as 'male' | 'female');
       }
 
     case 'date_time':
@@ -941,10 +1080,7 @@ function generateFieldData(fieldId: string, configType?: string, dynamicConfig: 
 
 
     case 'ai_new_title':
-      return '这是一条由 AI 生成的新闻标题示例';
-
-    case 'ai_short_desc':
-      return '这是一段由 AI 生成的简短描述示例文本';
+      return '这是一条由 AI 生成的企业名称示例';
 
     case 'contact_phone':
       const phoneFormat = config.format || 'full';
@@ -992,8 +1128,6 @@ function generateFieldData(fieldId: string, configType?: string, dynamicConfig: 
 
     case 'account_email':
       const emailType = config.type || 'random';
-      const emailUsername = 'user' + randomInt(1000, 9999);
-
       let domainList: string[];
       if (emailType === 'overseas') {
         domainList = EMAIL_DOMAINS_OVERSEAS;
@@ -1003,8 +1137,7 @@ function generateFieldData(fieldId: string, configType?: string, dynamicConfig: 
         domainList = [...EMAIL_DOMAINS_CHINA, ...EMAIL_DOMAINS_OVERSEAS];
       }
 
-      const emailDomain = randomChoice(domainList);
-      return `${emailUsername}@${emailDomain}`;
+      return generateRealisticEmail(domainList);
 
     case 'company_department':
       const deptFormat = config.format || 'single';
@@ -1089,6 +1222,28 @@ async function saveCustomData(data: CustomDataPayload) {
   }
 }
 
+async function resetPluginState() {
+  try {
+    fieldConfigs = {};
+    await figma.clientStorage.setAsync('field_configs', {});
+    await figma.clientStorage.setAsync('custom_data', {
+      customFields: [],
+      customFolders: [],
+      removedSystemFolderKeys: [],
+      removedBuiltInFieldIds: []
+    });
+    figma.ui.postMessage({
+      type: 'plugin-state-reset'
+    });
+  } catch (e) {
+    console.error('重置插件状态失败:', e);
+    figma.ui.postMessage({
+      type: 'fill-error',
+      message: '重置插件状态失败'
+    });
+  }
+}
+
 // 监听来自 UI 的消息
 figma.ui.onmessage = (msg: PluginMessage) => {
   console.log('收到消息:', msg);
@@ -1115,6 +1270,10 @@ figma.ui.onmessage = (msg: PluginMessage) => {
 
     case 'save-custom-data':
       void saveCustomData(msg.data);
+      break;
+
+    case 'reset-plugin-state':
+      void resetPluginState();
       break;
 
     case 'load-ai-settings':
@@ -1233,7 +1392,7 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
       const targetLabel = fieldSpec ? fieldSpec.label : '图片';
       figma.ui.postMessage({
         type: 'fill-error',
-        message: `未找到可填充的${targetLabel}图层，请先选中已有图片填充且比例匹配的图层`
+        message: '未找到可填充的图片图层'
       });
       return;
     }

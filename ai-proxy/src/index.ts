@@ -6,6 +6,7 @@ interface Env {
   LICENSE_API_TOKEN?: string;
   LICENSES?: {
     get(key: string): Promise<string | null>;
+    put(key: string, value: string): Promise<void>;
   };
 }
 
@@ -22,6 +23,7 @@ interface GenerateRequestBody {
 
 const LICENSE_CACHE_TTL_MS = 10 * 60 * 1000;
 const AI_CACHE_TTL_MS = 3 * 60 * 1000;
+const TRIAL_LIMIT = 20;
 const licenseCache = new Map<string, { expiresAt: number; value: { valid: boolean; error?: string; plan?: string; expiresAt?: string } }>();
 const aiResponseCache = new Map<string, { expiresAt: number; value: string }>();
 
@@ -29,7 +31,7 @@ const jsonHeaders = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-License-Key'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-License-Key, X-Install-Id'
 };
 
 function json(data: unknown, status = 200): Response {
@@ -146,6 +148,84 @@ async function getLicenseRecord(request: Request, env: Env): Promise<{
   return result;
 }
 
+function getTrialUsageKey(installId: string): string {
+  return `trial:${installId}`;
+}
+
+async function getTrialUsage(env: Env, installId: string): Promise<number> {
+  if (!env.LICENSES) {
+    return 0;
+  }
+
+  const raw = await env.LICENSES.get(getTrialUsageKey(installId));
+  if (!raw) {
+    return 0;
+  }
+
+  try {
+    const data = JSON.parse(raw) as { used?: number };
+    return typeof data.used === 'number' && Number.isFinite(data.used) ? Math.max(0, Math.floor(data.used)) : 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function consumeTrialQuota(request: Request, env: Env, preview: boolean): Promise<{
+  allowed: boolean;
+  remaining: number;
+  error?: string;
+}> {
+  if (!env.LICENSES) {
+    return {
+      allowed: false,
+      remaining: 0,
+      error: 'Trial store unavailable'
+    };
+  }
+
+  const installId = request.headers.get('X-Install-Id')?.trim();
+  if (!installId) {
+    return {
+      allowed: false,
+      remaining: 0,
+      error: 'Missing install id'
+    };
+  }
+
+  const used = await getTrialUsage(env, installId);
+  const remaining = Math.max(TRIAL_LIMIT - used, 0);
+
+  if (preview) {
+    return {
+      allowed: remaining > 0,
+      remaining,
+      error: remaining > 0 ? undefined : 'Free trial limit reached'
+    };
+  }
+
+  if (remaining <= 0) {
+    return {
+      allowed: false,
+      remaining: 0,
+      error: 'Free trial limit reached'
+    };
+  }
+
+  const nextUsed = used + 1;
+  await env.LICENSES.put(
+    getTrialUsageKey(installId),
+    JSON.stringify({
+      used: nextUsed,
+      updatedAt: new Date().toISOString()
+    })
+  );
+
+  return {
+    allowed: true,
+    remaining: Math.max(TRIAL_LIMIT - nextUsed, 0)
+  };
+}
+
 async function callDeepSeek(env: Env, body: GenerateRequestBody): Promise<string> {
   if (!env.DEEPSEEK_API_KEY) {
     throw new Error('Missing DEEPSEEK_API_KEY secret');
@@ -237,13 +317,21 @@ export default {
       return json({ error: 'Not found' }, 404);
     }
 
-    const license = await getLicenseRecord(request, env);
-    if (!license.valid) {
-      return json({ error: license.error || 'License validation failed' }, 401);
-    }
-
     try {
       const body = await request.json() as GenerateRequestBody;
+      const license = await getLicenseRecord(request, env);
+      if (!license.valid) {
+        const hasLicenseKey = Boolean(request.headers.get('X-License-Key')?.trim());
+        if (hasLicenseKey) {
+          return json({ error: license.error || 'License validation failed' }, 401);
+        }
+
+        const trial = await consumeTrialQuota(request, env, body.preview === true);
+        if (!trial.allowed) {
+          return json({ error: trial.error || 'Free trial limit reached' }, 401);
+        }
+      }
+
       const content = await callDeepSeek(env, body);
       return json({ content });
     } catch (error) {

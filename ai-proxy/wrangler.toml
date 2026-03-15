@@ -7,7 +7,7 @@ enabled = true
 
 [vars]
 DEEPSEEK_MODEL = "deepseek-chat"
-ENABLE_LICENSE_CHECK = "true"
+ENABLE_LICENSE_CHECK = "false"
 
 [[kv_namespaces]]
 binding = "LICENSES"
