@@ -1,0 +1,35 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="88" y1="72" x2="1492" y2="1128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.55" stop-color="#134E4A"/>
+      <stop offset="1" stop-color="#7C2D12"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1200" rx="40" fill="url(#bg)"/>
+  <circle cx="128" cy="128" r="210" fill="#22D3EE" fill-opacity="0.08"/>
+  <circle cx="1460" cy="1024" r="280" fill="#FB7185" fill-opacity="0.12"/>
+
+  <text x="100" y="218" fill="#99F6E4" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">适用人群 / 行动引导</text>
+  <text x="100" y="356" fill="white" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="82" font-weight="700">如果你经常要为原型补数据</text>
+  <text x="100" y="454" fill="white" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="82" font-weight="700">这款插件会很适合你</text>
+
+  <rect x="100" y="556" width="620" height="396" rx="34" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.16"/>
+  <text x="144" y="640" fill="white" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">适合这些场景</text>
+  <text x="144" y="716" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">原型设计阶段快速补列表、表单、卡片内容</text>
+  <text x="144" y="774" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">B 端系统页面验证信息密度和排版节奏</text>
+  <text x="144" y="832" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">Demo、汇报稿、方案展示前临时补真实感数据</text>
+  <text x="144" y="890" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">把数据填充方式沉淀成长期可复用资产</text>
+
+  <rect x="762" y="556" width="738" height="396" rx="34" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.16"/>
+  <text x="866" y="640" fill="white" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">对外宣传可以这样收尾</text>
+  <text x="806" y="716" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">Data Fill 不是单纯的随机数据工具</text>
+  <text x="806" y="774" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">而是一套可管理、可复用、可积累的字段填充系统</text>
+  <text x="806" y="832" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">如果你也经常在 Figma 里补数据，欢迎直接试用</text>
+  <text x="806" y="890" fill="#E2E8F0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">也欢迎把你的场景反馈给我，我会继续迭代</text>
+
+  <rect x="100" y="1016" width="340" height="76" rx="38" fill="#99F6E4"/>
+  <text x="162" y="1064" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">现在就去展示它</text>
+  <rect x="470" y="1016" width="382" height="76" rx="38" fill="white" fill-opacity="0.1" stroke="white" stroke-opacity="0.16"/>
+  <text x="548" y="1064" fill="white" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">先发 6 张图就够了</text>
+</svg>

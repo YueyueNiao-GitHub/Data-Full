@@ -1,0 +1,45 @@
+
+  <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="dotGrid" width="16" height="16" patternUnits="userSpaceOnUse">
+        <circle cx="8" cy="8" r="0.9" fill="#E9EEF6"/>
+      </pattern>
+      <filter id="shadow" x="0" y="0" width="1920" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+        <feOffset dy="2"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0.06 0 0 0 0 0.14 0 0 0 0 0.28 0 0 0 0.08 0"/>
+        <feBlend in2="SourceGraphic" mode="normal"/>
+      </filter>
+    </defs>
+    <rect width="1920" height="1080" fill="#FBFCFE"/>
+    <rect width="1920" height="1080" fill="url(#dotGrid)"/>
+    
+    
+    <text x="84" y="108" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">插件的本质.</text>
+    <line x1="364" y1="60" x2="364" y2="116" stroke="#D8E3F5" stroke-width="4"/>
+    <text x="388" y="108" fill="#AAB4C5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="46" font-style="italic" font-weight="600">Core Mechanism</text>
+  
+    <rect x="64" y="176" width="1792" height="10" fill="#1F5FE5"/>
+    
+    <g filter="url(#shadow)">
+      <rect x="64" y="188" width="1792" height="820" fill="#FFFFFF" stroke="#D8E3F5"/>
+      
+      <text x="880" y="288" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="60" font-weight="700">字段系统</text>
+      
+    <rect x="96" y="334" width="1728" height="92" rx="16" fill="#EEF4FF" stroke="#D8E3F5"/>
+    <text fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="700"><tspan x="124" y="382">“ 字段不是一次结果，而是一条可复用规则。它可以管理文本、图片和 AI，并持续沉淀下来 ”</tspan></text>
+  
+      <line x1="64" y1="494" x2="1856" y2="494" stroke="#D8E3F5" stroke-dasharray="6 8"/>
+      <text x="360" y="570" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="38" font-weight="700">例如：人员姓名，不只是随机文本</text>
+      <text fill="#607290" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-style="normal" font-weight="500"><tspan x="286" y="636">要联动：字段名称、字段类型、生成方式、排序规则、可编辑配置、可复用场景</tspan></text>
+      <rect x="96" y="738" width="790" height="172" rx="18" fill="#F5F8FC" stroke="#D8E3F5"/>
+      <text fill="#0E2347" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-style="normal" font-weight="600"><tspan x="136" y="794">文本字段：姓名、日期、数值、标题</tspan><tspan x="136" y="836">图片字段：头像、Banner、背景图</tspan><tspan x="136" y="878">AI 字段：把提示词保存成字段，后续继续复用</tspan></text>
+      <text x="930" y="826" fill="#6C7A96" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="56" font-weight="700">→</text>
+      <rect x="1048" y="738" width="776" height="172" rx="18" fill="#EEF4FF" stroke="#D8E3F5"/>
+      <text fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-style="normal" font-weight="700"><tspan x="1088" y="794">选中图层后点击字段即可执行，不再来回切工具。</tspan><tspan x="1088" y="837">字段支持搜索、排序、编辑与复用，适合长期积累。</tspan></text>
+    
+    </g>
+  
+  
+  </svg>

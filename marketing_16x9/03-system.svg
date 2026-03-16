@@ -1,0 +1,65 @@
+
+  <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bg" x1="180" y1="120" x2="1700" y2="980" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#F7F2EA"/>
+        <stop offset="0.58" stop-color="#F2F0EC"/>
+        <stop offset="1" stop-color="#EEF5F2"/>
+      </linearGradient>
+      <linearGradient id="hero" x1="1210" y1="142" x2="1680" y2="924" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#FFFFFF"/>
+        <stop offset="1" stop-color="#F2F5F8"/>
+      </linearGradient>
+      <filter id="shadow" x="0" y="0" width="1920" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="22"/>
+        <feGaussianBlur stdDeviation="30"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0.0745098 0 0 0 0 0.133333 0 0 0 0 0.219608 0 0 0 0.14 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+      </filter>
+      <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+        <path d="M64 0H0V64" fill="none" stroke="rgba(19,34,56,0.045)"/>
+      </pattern>
+    </defs>
+    <rect width="1920" height="1080" fill="url(#bg)"/>
+    <rect width="1920" height="1080" fill="url(#grid)"/>
+    <circle cx="132" cy="122" r="220" fill="#E8D3B4" fill-opacity="0.7"/>
+    <circle cx="1774" cy="918" r="310" fill="#D4ECE4" fill-opacity="0.7"/>
+    <circle cx="1448" cy="150" r="130" fill="#D6E3F3" fill-opacity="0.65"/>
+    
+    
+    <rect x="110" y="96" width="190" height="46" rx="23" fill="#DDF4EC"/>
+    <text x="130" y="126" fill="#0E6F67" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="22" font-weight="700">核心机制</text>
+  
+    <text fill="#132238" font-family="Songti SC, STSong, Times New Roman, serif" font-size="82" font-weight="700"><tspan x="110" y="220">Data Fill 的关键不是</tspan><tspan x="110" y="312">随机生成，而是字段系统</tspan></text>
+    <text fill="#5E6B7A" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="32" font-weight="600"><tspan x="110" y="416">字段代表一条可复用规则。选中图层后点击字段即可执行，</tspan><tspan x="110" y="462">文本、图片与 AI 都被统一到同一套工作流里。</tspan></text>
+    
+    <rect x="110" y="536" width="560" height="380" rx="34" fill="#FBF8F2" stroke="rgba(19, 34, 56, 0.10)" />
+    
+    
+      <text x="156" y="604" fill="#B56A3D" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">字段 = 一条规则，而不是一次结果</text>
+      <rect x="156" y="650" width="170" height="54" rx="18" fill="#DCEAF7"/>
+      <text x="196" y="685" fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">人员姓名</text>
+      <text fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="30" font-weight="600"><tspan x="156" y="764">文本 · 随机 · 可重复</tspan><tspan x="156" y="807">点击字段后立即填充到当前选区</tspan><tspan x="156" y="850">后续仍可继续编辑、排序与复用</tspan></text>
+    
+  
+    <path d="M720 722H846" stroke="#0E6F67" stroke-width="10" stroke-linecap="round"/>
+    <path d="M816 684L856 722L816 760" stroke="#0E6F67" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <rect x="900" y="536" width="820" height="380" rx="34" fill="#FBF8F2" stroke="rgba(19, 34, 56, 0.10)" />
+    
+    
+      <text x="946" y="604" fill="#B56A3D" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">统一文本、图片与 AI 填充</text>
+      <rect x="946" y="650" width="184" height="52" rx="18" fill="#DDF4EC"/>
+      <text x="998" y="684" fill="#0E6F67" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">文本字段</text>
+      <rect x="1148" y="650" width="184" height="52" rx="18" fill="#F3E2D8"/>
+      <text x="1202" y="684" fill="#B56A3D" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">图片字段</text>
+      <rect x="1350" y="650" width="184" height="52" rx="18" fill="#DCEAF7"/>
+      <text x="1410" y="684" fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">AI 字段</text>
+      <text fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="31" font-weight="600"><tspan x="946" y="790">同一套字段列表统一管理、搜索、拖拽排序。</tspan><tspan x="946" y="834">适合原型、B 端系统、列表表单、卡片详情与 Demo 展示。</tspan><tspan x="946" y="878">一句话：字段是资产，AI 只是生成方式之一。</tspan></text>
+    
+  
+  
+  </svg>

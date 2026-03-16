@@ -1,0 +1,42 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="112" x2="1480" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECFEFF"/>
+      <stop offset="0.46" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#FFF7ED"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1200" rx="40" fill="url(#bg)"/>
+
+  <rect x="88" y="84" width="170" height="46" rx="23" fill="#CCFBF1"/>
+  <text x="122" y="114" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700">解决方案</text>
+
+  <text x="88" y="228" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="74" font-weight="700">Data Fill 的核心不是</text>
+  <text x="88" y="318" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="74" font-weight="700">随机生成，而是字段系统</text>
+  <text x="88" y="392" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32">字段代表一条可复用规则，点击字段就能完成填充，日后还能继续使用</text>
+
+  <rect x="88" y="488" width="450" height="508" rx="34" fill="#FFFFFF" stroke="#D7E3F0"/>
+  <text x="128" y="566" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">字段 = 可复用规则</text>
+  <text x="128" y="632" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">字段名称</text>
+  <rect x="128" y="654" width="180" height="54" rx="18" fill="#E0F2FE"/>
+  <text x="164" y="689" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">人员姓名</text>
+  <text x="128" y="760" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">字段规则</text>
+  <text x="128" y="812" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">文本 · 随机 · 可重复</text>
+  <text x="128" y="888" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">点击行为</text>
+  <text x="128" y="940" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">选中图层后点击字段，立即执行</text>
+
+  <path d="M584 742H692" stroke="#0F766E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M662 704L700 742L662 780" stroke="#0F766E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="742" y="488" width="770" height="508" rx="34" fill="#FFFFFF" stroke="#D7E3F0"/>
+  <text x="786" y="566" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">统一文本、图片和 AI 填充</text>
+  <rect x="786" y="620" width="202" height="56" rx="18" fill="#DCFCE7"/>
+  <text x="836" y="656" fill="#166534" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">文本字段</text>
+  <rect x="1008" y="620" width="202" height="56" rx="18" fill="#FEE2E2"/>
+  <text x="1058" y="656" fill="#991B1B" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">图片字段</text>
+  <rect x="1230" y="620" width="202" height="56" rx="18" fill="#EDE9FE"/>
+  <text x="1298" y="656" fill="#5B21B6" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700">AI 字段</text>
+  <text x="786" y="744" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">同一套字段列表里统一管理、搜索、排序和复用</text>
+  <text x="786" y="806" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28">适合列表、表单、卡片、详情页、Demo 汇报等场景</text>
+  <text x="786" y="908" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="44" font-weight="700">一句话：字段是资产，AI 只是生成方式之一</text>
+</svg>

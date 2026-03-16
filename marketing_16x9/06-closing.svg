@@ -1,0 +1,55 @@
+
+  <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bg" x1="180" y1="120" x2="1700" y2="980" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#F7F2EA"/>
+        <stop offset="0.58" stop-color="#F2F0EC"/>
+        <stop offset="1" stop-color="#EEF5F2"/>
+      </linearGradient>
+      <linearGradient id="hero" x1="1210" y1="142" x2="1680" y2="924" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#FFFFFF"/>
+        <stop offset="1" stop-color="#F2F5F8"/>
+      </linearGradient>
+      <filter id="shadow" x="0" y="0" width="1920" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="22"/>
+        <feGaussianBlur stdDeviation="30"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0.0745098 0 0 0 0 0.133333 0 0 0 0 0.219608 0 0 0 0.14 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+      </filter>
+      <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+        <path d="M64 0H0V64" fill="none" stroke="rgba(19,34,56,0.045)"/>
+      </pattern>
+    </defs>
+    <rect width="1920" height="1080" fill="url(#bg)"/>
+    <rect width="1920" height="1080" fill="url(#grid)"/>
+    <circle cx="132" cy="122" r="220" fill="#E8D3B4" fill-opacity="0.7"/>
+    <circle cx="1774" cy="918" r="310" fill="#D4ECE4" fill-opacity="0.7"/>
+    <circle cx="1448" cy="150" r="130" fill="#D6E3F3" fill-opacity="0.65"/>
+    
+    <rect width="1920" height="1080" fill="#15263D"/>
+    <circle cx="164" cy="148" r="220" fill="#21405C" fill-opacity="0.85"/>
+    <circle cx="1760" cy="906" r="320" fill="#44624F" fill-opacity="0.44"/>
+    
+    <rect x="110" y="96" width="248" height="46" rx="23" fill="rgba(221,244,236,0.16)"/>
+    <text x="130" y="126" fill="#9BE4D6" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="22" font-weight="700">适用人群与收尾</text>
+  
+    <text fill="#FFFFFF" font-family="Songti SC, STSong, Times New Roman, serif" font-size="84" font-weight="700"><tspan x="110" y="236">如果你经常要为原型补数据，</tspan><tspan x="110" y="332">这款插件会很适合你</tspan></text>
+    <rect x="110" y="492" width="760" height="374" rx="34" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+    
+      <text x="156" y="560" fill="#A7E6D9" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="26" font-weight="700">适合这些场景</text>
+      <text fill="#E9EEF4" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="32" font-weight="600"><tspan x="156" y="626">原型设计阶段快速补列表、表单、卡片内容</tspan><tspan x="156" y="673">B 端系统页面验证信息密度与排版节奏</tspan><tspan x="156" y="720">Demo、汇报稿、方案展示前临时补真实感数据</tspan><tspan x="156" y="767">希望把数据填充方式沉淀成长期可复用资产</tspan></text>
+    
+    <rect x="920" y="492" width="890" height="374" rx="34" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+    
+      <text x="966" y="560" fill="#A7E6D9" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="26" font-weight="700">对外宣传建议这样收尾</text>
+      <text fill="#FFFFFF" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="34" font-weight="600"><tspan x="966" y="626">Data Fill 不是单纯的随机数据工具，</tspan><tspan x="966" y="676">而是一套可管理、可复用、可积累的字段填充系统。</tspan><tspan x="966" y="726">如果你也经常在 Figma 里补数据，欢迎直接试用。</tspan></text>
+    
+    <rect x="110" y="912" width="280" height="72" rx="36" fill="#9BE4D6"/>
+    <text x="174" y="958" fill="#15263D" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">现在就去展示它</text>
+    <rect x="416" y="912" width="332" height="72" rx="36" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.12)"/>
+    <text x="488" y="958" fill="#FFFFFF" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">先用这 6 张图</text>
+  
+  </svg>

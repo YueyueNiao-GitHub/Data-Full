@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Fill 宣传图预览</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4efe6;
+      --panel: #fffdf8;
+      --ink: #132238;
+      --muted: #5d6b7d;
+      --line: rgba(19, 34, 56, 0.1);
+      --accent: #0f766e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(227, 124, 61, 0.14), transparent 22%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 28px;
+    }
+
+    .card {
+      background: rgba(255, 253, 248, 0.78);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(19, 34, 56, 0.08);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .card img {
+      width: 100%;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    .hint {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <h1>Data Fill 宣传图</h1>
+  <p>共 6 张，适合插件商店详情、社群分享图、朋友圈或小红书首屏轮播。</p>
+  <div class="grid">
+    <div class="card">
+      <h2>01 封面</h2>
+      <img src="./01-cover.svg" alt="封面图" />
+    </div>
+    <div class="card">
+      <h2>02 痛点</h2>
+      <img src="./02-pain-points.svg" alt="痛点图" />
+    </div>
+    <div class="card">
+      <h2>03 方案</h2>
+      <img src="./03-solution.svg" alt="方案图" />
+    </div>
+    <div class="card">
+      <h2>04 功能</h2>
+      <img src="./04-features.svg" alt="功能图" />
+    </div>
+    <div class="card">
+      <h2>05 流程</h2>
+      <img src="./05-workflow.svg" alt="流程图" />
+    </div>
+    <div class="card">
+      <h2>06 转化</h2>
+      <img src="./06-cta.svg" alt="转化图" />
+    </div>
+  </div>
+  <p class="hint">直接打开这个文件预览：<a href="/Users/yueyueniao/Desktop/Data Full _Codex/marketing/index.html">marketing/index.html</a></p>
+</body>
+</html>

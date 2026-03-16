@@ -1,0 +1,58 @@
+
+  <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="dotGrid" width="16" height="16" patternUnits="userSpaceOnUse">
+        <circle cx="8" cy="8" r="0.9" fill="#E9EEF6"/>
+      </pattern>
+      <filter id="shadow" x="0" y="0" width="1920" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+        <feOffset dy="2"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0.06 0 0 0 0 0.14 0 0 0 0 0.28 0 0 0 0.08 0"/>
+        <feBlend in2="SourceGraphic" mode="normal"/>
+      </filter>
+    </defs>
+    <rect width="1920" height="1080" fill="#FBFCFE"/>
+    <rect width="1920" height="1080" fill="url(#dotGrid)"/>
+    
+    
+    <text x="84" y="108" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">能力结构与功能范围.</text>
+    <line x1="580" y1="60" x2="580" y2="116" stroke="#D8E3F5" stroke-width="4"/>
+    <text x="604" y="108" fill="#AAB4C5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="46" font-style="italic" font-weight="600">Capability Analysis</text>
+  
+    <rect x="64" y="176" width="1792" height="10" fill="#1F5FE5"/>
+    
+    <g filter="url(#shadow)">
+      <rect x="64" y="188" width="1792" height="820" fill="#FFFFFF" stroke="#D8E3F5"/>
+      
+      
+    <rect x="96" y="228" width="1728" height="88" rx="16" fill="#EEF4FF" stroke="#D8E3F5"/>
+    <text fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="700"><tspan x="124" y="276">“ Data Fill 不是单纯的随机数据工具，而是一套围绕字段规则组织起来的数据填充系统 ”</tspan></text>
+  
+      <rect x="96" y="372" width="1728" height="84" fill="#EEF4FF"/>
+      <rect x="96" y="372" width="1728" height="84" stroke="#D8E3F5"/>
+      <rect x="96" y="372" width="260" height="84" fill="#EEF4FF"/>
+      <rect x="356" y="372" width="684" height="84" fill="#E4EEFF"/>
+      <rect x="1040" y="372" width="784" height="84" fill="#EAF1FF"/>
+      <line x1="356" y1="372" x2="356" y2="860" stroke="#D8E3F5"/>
+      <line x1="1040" y1="372" x2="1040" y2="860" stroke="#D8E3F5"/>
+      <text x="390" y="426" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">核心理念</text>
+      <text x="1080" y="426" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">当前能力</text>
+      <line x1="96" y1="456" x2="1824" y2="456" stroke="#D8E3F5"/>
+      <line x1="96" y1="578" x2="1824" y2="578" stroke="#D8E3F5"/>
+      <line x1="96" y1="700" x2="1824" y2="700" stroke="#D8E3F5"/>
+      <line x1="96" y1="822" x2="1824" y2="822" stroke="#D8E3F5"/>
+      <text fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-style="normal" font-weight="700"><tspan x="130" y="526">文本字段</tspan></text>
+      <text fill="#0E2347" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="600"><tspan x="390" y="514">支持文本、数字、日期等结构化内容，</tspan><tspan x="390" y="552">可按字段规则生成并长期复用</tspan></text>
+      <text fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="700"><tspan x="1080" y="514">随机、顺序、自增、格式配置、批量填充</tspan></text>
+      <text fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-style="normal" font-weight="700"><tspan x="130" y="648">图片字段</tspan></text>
+      <text fill="#0E2347" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="600"><tspan x="390" y="636">把头像、封面图等视觉素材也纳入字段列表，</tspan><tspan x="390" y="674">统一到同一套操作方式中</tspan></text>
+      <text fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="700"><tspan x="1080" y="636">内置真人头像、卡通头像、Banner / 背景图</tspan></text>
+      <text fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-style="normal" font-weight="700"><tspan x="130" y="770">AI 字段</tspan></text>
+      <text fill="#0E2347" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="600"><tspan x="390" y="758">把提示词保存成字段，而不是每次重新生成，</tspan><tspan x="390" y="796">更适合高频说明文案与内容占位</tspan></text>
+      <text fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="700"><tspan x="1080" y="758">新建 AI 字段、预览确认、后续继续复用</tspan></text>
+    
+    </g>
+  
+  
+  </svg>

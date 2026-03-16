@@ -1,0 +1,38 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="70" y1="100" x2="1540" y2="1108" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFF6FF"/>
+      <stop offset="1" stop-color="#ECFDF5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1200" rx="40" fill="url(#bg)"/>
+
+  <text x="92" y="190" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="74" font-weight="700">3 步就能上手</text>
+  <text x="92" y="258" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30">这张图的作用是降低尝试门槛，让别人一眼就知道怎么用</text>
+
+  <rect x="92" y="340" width="394" height="716" rx="34" fill="#FFFFFF" stroke="#D7E3F0"/>
+  <text x="132" y="412" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">01</text>
+  <text x="132" y="470" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="38" font-weight="700">选中要填充的图层</text>
+  <text x="132" y="526" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">支持文本图层，也支持可替换图片的图层</text>
+  <rect x="124" y="574" width="330" height="422" rx="28" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <image x="140" y="590" width="298" height="390" preserveAspectRatio="xMidYMid slice" href="../已有资料/界面截图/初始化状态.png"/>
+
+  <rect x="538" y="340" width="394" height="716" rx="34" fill="#FFFFFF" stroke="#D7E3F0"/>
+  <text x="624" y="412" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">02</text>
+  <text x="624" y="470" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="38" font-weight="700">点击字段立即执行</text>
+  <text x="624" y="526" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">顶部切换文本填充 / 图片填充，直接点字段即可</text>
+  <rect x="570" y="574" width="330" height="422" rx="28" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <image x="586" y="590" width="298" height="390" preserveAspectRatio="xMidYMid slice" href="../已有资料/界面截图/图片填充.png"/>
+
+  <rect x="984" y="340" width="394" height="716" rx="34" fill="#FFFFFF" stroke="#D7E3F0"/>
+  <text x="1024" y="412" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">03</text>
+  <text x="1024" y="470" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">字段可继续复用和管理</text>
+  <text x="1024" y="526" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24">新建 AI 字段、编辑字段、拖拽排序都会保存</text>
+  <rect x="1016" y="574" width="330" height="422" rx="28" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <image x="1032" y="590" width="298" height="390" preserveAspectRatio="xMidYMid slice" href="../已有资料/界面截图/新建 AI 字段 - 已输入提示词.png"/>
+
+  <path d="M494 694H520" stroke="#0F766E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M504 672L530 694L504 716" stroke="#0F766E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M940 694H966" stroke="#0F766E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M950 672L976 694L950 716" stroke="#0F766E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

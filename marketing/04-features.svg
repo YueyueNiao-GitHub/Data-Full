@@ -1,0 +1,36 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="86" x2="1514" y2="1116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#FEF2F2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1200" rx="40" fill="url(#bg)"/>
+
+  <text x="90" y="186" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="74" font-weight="700">最值得讲的 4 个核心功能</text>
+  <text x="90" y="254" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30">不要一口气堆十几个点，对外宣传就抓住这四个就够了</text>
+
+  <rect x="90" y="330" width="650" height="272" rx="32" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="132" y="402" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="700">01 文本字段填充</text>
+  <text x="132" y="464" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">支持文本、数字、日期批量填充</text>
+  <text x="132" y="526" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24">随机、顺序、自增、格式化都能纳入字段规则</text>
+
+  <rect x="860" y="330" width="650" height="272" rx="32" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="872" y="402" fill="#BE123C" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="700">02 图片字段填充</text>
+  <text x="902" y="464" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">头像、封面图可以直接替换</text>
+  <text x="902" y="526" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24">当前内置真人头像、卡通头像和 Banner 素材</text>
+
+  <rect x="90" y="642" width="650" height="272" rx="32" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="132" y="714" fill="#6D28D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="700">03 AI 字段</text>
+  <text x="132" y="776" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">提示词保存成字段，后续继续复用</text>
+  <text x="132" y="838" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24">不需要每次从零写 prompt，适合高频生成说明文案</text>
+
+  <rect x="860" y="642" width="650" height="272" rx="32" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="872" y="714" fill="#B45309" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="700">04 管理能力</text>
+  <text x="902" y="776" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">支持文件夹、搜索、编辑和排序</text>
+  <text x="902" y="838" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24">字段能沉淀下来，适合个人长期使用，也适合团队整理</text>
+
+  <rect x="90" y="962" width="1420" height="160" rx="34" fill="#0F172A"/>
+  <text x="140" y="1036" fill="white" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">宣传时别说“功能很多”，要说“同一套字段系统把填充这件事做完整了”</text>
+  <text x="140" y="1088" fill="#CBD5E1" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">这句话比单纯列功能，更容易让用户理解产品价值</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="140" y1="120" x2="1492" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7ED"/>
+      <stop offset="1" stop-color="#EFF6FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="1200" rx="40" fill="url(#bg)"/>
+  <rect x="84" y="86" width="170" height="46" rx="23" fill="#FED7AA"/>
+  <text x="118" y="116" fill="#9A3412" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700">用户痛点</text>
+
+  <text x="84" y="236" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="76" font-weight="700">做原型时，最费时间的</text>
+  <text x="84" y="328" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="76" font-weight="700">常常不是设计，而是填数据</text>
+  <text x="84" y="408" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="500">现有方案要么太随机，要么不成体系，要么 AI 和图片填充各自分散</text>
+
+  <rect x="84" y="500" width="340" height="238" rx="30" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="120" y="578" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">01</text>
+  <text x="120" y="636" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">一次性填充</text>
+  <text x="120" y="688" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">每次都要重新找数据</text>
+  <text x="120" y="726" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">很难沉淀成团队资产</text>
+
+  <rect x="450" y="500" width="340" height="238" rx="30" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="486" y="578" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">02</text>
+  <text x="486" y="636" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">缺少字段语义</text>
+  <text x="486" y="688" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">名字、金额、日期混在一起</text>
+  <text x="486" y="726" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">无法按业务逻辑复用</text>
+
+  <rect x="816" y="500" width="340" height="238" rx="30" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="852" y="578" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">03</text>
+  <text x="852" y="636" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">AI 很割裂</text>
+  <text x="852" y="688" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">需要另开工具或单独操作</text>
+  <text x="852" y="726" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">效率不稳定，也不统一</text>
+
+  <rect x="1182" y="500" width="340" height="238" rx="30" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="1218" y="578" fill="#0F766E" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">04</text>
+  <text x="1218" y="636" fill="#0F172A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="700">图片填充零散</text>
+  <text x="1218" y="688" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">头像、Banner 不统一</text>
+  <text x="1218" y="726" fill="#475569" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26">批量替换体验差</text>
+
+  <rect x="84" y="796" width="1438" height="300" rx="36" fill="#0F172A"/>
+  <text x="132" y="878" fill="white" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700">你可能经常遇到这些场景</text>
+  <text x="132" y="950" fill="#CBD5E1" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30">列表页要补一批姓名、手机号、邮箱和状态</text>
+  <text x="132" y="1002" fill="#CBD5E1" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30">卡片流需要头像、封面图、标题和金额同时看起来真实</text>
+  <text x="132" y="1054" fill="#CBD5E1" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30">做汇报稿前临时补数据，结果重复、出错、还要来回切工具</text>
+</svg>

@@ -1,0 +1,71 @@
+
+  <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bg" x1="180" y1="120" x2="1700" y2="980" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#F7F2EA"/>
+        <stop offset="0.58" stop-color="#F2F0EC"/>
+        <stop offset="1" stop-color="#EEF5F2"/>
+      </linearGradient>
+      <linearGradient id="hero" x1="1210" y1="142" x2="1680" y2="924" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#FFFFFF"/>
+        <stop offset="1" stop-color="#F2F5F8"/>
+      </linearGradient>
+      <filter id="shadow" x="0" y="0" width="1920" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="22"/>
+        <feGaussianBlur stdDeviation="30"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0.0745098 0 0 0 0 0.133333 0 0 0 0 0.219608 0 0 0 0.14 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+      </filter>
+      <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+        <path d="M64 0H0V64" fill="none" stroke="rgba(19,34,56,0.045)"/>
+      </pattern>
+    </defs>
+    <rect width="1920" height="1080" fill="url(#bg)"/>
+    <rect width="1920" height="1080" fill="url(#grid)"/>
+    <circle cx="132" cy="122" r="220" fill="#E8D3B4" fill-opacity="0.7"/>
+    <circle cx="1774" cy="918" r="310" fill="#D4ECE4" fill-opacity="0.7"/>
+    <circle cx="1448" cy="150" r="130" fill="#D6E3F3" fill-opacity="0.65"/>
+    
+    
+    <rect x="110" y="96" width="216" height="46" rx="23" fill="#E0EAF6"/>
+    <text x="130" y="126" fill="#2F5E96" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="22" font-weight="700">功能亮点</text>
+  
+    <text fill="#132238" font-family="Songti SC, STSong, Times New Roman, serif" font-size="82" font-weight="700"><tspan x="110" y="220">真正值得对外讲的</tspan><tspan x="110" y="312">是这 4 组能力</tspan></text>
+    <text fill="#5E6B7A" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="32" font-weight="600"><tspan x="110" y="416">不是“功能很多”，而是把数据填充这件事做完整了。</tspan></text>
+    
+    <rect x="110" y="520" width="810" height="208" rx="34" fill="#FBF8F2" stroke="rgba(19, 34, 56, 0.10)" />
+    
+    
+      <text x="154" y="588" fill="#0E6F67" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">01 文本字段填充</text>
+      <text fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="36" font-weight="700"><tspan x="154" y="650">支持文本、数字、日期的批量填充</tspan><tspan x="154" y="699">随机、顺序、自增与格式控制都可纳入规则</tspan></text>
+    
+  
+    
+    <rect x="1000" y="520" width="810" height="208" rx="34" fill="#FBF8F2" stroke="rgba(19, 34, 56, 0.10)" />
+    
+    
+      <text x="1044" y="588" fill="#B56A3D" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">02 图片字段填充</text>
+      <text fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="34" font-weight="700"><tspan x="1044" y="650">内置默认图片字段，可直接替换头像与 Banner / 背景图</tspan><tspan x="1044" y="696">更适合做卡片、封面、个人资料等真实化场景</tspan></text>
+    
+  
+    
+    <rect x="110" y="770" width="810" height="208" rx="34" fill="#FBF8F2" stroke="rgba(19, 34, 56, 0.10)" />
+    
+    
+      <text x="154" y="838" fill="#5C4AA5" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">03 AI 字段</text>
+      <text fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="36" font-weight="700"><tspan x="154" y="900">把提示词保存成字段，后续继续复用</tspan><tspan x="154" y="949">适合高频生成说明文案与占位内容</tspan></text>
+    
+  
+    
+    <rect x="1000" y="770" width="810" height="208" rx="34" fill="#FBF8F2" stroke="rgba(19, 34, 56, 0.10)" />
+    
+    
+      <text x="1044" y="838" fill="#8A5A24" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">04 管理能力</text>
+      <text fill="#132238" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" font-size="36" font-weight="700"><tspan x="1044" y="900">支持文件夹、搜索、编辑与拖拽排序</tspan><tspan x="1044" y="949">字段可以长期沉淀，适合个人与团队积累</tspan></text>
+    
+  
+  
+  </svg>

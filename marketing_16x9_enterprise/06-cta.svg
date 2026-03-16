@@ -1,0 +1,49 @@
+
+  <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="dotGrid" width="16" height="16" patternUnits="userSpaceOnUse">
+        <circle cx="8" cy="8" r="0.9" fill="#E9EEF6"/>
+      </pattern>
+      <filter id="shadow" x="0" y="0" width="1920" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+        <feOffset dy="2"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0.06 0 0 0 0 0.14 0 0 0 0 0.28 0 0 0 0.08 0"/>
+        <feBlend in2="SourceGraphic" mode="normal"/>
+      </filter>
+    </defs>
+    <rect width="1920" height="1080" fill="#FBFCFE"/>
+    <rect width="1920" height="1080" fill="url(#dotGrid)"/>
+    
+    
+    <text x="84" y="108" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="54" font-weight="700">适用人群与结论.</text>
+    <line x1="472" y1="60" x2="472" y2="116" stroke="#D8E3F5" stroke-width="4"/>
+    <text x="496" y="108" fill="#AAB4C5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="46" font-style="italic" font-weight="600">Who It Is For</text>
+  
+    <rect x="64" y="176" width="1792" height="10" fill="#1F5FE5"/>
+    
+    <g filter="url(#shadow)">
+      <rect x="64" y="188" width="1792" height="820" fill="#FFFFFF" stroke="#D8E3F5"/>
+      
+      <text x="96" y="286" fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="62" font-weight="700">这款插件适合经常要为原型补数据的人</text>
+      
+    <rect x="96" y="340" width="1728" height="88" rx="16" fill="#EEF4FF" stroke="#D8E3F5"/>
+    <text fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-style="normal" font-weight="700"><tspan x="124" y="388">“ 如果你经常在 Figma 里做列表、表单、卡片、详情页，Data Fill 会明显减少重复劳动 ”</tspan></text>
+  
+      <rect x="96" y="492" width="800" height="352" fill="#FFFFFF" stroke="#D8E3F5"/>
+      <rect x="96" y="492" width="800" height="10" fill="#1F5FE5"/>
+      <text x="128" y="560" fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="38" font-weight="700">适合这些场景</text>
+      <text fill="#0E2347" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-style="normal" font-weight="600"><tspan x="128" y="632">原型设计阶段快速补列表、表单、卡片内容</tspan><tspan x="128" y="675">B 端系统页面验证信息密度与排版节奏</tspan><tspan x="128" y="718">Demo、汇报稿、方案展示前临时补真实感数据</tspan><tspan x="128" y="761">希望把填充方式沉淀成长期可复用资产</tspan></text>
+      <rect x="944" y="492" width="880" height="352" fill="#FFFFFF" stroke="#D8E3F5"/>
+      <rect x="944" y="492" width="880" height="10" fill="#1F5FE5"/>
+      <text x="976" y="560" fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="38" font-weight="700">一句话总结</text>
+      <text fill="#0E2347" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-style="normal" font-weight="700"><tspan x="976" y="632">Data Fill 的价值不在于“随机生成”，</tspan><tspan x="976" y="675">而在于把数据填充这件事，做成一套</tspan><tspan x="976" y="718">可管理、可复用、可积累的字段系统。</tspan></text>
+      <rect x="96" y="900" width="320" height="66" rx="10" fill="#1F5FE5"/>
+      <text x="188" y="944" fill="#FFFFFF" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="700">立即体验</text>
+      <rect x="446" y="900" width="370" height="66" rx="10" fill="#EEF4FF" stroke="#1F5FE5"/>
+      <text x="544" y="944" fill="#1F5FE5" font-family="腾讯体, PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="700">查看更多能力</text>
+    
+    </g>
+  
+  
+  </svg>

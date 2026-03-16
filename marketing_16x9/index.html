@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Fill 16:9 宣传图</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 28px;
+        background: #f2eee8;
+        font-family: PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif;
+        color: #132238;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 30px;
+      }
+      p {
+        margin: 0 0 24px;
+        color: #5E6B7A;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+        gap: 24px;
+      }
+      .card {
+        background: #fffaf5;
+        border: 1px solid rgba(19, 34, 56, 0.1);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 20px 60px rgba(19, 34, 56, 0.08);
+      }
+      img {
+        width: 100%;
+        border-radius: 18px;
+        display: block;
+        border: 1px solid rgba(19, 34, 56, 0.08);
+      }
+      .label {
+        margin: 0 0 12px;
+        font-size: 18px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Data Fill 16:9 宣传图</h1>
+    <p>基于 custom theme + frontend-design + web-design-guidelines 的重做版本。</p>
+    <div class="grid">
+      
+            <div class="card">
+              <div class="label">01-cover.svg</div>
+              <img src="./01-cover.svg" alt="01-cover.svg" />
+            </div>
+            <div class="card">
+              <div class="label">02-pain.svg</div>
+              <img src="./02-pain.svg" alt="02-pain.svg" />
+            </div>
+            <div class="card">
+              <div class="label">03-system.svg</div>
+              <img src="./03-system.svg" alt="03-system.svg" />
+            </div>
+            <div class="card">
+              <div class="label">04-capabilities.svg</div>
+              <img src="./04-capabilities.svg" alt="04-capabilities.svg" />
+            </div>
+            <div class="card">
+              <div class="label">05-workflow.svg</div>
+              <img src="./05-workflow.svg" alt="05-workflow.svg" />
+            </div>
+            <div class="card">
+              <div class="label">06-closing.svg</div>
+              <img src="./06-closing.svg" alt="06-closing.svg" />
+            </div>
+    </div>
+  </body>
+  </html>
