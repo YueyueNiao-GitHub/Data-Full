@@ -190,43 +190,43 @@ const DEFAULT_FIELDS = {
     imageFields: [
         {
             id: 'image_avatar_real',
-            name: '真人头像 - Avatar',
+            name: '真人头像',
             type: 'image',
             method: 'random',
             icon: '👤',
-            iconBg: '#dbeafe',
+            iconBg: '#eaf2ff',
             iconColor: '#2563eb',
             tags: ['图片', '随机', '真人头像']
         },
         {
             id: 'image_avatar_cartoon',
-            name: '卡通头像 - Avatar',
+            name: '卡通头像',
             type: 'image',
             method: 'random',
             icon: '👤',
-            iconBg: '#fce7f3',
-            iconColor: '#db2777',
+            iconBg: '#eaf2ff',
+            iconColor: '#2563eb',
             tags: ['图片', '随机', '卡通头像']
         },
         {
-            id: 'image_banner_16_9',
-            name: '封面图 16:9 - Banner',
+            id: 'image_fluid_background',
+            name: '流体背景',
             type: 'image',
             method: 'random',
             icon: '🖼️',
-            iconBg: '#dbeafe',
+            iconBg: '#eaf2ff',
             iconColor: '#2563eb',
-            tags: ['图片', '随机', '16:9']
+            tags: ['图片', '随机', '流体背景']
         },
         {
-            id: 'image_banner_4_3',
-            name: '封面图 4:3 - Banner',
+            id: 'image_tech_brand_hero',
+            name: '科技 Banner',
             type: 'image',
             method: 'random',
             icon: '🖼️',
-            iconBg: '#d1fae5',
-            iconColor: '#059669',
-            tags: ['图片', '随机', '4:3']
+            iconBg: '#eaf2ff',
+            iconColor: '#2563eb',
+            tags: ['图片', '随机', '科技 Banner']
         }
     ]
 };

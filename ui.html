@@ -5,6 +5,17 @@
   <meta charset="utf-8">
   <title>Data Fill</title>
   <style>
+    :root {
+      --cursor-field-hover:
+        url("data:image/svg+xml,%3Csvg%20width%3D%2217%22%20height%3D%2218%22%20viewBox%3D%220%200%2017%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%20%3Cg%20filter%3D%22url%28%23filter0_d_188_12264%29%22%3E%20%3Cpath%20d%3D%22M4.07847%2012.2682C3.79847%2011.9082%203.44847%2011.1782%202.83847%2010.2682C2.48847%209.76821%201.62847%208.81821%201.36847%208.32821C1.18104%208.03044%201.12665%207.66786%201.21847%207.32821C1.37543%206.68242%201.98803%206.25403%202.64847%206.32821C3.15927%206.43082%203.62869%206.68118%203.99847%207.04821C4.25665%207.29138%204.49413%207.55563%204.70847%207.83821C4.86847%208.03821%204.90847%208.11821%205.08847%208.34821C5.26847%208.57821%205.38847%208.80821%205.29847%208.46821C5.22847%207.96821%205.10847%207.12821%204.93847%206.37821C4.80847%205.80821%204.77847%205.71821%204.65847%205.28821C4.53847%204.85821%204.46847%204.49821%204.33847%204.00821C4.21963%203.52678%204.12617%203.03944%204.05847%202.54821C3.93242%201.91991%204.02412%201.26742%204.31847%200.698209C4.66786%200.369578%205.1804%200.282841%205.61847%200.478209C6.05906%200.803545%206.38757%201.25786%206.55847%201.77821C6.82053%202.4186%206.99543%203.09127%207.07847%203.77821C7.23847%204.77821%207.54847%206.23821%207.55847%206.53821C7.55847%206.16821%207.48847%205.38821%207.55847%205.03821C7.62782%204.67333%207.88142%204.37052%208.22847%204.23821C8.52628%204.14683%208.84131%204.12629%209.14847%204.17821C9.4585%204.24302%209.73313%204.42135%209.91847%204.67821C10.1501%205.2616%2010.2787%205.88081%2010.2985%206.50821C10.3252%205.9588%2010.4193%205.41474%2010.5785%204.88821C10.7456%204.65276%2010.9896%204.483%2011.2685%204.40821C11.5991%204.34776%2011.9379%204.34776%2012.2685%204.40821C12.5396%204.49884%2012.7767%204.66972%2012.9485%204.89821C13.1602%205.42855%2013.2884%205.98855%2013.3285%206.55821C13.3285%206.69821%2013.3985%206.16821%2013.6185%205.81821C13.7328%205.47881%2014.0195%205.22618%2014.3706%205.15548C14.7217%205.08479%2015.0838%205.20678%2015.3206%205.47548C15.5574%205.74419%2015.6328%206.11881%2015.5185%206.45821C15.5185%207.10821%2015.5185%207.07821%2015.5185%207.51821C15.5185%207.95821%2015.5185%208.34821%2015.5185%208.71821C15.482%209.30339%2015.4018%209.88502%2015.2785%2010.4582C15.1044%2010.9653%2014.8622%2011.4464%2014.5585%2011.8882C14.0729%2012.4282%2013.6717%2013.0384%2013.3685%2013.6982C13.2932%2014.026%2013.2596%2014.362%2013.2685%2014.6982C13.2675%2015.0088%2013.3078%2015.3182%2013.3885%2015.6182C12.9796%2015.6614%2012.5673%2015.6614%2012.1585%2015.6182C11.7685%2015.5582%2011.2885%2014.7782%2011.1585%2014.5382C11.0941%2014.4093%2010.9625%2014.3279%2010.8185%2014.3279C10.6744%2014.3279%2010.5428%2014.4093%2010.4785%2014.5382C10.2585%2014.9182%209.76847%2015.6082%209.42847%2015.6482C8.75847%2015.7282%207.37847%2015.6482%206.28847%2015.6482C6.28847%2015.6482%206.46847%2014.6482%206.05847%2014.2882C5.64847%2013.9282%205.22847%2013.5082%204.91847%2013.2282L4.07847%2012.2682Z%22%20fill%3D%22white%22%2F%3E%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M4.07847%2012.2682C3.79847%2011.9082%203.44847%2011.1782%202.83847%2010.2682C2.48847%209.76821%201.62847%208.81821%201.36847%208.32821C1.18104%208.03044%201.12665%207.66786%201.21847%207.32821C1.37543%206.68242%201.98803%206.25403%202.64847%206.32821C3.15927%206.43082%203.62869%206.68118%203.99847%207.04821C4.25665%207.29138%204.49413%207.55563%204.70847%207.83821C4.86847%208.03821%204.90847%208.11821%205.08847%208.34821C5.26847%208.57821%205.38847%208.80821%205.29847%208.46821C5.22847%207.96821%205.10847%207.12821%204.93847%206.37821C4.80847%205.80821%204.77847%205.71821%204.65847%205.28821C4.53847%204.85821%204.46847%204.49821%204.33847%204.00821C4.21963%203.52678%204.12617%203.03944%204.05847%202.54821C3.93242%201.91991%204.02412%201.26742%204.31847%200.698209C4.66786%200.369578%205.1804%200.282841%205.61847%200.478209C6.05906%200.803545%206.38757%201.25786%206.55847%201.77821C6.82053%202.4186%206.99543%203.09127%207.07847%203.77821C7.23847%204.77821%207.54847%206.23821%207.55847%206.53821C7.55847%206.16821%207.48847%205.38821%207.55847%205.03821C7.62782%204.67333%207.88142%204.37052%208.22847%204.23821C8.52628%204.14683%208.84131%204.12629%209.14847%204.17821C9.4585%204.24302%209.73313%204.42135%209.91847%204.67821C10.1501%205.2616%2010.2787%205.88081%2010.2985%206.50821C10.3252%205.9588%2010.4193%205.41474%2010.5785%204.88821C10.7456%204.65276%2010.9896%204.483%2011.2685%204.40821C11.5991%204.34776%2011.9379%204.34776%2012.2685%204.40821C12.5396%204.49884%2012.7767%204.66972%2012.9485%204.89821C13.1602%205.42855%2013.2884%205.98855%2013.3285%206.55821C13.3285%206.69821%2013.3985%206.16821%2013.6185%205.81821C13.7328%205.47881%2014.0195%205.22618%2014.3706%205.15548C14.7217%205.08479%2015.0838%205.20678%2015.3206%205.47548C15.5574%205.74419%2015.6328%206.11881%2015.5185%206.45821C15.5185%207.10821%2015.5185%207.07821%2015.5185%207.51821C15.5185%207.95821%2015.5185%208.34821%2015.5185%208.71821C15.482%209.30339%2015.4018%209.88502%2015.2785%2010.4582C15.1044%2010.9653%2014.8622%2011.4464%2014.5585%2011.8882C14.0729%2012.4282%2013.6717%2013.0384%2013.3685%2013.6982C13.2932%2014.026%2013.2596%2014.362%2013.2685%2014.6982C13.2675%2015.0088%2013.3078%2015.3182%2013.3885%2015.6182C12.9796%2015.6614%2012.5673%2015.6614%2012.1585%2015.6182C11.7685%2015.5582%2011.2885%2014.7782%2011.1585%2014.5382C11.0941%2014.4093%2010.9625%2014.3279%2010.8185%2014.3279C10.6744%2014.3279%2010.5428%2014.4093%2010.4785%2014.5382C10.2585%2014.9182%209.76847%2015.6082%209.42847%2015.6482C8.75847%2015.7282%207.37847%2015.6482%206.28847%2015.6482C6.28847%2015.6482%206.46847%2014.6482%206.05847%2014.2882C5.64847%2013.9282%205.22847%2013.5082%204.91847%2013.2282L4.07847%2012.2682Z%22%20fill%3D%22white%22%20stroke%3D%22black%22%20stroke-width%3D%220.75%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%20%3Cpath%20d%3D%22M12.5586%2012.8142V9.36239C12.5586%209.15578%2012.3907%208.98828%2012.1836%208.98828C11.9765%208.98828%2011.8086%209.15578%2011.8086%209.36239V12.8142C11.8086%2013.0208%2011.9765%2013.1883%2012.1836%2013.1883C12.3907%2013.1883%2012.5586%2013.0208%2012.5586%2012.8142Z%22%20fill%3D%22black%22%2F%3E%20%3Cpath%20d%3D%22M10.5786%2012.8129L10.5586%209.35936C10.5574%209.15324%2010.3885%208.98711%2010.1814%208.98829C9.97434%208.98948%209.80741%209.15754%209.8086%209.36366L9.82861%2012.8172C9.8298%2013.0233%209.99866%2013.1895%2010.2058%2013.1883C10.4129%2013.1871%2010.5798%2013.019%2010.5786%2012.8129Z%22%20fill%3D%22black%22%2F%3E%20%3Cpath%20d%3D%22M7.8086%209.36728L7.82861%2012.8137C7.82981%2013.0218%207.99868%2013.1895%208.20579%2013.1883C8.41289%2013.1871%208.5798%2013.0174%208.57859%2012.8093L8.55859%209.36289C8.55739%209.15479%208.38852%208.98708%208.18141%208.98829C7.97431%208.98951%207.8074%209.15918%207.8086%209.36728Z%22%20fill%3D%22black%22%2F%3E%20%3C%2Fg%3E%20%3Cdefs%3E%20%3Cfilter%20id%3D%22filter0_d_188_12264%22%20x%3D%22-0.000195324%22%20y%3D%220%22%20width%3D%2216.7465%22%20height%3D%2217.8586%22%20filterUnits%3D%22userSpaceOnUse%22%20color-interpolation-filters%3D%22sRGB%22%3E%20%3CfeFlood%20flood-opacity%3D%220%22%20result%3D%22BackgroundImageFix%22%2F%3E%20%3CfeColorMatrix%20in%3D%22SourceAlpha%22%20type%3D%22matrix%22%20values%3D%220%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%20127%200%22%20result%3D%22hardAlpha%22%2F%3E%20%3CfeOffset%20dy%3D%221%22%2F%3E%20%3CfeGaussianBlur%20stdDeviation%3D%220.4%22%2F%3E%20%3CfeColorMatrix%20type%3D%22matrix%22%20values%3D%220%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200.5%200%22%2F%3E%20%3CfeBlend%20mode%3D%22normal%22%20in2%3D%22BackgroundImageFix%22%20result%3D%22effect1_dropShadow_188_12264%22%2F%3E%20%3CfeBlend%20mode%3D%22normal%22%20in%3D%22SourceGraphic%22%20in2%3D%22effect1_dropShadow_188_12264%22%20result%3D%22shape%22%2F%3E%20%3C%2Ffilter%3E%20%3C%2Fdefs%3E%20%3C%2Fsvg%3E")
+        8 2,
+        pointer;
+      --cursor-field-dragging:
+        url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2215%22%20viewBox%3D%220%200%2016%2015%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%20%3Cg%20filter%3D%22url%28%23filter0_d_188_12265%29%22%3E%20%3Cpath%20d%3D%22M3.7449%201.15483C4.2249%200.974833%205.1749%201.08483%205.4249%201.62483C5.6749%202.16483%205.8249%202.86483%205.8349%202.69483C5.81577%202.17813%205.85942%201.66102%205.9649%201.15483C6.07605%200.830648%206.33071%200.575983%206.6549%200.464833C6.95221%200.370805%207.26789%200.350217%207.5749%200.404833C7.88531%200.468731%208.16025%200.64726%208.3449%200.904833C8.57885%201.48796%208.71077%202.10699%208.7349%202.73483C8.75977%202.19909%208.85045%201.66844%209.0049%201.15483C9.172%200.919383%209.41603%200.749624%209.6949%200.674833C10.0255%200.614388%2010.3643%200.614388%2010.6949%200.674833C10.9663%200.764892%2011.2036%200.93589%2011.3749%201.16483C11.5873%201.69498%2011.7155%202.25508%2011.7549%202.82483C11.7549%202.96483%2011.8249%202.43483%2012.0449%202.08483C12.2216%201.56016%2012.7902%201.2781%2013.3149%201.45483C13.8396%201.63156%2014.1216%202.20016%2013.9449%202.72483C13.9449%203.37483%2013.9449%203.34483%2013.9449%203.78483C13.9449%204.22483%2013.9449%204.61483%2013.9449%204.98483C13.9089%205.57005%2013.8286%206.15171%2013.7049%206.72483C13.5313%207.23215%2013.2891%207.71329%2012.9849%208.15483C12.4995%208.69489%2012.0983%209.30509%2011.7949%209.96483C11.7209%2010.2928%2011.6873%2010.6287%2011.6949%2010.9648C11.6939%2011.2755%2011.7342%2011.5849%2011.8149%2011.8848C11.4061%2011.9285%2010.9937%2011.9285%2010.5849%2011.8848C10.1949%2011.8248%209.7149%2011.0448%209.5849%2010.8048C9.52058%2010.676%209.38893%2010.5945%209.2449%2010.5945C9.10087%2010.5945%208.96922%2010.676%208.9049%2010.8048C8.6849%2011.1848%208.1949%2011.8748%207.9049%2011.9148C7.2349%2011.9948%205.8449%2011.9148%204.7649%2011.9148C4.7649%2011.9148%204.9549%2010.9148%204.5349%2010.5548C4.1149%2010.1948%203.7049%209.77483%203.3949%209.49483L2.5649%208.57483C1.97959%208.03151%201.55128%207.34069%201.3249%206.57483C1.1149%205.63483%201.1349%205.18483%201.3249%204.80483C1.51869%204.49104%201.82129%204.25964%202.1749%204.15483C2.46867%204.10154%202.77108%204.12216%203.0549%204.21483C3.25117%204.297%203.42079%204.43201%203.5449%204.60483C3.7749%204.91483%203.8549%205.06483%203.7549%204.72483C3.6549%204.38483%203.4349%204.13483%203.3249%203.72483C3.11075%203.24063%202.98218%202.72296%202.9449%202.19483C2.98588%201.721%203.31672%201.3224%203.7749%201.19483%22%20fill%3D%22white%22%2F%3E%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M3.7449%201.15483C4.2249%200.974833%205.1749%201.08483%205.4249%201.62483C5.6749%202.16483%205.8249%202.86483%205.8349%202.69483C5.81577%202.17813%205.85942%201.66102%205.9649%201.15483C6.07605%200.830648%206.33071%200.575983%206.6549%200.464833C6.95221%200.370805%207.26789%200.350217%207.5749%200.404833C7.88531%200.468731%208.16025%200.64726%208.3449%200.904833C8.57885%201.48796%208.71077%202.10699%208.7349%202.73483C8.75977%202.19909%208.85045%201.66844%209.0049%201.15483C9.172%200.919383%209.41603%200.749624%209.6949%200.674833C10.0255%200.614388%2010.3643%200.614388%2010.6949%200.674833C10.9663%200.764892%2011.2036%200.93589%2011.3749%201.16483C11.5873%201.69498%2011.7155%202.25508%2011.7549%202.82483C11.7549%202.96483%2011.8249%202.43483%2012.0449%202.08483C12.2216%201.56016%2012.7902%201.2781%2013.3149%201.45483C13.8396%201.63156%2014.1216%202.20016%2013.9449%202.72483C13.9449%203.37483%2013.9449%203.34483%2013.9449%203.78483C13.9449%204.22483%2013.9449%204.61483%2013.9449%204.98483C13.9089%205.57005%2013.8286%206.15171%2013.7049%206.72483C13.5313%207.23215%2013.2891%207.71329%2012.9849%208.15483C12.4995%208.69489%2012.0983%209.30509%2011.7949%209.96483C11.7209%2010.2928%2011.6873%2010.6287%2011.6949%2010.9648C11.6939%2011.2755%2011.7342%2011.5849%2011.8149%2011.8848C11.4061%2011.9285%2010.9937%2011.9285%2010.5849%2011.8848C10.1949%2011.8248%209.7149%2011.0448%209.5849%2010.8048C9.52058%2010.676%209.38893%2010.5945%209.2449%2010.5945C9.10087%2010.5945%208.96922%2010.676%208.9049%2010.8048C8.6849%2011.1848%208.1949%2011.8748%207.9049%2011.9148C7.2349%2011.9948%205.8449%2011.9148%204.7649%2011.9148C4.7649%2011.9148%204.9549%2010.9148%204.5349%2010.5548C4.1149%2010.1948%203.7049%209.77483%203.3949%209.49483L2.5649%208.57483C1.97959%208.03151%201.55128%207.34069%201.3249%206.57483C1.1149%205.63483%201.1349%205.18483%201.3249%204.80483C1.51869%204.49104%201.82129%204.25964%202.1749%204.15483C2.46867%204.10154%202.77108%204.12216%203.0549%204.21483C3.25117%204.297%203.42079%204.43201%203.5449%204.60483C3.7749%204.91483%203.8549%205.06483%203.7549%204.72483C3.6549%204.38483%203.4349%204.13483%203.3249%203.72483C3.11075%203.24063%202.98218%202.72296%202.9449%202.19483C2.96534%201.71407%203.28546%201.29791%203.7449%201.15483Z%22%20fill%3D%22white%22%20stroke%3D%22black%22%20stroke-width%3D%220.75%22%20stroke-linejoin%3D%22round%22%2F%3E%20%3Cpath%20d%3D%22M11.4951%208.83077V5.37899C11.4951%205.17238%2011.3272%205.00488%2011.1201%205.00488C10.913%205.00488%2010.7451%205.17238%2010.7451%205.37899V8.83077C10.7451%209.03739%2010.913%209.20488%2011.1201%209.20488C11.3272%209.20488%2011.4951%209.03739%2011.4951%208.83077Z%22%20fill%3D%22black%22%2F%3E%20%3Cpath%20d%3D%22M9.51512%208.82951L9.49512%205.37596C9.49392%205.16984%209.32507%205.00371%209.11796%205.00489C8.91086%205.00608%208.74394%205.17414%208.74512%205.38026L8.76513%208.83382C8.76632%209.03994%208.93518%209.20607%209.14228%209.20489C9.34939%209.20369%209.51631%209.03564%209.51512%208.82951Z%22%20fill%3D%22black%22%2F%3E%20%3Cpath%20d%3D%22M6.74512%205.3848L6.76513%208.8294C6.76634%209.03799%206.93521%209.2061%207.14232%209.20489C7.34942%209.20366%207.51633%209.03358%207.51512%208.82498L7.49512%205.38038C7.49391%205.17179%207.32503%205.00368%207.11793%205.00489C6.91083%205.00612%206.74392%205.1762%206.74512%205.3848Z%22%20fill%3D%22black%22%2F%3E%20%3C%2Fg%3E%20%3Cdefs%3E%20%3Cfilter%20id%3D%22filter0_d_188_12265%22%20x%3D%22-0.000195324%22%20y%3D%220%22%20width%3D%2215.1732%22%20height%3D%2214.1252%22%20filterUnits%3D%22userSpaceOnUse%22%20color-interpolation-filters%3D%22sRGB%22%3E%20%3CfeFlood%20flood-opacity%3D%220%22%20result%3D%22BackgroundImageFix%22%2F%3E%20%3CfeColorMatrix%20in%3D%22SourceAlpha%22%20type%3D%22matrix%22%20values%3D%220%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%20127%200%22%20result%3D%22hardAlpha%22%2F%3E%20%3CfeOffset%20dy%3D%221%22%2F%3E%20%3CfeGaussianBlur%20stdDeviation%3D%220.4%22%2F%3E%20%3CfeColorMatrix%20type%3D%22matrix%22%20values%3D%220%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200.5%200%22%2F%3E%20%3CfeBlend%20mode%3D%22normal%22%20in2%3D%22BackgroundImageFix%22%20result%3D%22effect1_dropShadow_188_12265%22%2F%3E%20%3CfeBlend%20mode%3D%22normal%22%20in%3D%22SourceGraphic%22%20in2%3D%22effect1_dropShadow_188_12265%22%20result%3D%22shape%22%2F%3E%20%3C%2Ffilter%3E%20%3C%2Fdefs%3E%20%3C%2Fsvg%3E")
+        7 2,
+        grabbing;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -553,10 +564,97 @@
       margin-top: 6px;
       overflow: hidden;
       transition: all 0.2s ease;
+      position: relative;
     }
 
     .folder.collapsed .folder-content {
       display: none;
+    }
+
+    .folder-content.drag-sort-active {
+      padding-bottom: 6px;
+    }
+
+    body.drag-sorting-active,
+    body.drag-sorting-active * {
+      cursor: var(--cursor-field-dragging) !important;
+    }
+
+    .field-drop-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 16px;
+      pointer-events: none;
+      z-index: 3000;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .field-drop-indicator.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .field-drop-indicator::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: 40px;
+      height: 1.5px;
+      background: #2563eb;
+      border-radius: 999px;
+    }
+
+    .field-drop-indicator::after {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 40px;
+      width: 8px;
+      height: 8px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #2563eb;
+      box-sizing: border-box;
+    }
+
+    .field-drop-indicator-end {
+      position: absolute;
+      right: 8px;
+      top: 40px;
+      width: 8px;
+      height: 8px;
+      transform: translate(50%, -50%);
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #2563eb;
+      box-sizing: border-box;
+    }
+
+    .field-drop-indicator-label {
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 76px;
+      height: 28px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #2563eb;
+      background: #eaf2ff;
+      color: #2563eb;
+      font-size: 14px;
+      line-height: normal;
+      font-weight: 400;
+      white-space: nowrap;
+      z-index: 3001;
     }
 
     /* 字段卡片 */
@@ -569,9 +667,14 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease,
+        opacity 0.18s ease;
       min-height: 62px;
       width: 100%;
+      position: relative;
     }
 
     .folder[data-folder-id="defaultFields"] .folder-content {
@@ -580,7 +683,41 @@
 
     .field-card:hover {
       background: #f1f5f9;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      box-shadow: none;
+    }
+
+    .folder-content.drag-sort-active .field-card:hover {
+      background: #f8fafc;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .folder-content.drag-sort-active .field-card:hover .field-info {
+      padding-right: 0;
+    }
+
+    .folder-content.drag-sort-active .field-actions {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .field-card.sortable {
+      cursor: pointer;
+    }
+
+    .field-card.sortable:hover {
+      cursor: var(--cursor-field-hover);
+      transform: translateY(-1px);
+    }
+
+    .field-card.sortable:active {
+      cursor: var(--cursor-field-dragging);
+    }
+
+    .field-card.dragging {
+      opacity: 1;
+      transform: none;
+      box-shadow: inset 0 0 0 1px #2563eb;
     }
 
     .field-icon {
@@ -795,6 +932,17 @@
       -moz-user-select: text;
       -ms-user-select: text;
       background: #ffffff;
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+    }
+
+    textarea.config-input {
+      height: auto;
+      min-height: 96px;
+      padding: 10px 12px;
+      resize: vertical;
     }
 
     .config-input::placeholder,
@@ -806,6 +954,21 @@
     .config-select:focus {
       outline: none;
       border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .config-input[type="number"],
+    .form-field input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .config-input[type="number"]::-webkit-outer-spin-button,
+    .config-input[type="number"]::-webkit-inner-spin-button,
+    .form-field input[type="number"]::-webkit-outer-spin-button,
+    .form-field input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     .config-range-group {
@@ -819,11 +982,15 @@
     }
 
     .config-range-separator {
-      width: 6px;
-      height: 1px;
-      background: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 40px;
+      color: #94a3b8;
+      font-size: 16px;
+      line-height: 1;
       flex-shrink: 0;
-      margin-top: 22px;
     }
 
     .config-footer {
@@ -855,6 +1022,12 @@
       background: #f8fafc;
     }
 
+    .config-cancel:focus-visible,
+    .config-save:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+    }
+
     .config-save {
       flex: 1;
       background: #2563eb;
@@ -867,10 +1040,6 @@
     }
 
     /* 字段卡片配置按钮 */
-    .field-card {
-      position: relative;
-    }
-
     .field-config-btn {
       width: 28px;
       height: 28px;
@@ -995,6 +1164,10 @@
 
     .config-radio:hover {
       background: rgba(255, 255, 255, 0.72);
+    }
+
+    .config-radio:has(input[type="radio"]:focus-visible) {
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.22);
     }
 
     .config-sublabel {
@@ -1972,6 +2145,33 @@
       opacity: 1;
     }
 
+    button:not(:disabled),
+    .tab,
+    .new-button,
+    .search-clear,
+    .contact-button,
+    .help-button,
+    .language-button,
+    .folder-header,
+    .folder-add-btn,
+    .folder-delete-btn,
+    .field-card.sortable,
+    .field-config-btn,
+    .field-edit-btn,
+    .field-delete-btn,
+    .config-cancel,
+    .config-save,
+    .config-radio,
+    .add-menu-item,
+    .modal-close,
+    .btn-secondary:not(:disabled),
+    .btn-primary:not(:disabled),
+    .btn-danger:not(:disabled),
+    .btn-outline-accent:not(:disabled),
+    .folder-selector-item {
+      cursor: var(--cursor-field-hover);
+    }
+
     /* Toast 提示 */
     .toast {
       position: fixed;
@@ -2369,20 +2569,28 @@
         </div>
         <div class="modal-body">
           <div class="help-section">
-            <div class="help-section-title">文本填充</div>
-            <div class="help-section-text">选中文本图层后，点击任意文本字段即可直接填充；多选时会按字段内容随机分发。</div>
+            <div class="help-section-title">1. 基本使用</div>
+            <div class="help-section-text">顶部可切换“文本填充”和“图片填充”。先在 Figma 画布中选中要填充的图层，再回到插件中点击字段；未选中可填充图层时，插件会直接提示。</div>
           </div>
           <div class="help-section">
-            <div class="help-section-title">图片填充</div>
-            <div class="help-section-text">选中可替换图片的图层后，点击图片字段即可填充内置素材；未找到可填充图层时会给出提示。</div>
+            <div class="help-section-title">2. 文本填充</div>
+            <div class="help-section-text">选中文本图层后，点击任意文本字段即可填充。支持单个图层直接填充，也支持多选批量填充；顺序类字段会按当前配置依次生成，随机类字段会自动分发内容。</div>
           </div>
           <div class="help-section">
-            <div class="help-section-title">AI 字段</div>
-            <div class="help-section-text">先输入提示词并生成预览，再保存为字段；后续填充会优先复用已生成内容，速度更快。</div>
+            <div class="help-section-title">3. 图片填充</div>
+            <div class="help-section-text">当前内置 4 个默认图片字段：真人头像、卡通头像、流体背景、科技 Banner。选中可替换图片的图层后点击字段，即可用内置素材填充；四个图片字段现在使用统一的填充逻辑。</div>
           </div>
           <div class="help-section">
-            <div class="help-section-title">字段管理</div>
-            <div class="help-section-text">支持新建文件夹、编辑字段、搜索字段；搜索无结果时会显示空状态插画，方便快速确认关键词。</div>
+            <div class="help-section-title">4. AI 字段</div>
+            <div class="help-section-text">新建 AI 字段时，先输入提示词并确认预览，再保存为字段。保存后该字段可以重复使用；填充时会优先复用已生成内容，从而减少等待时间。</div>
+          </div>
+          <div class="help-section">
+            <div class="help-section-title">5. 字段配置与排序</div>
+            <div class="help-section-text">默认字段支持编辑配置，例如前后缀、起始值、排序方式、补零位数等。字段列表支持拖拽排序，直接拖动整张字段卡片即可调整顺序，排序结果会自动保存。</div>
+          </div>
+          <div class="help-section">
+            <div class="help-section-title">6. 搜索、文件夹与提示</div>
+            <div class="help-section-text">支持搜索字段、创建文件夹、编辑字段、删除字段。搜索只影响当前展示，不会改动真实顺序；若搜索无结果会显示空状态。填充失败、类型不匹配或未找到目标图层时，插件会给出明确提示。</div>
           </div>
         </div>
         <div class="modal-footer">
@@ -2802,7 +3010,7 @@
       imageFields: [
         {
           id: 'image_avatar_real',
-          name: '真人头像 - Avatar',
+          name: '真人头像',
           type: 'image',
           method: 'random',
           source: 'built-in',
@@ -2814,19 +3022,19 @@
         },
         {
           id: 'image_avatar_cartoon',
-          name: '卡通头像 - Avatar',
+          name: '卡通头像',
           type: 'image',
           method: 'random',
           source: 'built-in',
           icon: '👤',
-          iconBg: '#fce7f3',
-          iconColor: '#db2777',
-          iconBorder: '#fbcfe8',
+          iconBg: '#eaf2ff',
+          iconColor: '#2563eb',
+          iconBorder: '#bfd6ff',
           tags: ['图片', '随机', '卡通头像', '内置']
         },
         {
-          id: 'image_banner_16_9',
-          name: '封面图 16:9 - Banner',
+          id: 'image_fluid_background',
+          name: '流体背景',
           type: 'image',
           method: 'random',
           source: 'built-in',
@@ -2834,19 +3042,19 @@
           iconBg: '#eaf2ff',
           iconColor: '#2563eb',
           iconBorder: '#bfd6ff',
-          tags: ['图片', '随机', '16:9', '内置']
+          tags: ['图片', '随机', '流体背景', '内置']
         },
         {
-          id: 'image_banner_4_3',
-          name: '封面图 4:3 - Banner',
+          id: 'image_tech_brand_hero',
+          name: '科技 Banner',
           type: 'image',
           method: 'random',
           source: 'built-in',
           icon: '🖼️',
-          iconBg: '#ecfdf3',
-          iconColor: '#059669',
-          iconBorder: '#abefc6',
-          tags: ['图片', '随机', '4:3', '内置']
+          iconBg: '#eaf2ff',
+          iconColor: '#2563eb',
+          iconBorder: '#bfd6ff',
+          tags: ['图片', '随机', '科技 Banner', '内置']
         }
       ]
     };
@@ -3248,20 +3456,28 @@
             title: '使用帮助',
             sections: [
               {
-                title: '文本填充',
-                text: '选中文本图层后，点击任意文本字段即可直接填充；多选时会按字段内容随机分发。'
+                title: '1. 基本使用',
+                text: '顶部可切换“文本填充”和“图片填充”。先在 Figma 画布中选中要填充的图层，再回到插件中点击字段；未选中可填充图层时，插件会直接提示。'
               },
               {
-                title: '图片填充',
-                text: '选中可替换图片的图层后，点击图片字段即可填充内置素材；未找到可填充图层时会给出提示。'
+                title: '2. 文本填充',
+                text: '选中文本图层后，点击任意文本字段即可填充。支持单个图层直接填充，也支持多选批量填充；顺序类字段会按当前配置依次生成，随机类字段会自动分发内容。'
               },
               {
-                title: 'AI 字段',
-                text: '先输入提示词并生成预览，再保存为字段；后续填充会优先复用已生成内容，速度更快。'
+                title: '3. 图片填充',
+                text: '当前内置 4 个默认图片字段：真人头像、卡通头像、流体背景、科技 Banner。选中可替换图片的图层后点击字段，即可用内置素材填充；四个图片字段现在使用统一的填充逻辑。'
               },
               {
-                title: '字段管理',
-                text: '支持新建文件夹、编辑字段、搜索字段；搜索无结果时会显示空状态插画，方便快速确认关键词。'
+                title: '4. AI 字段',
+                text: '新建 AI 字段时，先输入提示词并确认预览，再保存为字段。保存后该字段可以重复使用；填充时会优先复用已生成内容，从而减少等待时间。'
+              },
+              {
+                title: '5. 字段配置与排序',
+                text: '默认字段支持编辑配置，例如前后缀、起始值、排序方式、补零位数等。字段列表支持拖拽排序，直接拖动整张字段卡片即可调整顺序，排序结果会自动保存。'
+              },
+              {
+                title: '6. 搜索、文件夹与提示',
+                text: '支持搜索字段、创建文件夹、编辑字段、删除字段。搜索只影响当前展示，不会改动真实顺序；若搜索无结果会显示空状态。填充失败、类型不匹配或未找到目标图层时，插件会给出明确提示。'
               }
             ]
           },
@@ -3324,10 +3540,10 @@
           ecom_pay_method: { name: '支付方式', tags: ['文本', '随机'] },
           ecom_actual_amount: { name: '实付金额', tags: ['金额', '随机'] },
           ecom_logistics_no: { name: '物流单号', tags: ['文本', '顺序'] },
-          image_avatar_real: { name: '真人头像 - Avatar', tags: ['图片', '随机', '真人头像'] },
-          image_avatar_cartoon: { name: '卡通头像 - Avatar', tags: ['图片', '随机', '卡通头像'] },
-          image_banner_16_9: { name: '封面图 16:9 - Banner', tags: ['图片', '随机', '16:9'] },
-          image_banner_4_3: { name: '封面图 4:3 - Banner', tags: ['图片', '随机', '4:3'] }
+          image_avatar_cartoon: { name: '卡通头像', tags: ['图片', '随机', '卡通头像'] },
+          image_tech_brand_hero: { name: '科技 Banner', tags: ['图片', '随机', '科技 Banner'] },
+          image_fluid_background: { name: '流体背景', tags: ['图片', '随机', '流体背景'] },
+          image_avatar_real: { name: '真人头像', tags: ['图片', '随机', '真人头像'] }
         }
       },
       en: {
@@ -3400,20 +3616,28 @@
             title: 'Help',
             sections: [
               {
-                title: 'Text Fill',
-                text: 'Select text layers and click any text field to fill them. With multiple layers selected, values are distributed automatically.'
+                title: '1. Basics',
+                text: 'Use the top tabs to switch between Text Fill and Image Fill. Select target layers on the Figma canvas first, then click a field in the plugin. The plugin shows a clear hint when no fillable layer is selected.'
               },
               {
-                title: 'Image Fill',
-                text: 'Select replaceable image layers and click an image field to fill built-in assets. A hint is shown if no target image layer is found.'
+                title: '2. Text Fill',
+                text: 'Select text layers and click any text field to fill them. It supports single-layer fill and batch fill; sequence fields follow their current settings, while random fields distribute values automatically.'
               },
               {
-                title: 'AI Fields',
-                text: 'Enter a prompt and generate a preview first, then save it as a field. Later fills reuse generated content when possible for faster results.'
+                title: '3. Image Fill',
+                text: 'There are 4 built-in image fields: Real Avatar, Cartoon Avatar, Fluid Background, and Tech Banner. Select replaceable image layers and click a field to fill built-in assets. All four image fields now use the same fill logic.'
               },
               {
-                title: 'Field Management',
-                text: 'Create folders, edit fields, and search fields. An empty-state illustration appears when search returns no results.'
+                title: '4. AI Fields',
+                text: 'When creating an AI field, enter a prompt and confirm the preview before saving. Saved AI fields can be reused later, and fills reuse generated content whenever possible to reduce waiting time.'
+              },
+              {
+                title: '5. Settings and Sorting',
+                text: 'Default fields support configuration such as prefix/suffix, start value, order mode, and zero padding. The field list also supports drag sorting by dragging the whole field card, and the order is saved automatically.'
+              },
+              {
+                title: '6. Search, Folders, and Hints',
+                text: 'You can search fields, create folders, edit fields, and delete fields. Search only affects the current view and does not change the real order. Clear hints are shown for empty results, missing targets, and failed fills.'
               }
             ]
           },
@@ -3476,10 +3700,10 @@
           ecom_pay_method: { name: 'Payment Method', tags: ['Text', 'Random'] },
           ecom_actual_amount: { name: 'Paid Amount', tags: ['Amount', 'Random'] },
           ecom_logistics_no: { name: 'Tracking Number', tags: ['Text', 'Sequence'] },
-          image_avatar_real: { name: 'Real Avatar', tags: ['Image', 'Random', 'Real Avatar'] },
           image_avatar_cartoon: { name: 'Cartoon Avatar', tags: ['Image', 'Random', 'Cartoon Avatar'] },
-          image_banner_16_9: { name: 'Banner 16:9', tags: ['Image', 'Random', '16:9'] },
-          image_banner_4_3: { name: 'Banner 4:3', tags: ['Image', 'Random', '4:3'] }
+          image_tech_brand_hero: { name: 'Tech Banner', tags: ['Image', 'Random', 'Tech Banner'] },
+          image_fluid_background: { name: 'Fluid Background', tags: ['Image', 'Random', 'Fluid'] },
+          image_avatar_real: { name: 'Real Avatar', tags: ['Image', 'Random', 'Real Avatar'] }
         }
       }
     };
@@ -4016,7 +4240,7 @@
                   <label class="config-sublabel">${currentLocale === 'en' ? 'Min' : '最小值'}</label>
                   <input type="number" class="config-input" id="configNumberMin" value="${config.min ?? ''}" placeholder="${currentLocale === 'en' ? 'Default: 100' : '默认：100'}">
                 </div>
-                <span class="config-range-separator"></span>
+                <span class="config-range-separator">-</span>
                 <div style="flex: 1;">
                   <label class="config-sublabel">${currentLocale === 'en' ? 'Max' : '最大值'}</label>
                   <input type="number" class="config-input" id="configNumberMax" value="${config.max ?? ''}" placeholder="${currentLocale === 'en' ? 'Default: 10000' : '默认：10000'}">
@@ -4459,10 +4683,10 @@
         'ecom_logistics_no': 'cart',
 
         // 图片字段
-        'image_avatar_real': 'image',
         'image_avatar_cartoon': 'image',
-        'image_banner_16_9': 'image',
-        'image_banner_4_3': 'image'
+        'image_tech_brand_hero': 'image',
+        'image_fluid_background': 'image',
+        'image_avatar_real': 'image'
       };
       
       // 获取图标名称
@@ -4668,7 +4892,7 @@
     }
 
     // 渲染字段卡片
-    function renderFieldCard(field, highlightKeyword = '') {
+    function renderFieldCard(field, highlightKeyword = '', folderId = '') {
       // 判断字段类型
       const isCustomAIField = field.id && field.id.startsWith('ai_custom_');
       const isAIField = field.id && field.id.startsWith('ai_') && !isCustomAIField;
@@ -4684,6 +4908,7 @@
       const isAnyAIField = field.method === 'ai' || isAIField || isCustomAIField;
       const summaryTags = getFieldSummaryTags(field);
       const highlightedName = highlightText(getFieldDisplayName(field), highlightKeyword);
+      const dragEnabled = isFieldDragEnabled() && !highlightKeyword;
       const secondaryContent = isAnyAIField
         ? `<div class="field-desc">${highlightText(getAIFieldSummary(field), highlightKeyword)}</div>`
         : `
@@ -4699,7 +4924,7 @@
       // 4. 自定义字段：删除按钮 + 编辑按钮
 
       return `
-        <div class="field-card" data-field-id="${field.id}">
+        <div class="field-card ${dragEnabled ? 'sortable' : ''}" data-field-id="${field.id}" data-folder-id="${folderId}">
         <div class="field-icon" style="${getFieldIconStyle(field)}">
           ${getFieldIconSVG(field)}
         </div>
@@ -4746,7 +4971,8 @@
       const collapsedClass = isCollapsed ? 'collapsed' : '';
       const canDeleteFolder = isFolderDeletable(folder);
       const showAddButton = options.showAddButton !== false;
-      const hasFields = Array.isArray(fields) && fields.length > 0;
+      const orderedFields = getOrderedFieldsForFolder(folder.id, fields);
+      const hasFields = Array.isArray(orderedFields) && orderedFields.length > 0;
 
       return `
         <div class="folder ${collapsedClass}" data-folder-id="${folder.id}">
@@ -4763,8 +4989,8 @@
             </div>
           </div>
           ${hasFields ? `
-            <div class="folder-content">
-              ${fields.map(field => renderFieldCard(field)).join('')}
+            <div class="folder-content" data-folder-id="${folder.id}">
+              ${orderedFields.map(field => renderFieldCard(field, '', folder.id)).join('')}
             </div>
           ` : ''}
         </div>
@@ -4812,6 +5038,9 @@
               e.target.closest('.field-actions')) {
             return;
           }
+          if (Date.now() < dragSortState.suppressClickUntil) {
+            return;
+          }
           const fieldId = card.dataset.fieldId;
           handleFieldClick(fieldId);
         });
@@ -4856,7 +5085,253 @@
           showDeleteFolderConfirm(folderId);
         });
       });
+
+      bindFieldDragSorting();
     }
+
+    function ensureDragIndicator() {
+      if (dragSortState.indicator && dragSortState.indicator.isConnected) {
+        return dragSortState.indicator;
+      }
+
+      const indicator = document.createElement('div');
+      indicator.className = 'field-drop-indicator';
+      indicator.innerHTML = `
+        <span class="field-drop-indicator-label"></span>
+        <span class="field-drop-indicator-end"></span>
+      `;
+      document.body.appendChild(indicator);
+      dragSortState.indicator = indicator;
+      return indicator;
+    }
+
+    function getClampedIndicatorLabelX(container, label, clientX) {
+      const containerRect = container.getBoundingClientRect();
+      const labelWidth = label.offsetWidth || 76;
+      const horizontalPadding = 2;
+      const minX = horizontalPadding + labelWidth / 2;
+      const maxX = Math.max(minX, containerRect.width - horizontalPadding - labelWidth / 2);
+      const localX = clientX - containerRect.left;
+      return Math.min(maxX, Math.max(minX, localX));
+    }
+
+    function updateDragIndicator(container, clientX, clientY) {
+      const indicator = ensureDragIndicator();
+      const label = indicator.querySelector('.field-drop-indicator-label');
+      if (!label || !container) return;
+
+      const cards = Array.from(container.querySelectorAll('.field-card')).filter(card => card.dataset.fieldId !== dragSortState.fieldId);
+      const referenceNode = getDragInsertionReference(container, clientY, dragSortState.fieldId);
+      dragSortState.dropBeforeFieldId = referenceNode ? referenceNode.dataset.fieldId : null;
+
+      const containerRect = container.getBoundingClientRect();
+      const containerGap = parseFloat(window.getComputedStyle(container).gap || '10') || 10;
+      let lineCenterY = containerRect.top + containerGap / 2;
+
+      if (referenceNode) {
+        const referenceRect = referenceNode.getBoundingClientRect();
+        const previousCard = referenceNode.previousElementSibling && referenceNode.previousElementSibling.classList.contains('field-card')
+          ? referenceNode.previousElementSibling
+          : null;
+        if (previousCard) {
+          const prevRect = previousCard.getBoundingClientRect();
+          lineCenterY = (prevRect.bottom + referenceRect.top) / 2;
+        } else {
+          lineCenterY = referenceRect.top - containerGap / 2;
+        }
+      } else if (cards.length > 0) {
+        const lastRect = cards[cards.length - 1].getBoundingClientRect();
+        lineCenterY = lastRect.bottom + containerGap / 2;
+      }
+
+      const clampedX = getClampedIndicatorLabelX(container, label, clientX);
+      indicator.style.left = `${containerRect.left}px`;
+      indicator.style.top = `${lineCenterY - 40}px`;
+      indicator.style.width = `${containerRect.width}px`;
+      label.style.left = `${containerRect.left + clampedX}px`;
+      label.style.top = `${clientY - 18}px`;
+      indicator.classList.add('visible');
+    }
+
+    function cleanupDragSortState() {
+      document.querySelectorAll('.folder-content.drag-sort-active').forEach(node => {
+        node.classList.remove('drag-sort-active');
+      });
+      document.querySelectorAll('.field-card.dragging').forEach(node => {
+        node.classList.remove('dragging');
+      });
+      document.body.classList.remove('drag-sorting-active');
+
+      if (dragSortState.indicator) {
+        dragSortState.indicator.classList.remove('visible');
+      }
+
+      dragSortState = {
+        fieldId: '',
+        folderId: '',
+        indicator: dragSortState.indicator,
+        pointerId: null,
+        startX: 0,
+        startY: 0,
+        currentX: 0,
+        currentY: 0,
+        pendingCard: null,
+        draggedCard: null,
+        sourceContainer: null,
+        isDragging: false,
+        dropBeforeFieldId: null,
+        suppressClickUntil: dragSortState.isDragging ? Date.now() + 180 : dragSortState.suppressClickUntil
+      };
+    }
+
+    function getDragInsertionReference(container, clientY, draggedFieldId) {
+      const cards = Array.from(container.querySelectorAll('.field-card')).filter(card => card.dataset.fieldId !== draggedFieldId);
+      let referenceNode = null;
+      let closestOffset = Number.NEGATIVE_INFINITY;
+
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const offset = clientY - rect.top - rect.height / 2;
+        if (offset < 0 && offset > closestOffset) {
+          closestOffset = offset;
+          referenceNode = card;
+        }
+      });
+
+      return referenceNode;
+    }
+
+    function persistDraggedFieldOrder(folderId, container) {
+      const currentIds = Array.from(container.querySelectorAll('.field-card'))
+        .map(card => card.dataset.fieldId)
+        .filter(Boolean);
+      if (!currentIds.includes(dragSortState.fieldId)) return false;
+
+      const nextOrder = currentIds.filter(id => id !== dragSortState.fieldId);
+      const insertIndex = dragSortState.dropBeforeFieldId
+        ? nextOrder.indexOf(dragSortState.dropBeforeFieldId)
+        : -1;
+
+      if (insertIndex === -1) {
+        nextOrder.push(dragSortState.fieldId);
+      } else {
+        nextOrder.splice(insertIndex, 0, dragSortState.fieldId);
+      }
+
+      const previousOrder = getOrderedFieldsForFolder(folderId, Array.from(container.querySelectorAll('.field-card')).map(card => getFieldById(card.dataset.fieldId)).filter(Boolean)).map(field => field.id);
+      if (JSON.stringify(previousOrder) === JSON.stringify(nextOrder)) {
+        return false;
+      }
+
+      folderFieldOrders[folderId] = nextOrder.slice();
+      saveCustomData();
+      renderFieldsList();
+      return true;
+    }
+
+    function startPointerDrag(card) {
+      const folderContent = card?.closest('.folder-content');
+      if (!card || !folderContent) {
+        cleanupDragSortState();
+        return;
+      }
+
+      dragSortState.fieldId = card.dataset.fieldId || '';
+      dragSortState.folderId = folderContent.dataset.folderId || '';
+      dragSortState.draggedCard = card;
+      dragSortState.sourceContainer = folderContent;
+      dragSortState.isDragging = true;
+
+      if (!dragSortState.fieldId || !dragSortState.folderId) {
+        cleanupDragSortState();
+        return;
+      }
+
+      hideAddMenu();
+      document.body.classList.add('drag-sorting-active');
+      card.classList.add('dragging');
+      folderContent.classList.add('drag-sort-active');
+
+      const label = ensureDragIndicator().querySelector('.field-drop-indicator-label');
+      if (label) {
+        label.textContent = card.querySelector('.field-name')?.textContent?.trim() || '';
+      }
+      updateDragIndicator(folderContent, dragSortState.currentX, dragSortState.currentY);
+    }
+
+    function updatePointerDrag(clientX, clientY) {
+      if (!dragSortState.sourceContainer || !dragSortState.fieldId) return;
+
+      const container = dragSortState.sourceContainer;
+      container.classList.add('drag-sort-active');
+      updateDragIndicator(container, clientX, clientY);
+    }
+
+    function bindFieldDragSorting() {
+      if (!isFieldDragEnabled()) {
+        cleanupDragSortState();
+        return;
+      }
+
+      document.querySelectorAll('.field-card.sortable').forEach(card => {
+        card.addEventListener('pointerdown', (event) => {
+          if (event.button !== 0) return;
+          if (event.target && event.target.closest && event.target.closest('.field-actions')) {
+            return;
+          }
+
+          dragSortState.pointerId = event.pointerId;
+          dragSortState.startX = event.clientX;
+          dragSortState.startY = event.clientY;
+          dragSortState.currentX = event.clientX;
+          dragSortState.currentY = event.clientY;
+          dragSortState.pendingCard = card;
+        });
+      });
+    }
+
+    document.addEventListener('pointermove', (event) => {
+      if (dragSortState.pointerId !== event.pointerId || !dragSortState.pendingCard) {
+        return;
+      }
+
+      dragSortState.currentX = event.clientX;
+      dragSortState.currentY = event.clientY;
+
+      if (!dragSortState.isDragging) {
+        const deltaX = event.clientX - dragSortState.startX;
+        const deltaY = event.clientY - dragSortState.startY;
+        if (Math.hypot(deltaX, deltaY) < 6) {
+          return;
+        }
+        startPointerDrag(dragSortState.pendingCard);
+      }
+
+      updatePointerDrag(event.clientX, event.clientY);
+    });
+
+    document.addEventListener('pointerup', (event) => {
+      if (dragSortState.pointerId !== event.pointerId) {
+        return;
+      }
+
+      const shouldPersist = dragSortState.isDragging && dragSortState.sourceContainer;
+      const sourceContainer = dragSortState.sourceContainer;
+      const folderId = dragSortState.folderId;
+
+      if (shouldPersist) {
+        persistDraggedFieldOrder(folderId, sourceContainer);
+      }
+
+      cleanupDragSortState();
+    });
+
+    document.addEventListener('pointercancel', (event) => {
+      if (dragSortState.pointerId !== event.pointerId) {
+        return;
+      }
+      cleanupDragSortState();
+    });
 
     function buildSystemTextFoldersHTML(useVisibleFolders = true) {
       const sourceFolders = useVisibleFolders ? getVisibleSystemFolders() : FOLDERS;
@@ -5195,6 +5670,9 @@
             fields: []
           }))
         : [];
+      folderFieldOrders = (data && typeof data.folderFieldOrders === 'object' && data.folderFieldOrders)
+        ? JSON.parse(JSON.stringify(data.folderFieldOrders))
+        : {};
       removedSystemFolderKeys = Array.isArray(data.removedSystemFolderKeys)
         ? data.removedSystemFolderKeys.filter(key => !PROTECTED_SYSTEM_FOLDER_KEYS.includes(key))
         : [];
@@ -5238,11 +5716,28 @@
     // 全局变量（使用内存存储）
     let customFields = [];
     let customFolders = [];
+    let folderFieldOrders = {};
     let removedSystemFolderKeys = [];
     let removedBuiltInFieldIds = [];
     let pendingField = null; // 待分配文件夹的字段
     let selectedFolderId = '';
     let currentFolderId = null; // 当前操作的文件夹 ID
+    let dragSortState = {
+      fieldId: '',
+      folderId: '',
+      indicator: null,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
+      pendingCard: null,
+      draggedCard: null,
+      sourceContainer: null,
+      isDragging: false,
+      dropBeforeFieldId: null,
+      suppressClickUntil: 0
+    };
 
     function cloneField(field) {
       return JSON.parse(JSON.stringify(field));
@@ -5317,6 +5812,7 @@
           ...cloneField(folder),
           fields: folder.fields.map(field => field.id)
         })),
+        folderFieldOrders: JSON.parse(JSON.stringify(folderFieldOrders)),
         removedSystemFolderKeys: removedSystemFolderKeys.slice(),
         removedBuiltInFieldIds: removedBuiltInFieldIds.slice()
       };
@@ -5362,6 +5858,13 @@
       customFolders.forEach(folder => {
         folder.fields = folder.fields.filter(field => field.id !== fieldId);
       });
+
+      Object.keys(folderFieldOrders).forEach(folderId => {
+        folderFieldOrders[folderId] = (folderFieldOrders[folderId] || []).filter(id => id !== fieldId);
+        if (folderFieldOrders[folderId].length === 0) {
+          delete folderFieldOrders[folderId];
+        }
+      });
     }
 
     function attachCustomFieldToFolder(field) {
@@ -5380,6 +5883,49 @@
       if (DEFAULT_FIELDS[field.folderId] && Array.isArray(DEFAULT_FIELDS[field.folderId])) {
         DEFAULT_FIELDS[field.folderId].push(field);
       }
+    }
+
+    function removeFieldIdFromOrderState(fieldId) {
+      Object.keys(folderFieldOrders).forEach(folderId => {
+        folderFieldOrders[folderId] = (folderFieldOrders[folderId] || []).filter(id => id !== fieldId);
+        if (folderFieldOrders[folderId].length === 0) {
+          delete folderFieldOrders[folderId];
+        }
+      });
+    }
+
+    function isFieldDragEnabled() {
+      return currentTab === 'text' && !searchInput.value.trim();
+    }
+
+    function getOrderedFieldsForFolder(folderId, fields) {
+      if (!folderId || !Array.isArray(fields) || fields.length <= 1) {
+        return Array.isArray(fields) ? fields.slice() : [];
+      }
+
+      const savedOrder = Array.isArray(folderFieldOrders[folderId]) ? folderFieldOrders[folderId] : [];
+      if (savedOrder.length === 0) {
+        return fields.slice();
+      }
+
+      const remaining = new Map(fields.map((field, index) => [field.id, { field, index }]));
+      const ordered = [];
+
+      savedOrder.forEach(fieldId => {
+        const entry = remaining.get(fieldId);
+        if (!entry) return;
+        ordered.push(entry.field);
+        remaining.delete(fieldId);
+      });
+
+      fields.forEach(field => {
+        if (remaining.has(field.id)) {
+          ordered.push(field);
+          remaining.delete(field.id);
+        }
+      });
+
+      return ordered;
     }
 
     // 显示 Toast 提示
@@ -6006,6 +6552,7 @@
       if (!deleteTarget) return;
 
       if (deleteTarget.type === 'field') {
+        removeFieldIdFromOrderState(deleteTarget.id);
         // 删除字段
         if (deleteTarget.isBuiltInAIField && deleteTarget.domainFieldIndex !== -1) {
           DEFAULT_FIELDS.aiFields.splice(deleteTarget.domainFieldIndex, 1);
@@ -6022,12 +6569,14 @@
         renderFieldsList();
         showToast(`字段"${deleteTarget.name}"已删除`);
       } else if (deleteTarget.type === 'folder') {
+        delete folderFieldOrders[deleteTarget.id];
         if (deleteTarget.isSystemFolder) {
           removedSystemFolderKeys = Array.from(new Set([...removedSystemFolderKeys, deleteTarget.systemFieldKey]));
           customFields = customFields.filter(field => field.folderId !== deleteTarget.systemFieldKey);
         } else {
           const folder = getCustomFolderById(deleteTarget.id);
           const fieldIds = folder ? folder.fields.map(field => field.id) : [];
+          fieldIds.forEach(removeFieldIdFromOrderState);
           customFields = customFields.filter(field => !fieldIds.includes(field.id));
           customFolders = customFolders.filter(folder => folder.id !== deleteTarget.id);
         }

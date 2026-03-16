@@ -70,15 +70,15 @@ interface PackedImageAsset {
 interface PackedImageAssetMap {
   avatarReal: PackedImageAsset[];
   avatarCartoon: PackedImageAsset[];
-  banner16x9: PackedImageAsset[];
-  banner4x3: PackedImageAsset[];
+  techBrandHero: PackedImageAsset[];
+  fluidBackground: PackedImageAsset[];
 }
 
 interface BuiltInImageFieldSpec {
-  fieldId: 'image_avatar_real' | 'image_avatar_cartoon' | 'image_banner_16_9' | 'image_banner_4_3';
+  fieldId: 'image_avatar_cartoon' | 'image_tech_brand_hero' | 'image_fluid_background' | 'image_avatar_real';
   assetKey: keyof PackedImageAssetMap;
   label: string;
-  targetKind: 'avatar' | 'banner16x9' | 'banner4x3';
+  targetKind: 'avatar' | 'wide';
 }
 
 // ==================== 数据生成器 ====================
@@ -179,16 +179,16 @@ const BUILT_IN_IMAGE_FIELD_SPECS: BuiltInImageFieldSpec[] = [
     targetKind: 'avatar'
   },
   {
-    fieldId: 'image_banner_16_9',
-    assetKey: 'banner16x9',
-    label: '16:9 封面',
-    targetKind: 'banner16x9'
+    fieldId: 'image_fluid_background',
+    assetKey: 'fluidBackground',
+    label: '流体背景',
+    targetKind: 'wide'
   },
   {
-    fieldId: 'image_banner_4_3',
-    assetKey: 'banner4x3',
-    label: '4:3 封面',
-    targetKind: 'banner4x3'
+    fieldId: 'image_tech_brand_hero',
+    assetKey: 'techBrandHero',
+    label: '科技 Banner',
+    targetKind: 'wide'
   }
 ];
 
@@ -267,6 +267,10 @@ function getNextSequence(fieldId: string): number {
     sequenceCounters[fieldId] = 0;
   }
   return ++sequenceCounters[fieldId];
+}
+
+function resetSequenceCounter(fieldId: string, start = 1): void {
+  sequenceCounters[fieldId] = start - 1;
 }
 
 function isImageField(fieldId: string): boolean {
@@ -858,31 +862,7 @@ function getImageHashForAsset(asset: PackedImageAsset): string {
 
 function matchesImageFieldTarget(node: SceneNode, fieldId: string): boolean {
   const fieldSpec = getBuiltInImageFieldSpec(fieldId);
-  if (!fieldSpec || !('width' in node) || !('height' in node)) {
-    return false;
-  }
-
-  const width = node.width;
-  const height = node.height;
-  if (!width || !height) {
-    return false;
-  }
-
-  const ratio = width / height;
-
-  if (fieldSpec.targetKind === 'avatar') {
-    return ratio >= 0.75 && ratio <= 1.25;
-  }
-
-  if (fieldSpec.targetKind === 'banner16x9') {
-    return Math.abs(ratio - 16 / 9) <= 0.35;
-  }
-
-  if (fieldSpec.targetKind === 'banner4x3') {
-    return Math.abs(ratio - 4 / 3) <= 0.22;
-  }
-
-  return false;
+  return Boolean(fieldSpec && 'width' in node && 'height' in node);
 }
 
 // 生成字段数据
@@ -1046,7 +1026,7 @@ function generateFieldData(fieldId: string, configType?: string, dynamicConfig: 
       // 前置补零
       let resultStr = String(serialNum);
       if (padding > 0) {
-        resultStr = padStart(resultStr, padding, '0');
+        resultStr = padStart(resultStr, resultStr.length + padding, '0');
       }
       return prefix + resultStr + suffix;
     }
@@ -1326,6 +1306,16 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
   const selection = figma.currentPage.selection;
   const fillingImages = isImageField(fieldId);
   const fillingAI = dynamicConfig?.method === 'ai';
+  const effectiveType = configType || fieldId;
+  const savedConfig = fieldConfigs[fieldId] || {};
+  const mergedConfig = { ...savedConfig, ...dynamicConfig };
+
+  if (effectiveType === 'serial_number') {
+    const start = Number.isFinite(Number(mergedConfig.start))
+      ? Math.floor(Number(mergedConfig.start))
+      : 1;
+    resetSequenceCounter(fieldId, start);
+  }
 
   // 检查是否有选中的图层
   if (selection.length === 0) {
@@ -1429,13 +1419,12 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
     }
 
     // 批量生成数据（用于排序或 AI 多条生成）
-    const config = fieldConfigs[fieldId] || {};
     let dataList: string[] = [];
 
     if (fillingAI) {
       try {
         dataList = await generateAIFieldValues({
-          ...config,
+          ...savedConfig,
           ...dynamicConfig
         }, textNodes.length);
       } catch (error) {
@@ -1451,11 +1440,10 @@ async function handleFill(fieldId: string, configType?: string, dynamicConfig: a
       }
     }
 
-    const effectiveType = configType || fieldId;
-    if (effectiveType === 'date_time' && config.order && config.order !== 'random') {
-      if (config.order === 'asc') {
+    if (effectiveType === 'date_time' && mergedConfig.order && mergedConfig.order !== 'random') {
+      if (mergedConfig.order === 'asc') {
         dataList.sort((a, b) => a.localeCompare(b));
-      } else if (config.order === 'desc') {
+      } else if (mergedConfig.order === 'desc') {
         dataList.sort((a, b) => b.localeCompare(a));
       }
     }

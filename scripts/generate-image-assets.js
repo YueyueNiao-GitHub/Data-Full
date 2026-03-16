@@ -5,10 +5,10 @@ const zlib = require('zlib');
 const ROOT_DIR = path.resolve(__dirname, '..');
 const OUTPUT_FILE = path.join(ROOT_DIR, 'image-assets.ts');
 
-const REAL_AVATAR_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '用户头像 - Avatar', '真人头像');
-const CARTOON_AVATAR_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '用户头像 - Avatar', '卡通头像');
-const BANNER_16_9_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '封面图 - Banner', '16-9');
-const BANNER_4_3_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '封面图 - Banner', '4-3');
+const CARTOON_AVATAR_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '卡通头像');
+const TECH_BRAND_HERO_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '科技Banner');
+const FLUID_BACKGROUND_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '流体背景');
+const REAL_AVATAR_DIR = path.join(ROOT_DIR, '已有资料', '图片资源', '真人头像');
 
 const REAL_AVATAR_LIMIT = 16;
 
@@ -219,44 +219,9 @@ function generateBanner(filePath, width, height, palette) {
 
 function ensureGeneratedSources() {
   ensureDir(CARTOON_AVATAR_DIR);
-  ensureDir(BANNER_16_9_DIR);
-  ensureDir(BANNER_4_3_DIR);
-
-  const avatarPalettes = [
-    { background: '#fde68a', halo: '#f59e0b', skin: '#f5c7a9', shirt: '#2563eb', hair: '#312e81' },
-    { background: '#bfdbfe', halo: '#0ea5e9', skin: '#f2c4a2', shirt: '#7c3aed', hair: '#1f2937' },
-    { background: '#fecdd3', halo: '#ec4899', skin: '#f4c5a2', shirt: '#059669', hair: '#4c1d95' },
-    { background: '#bbf7d0', halo: '#14b8a6', skin: '#f5c9a8', shirt: '#ea580c', hair: '#111827' },
-  ];
-
-  const existingCartoonFiles = fs.readdirSync(CARTOON_AVATAR_DIR)
-    .filter((fileName) => /\.(png|jpe?g|webp)$/i.test(fileName));
-
-  if (existingCartoonFiles.length === 0) {
-    avatarPalettes.forEach((palette, index) => {
-      generateCartoonAvatar(path.join(CARTOON_AVATAR_DIR, `cartoon-avatar-${index + 1}.png`), palette);
-    });
-  }
-
-  const banner169Palettes = [
-    { top: '#0f172a', bottom: '#1d4ed8', card: '#0ea5e9' },
-    { top: '#0f766e', bottom: '#65a30d', card: '#14b8a6' },
-    { top: '#7c2d12', bottom: '#ea580c', card: '#fb7185' },
-  ];
-
-  banner169Palettes.forEach((palette, index) => {
-    generateBanner(path.join(BANNER_16_9_DIR, `banner-16-9-${index + 1}.png`), 1600, 900, palette);
-  });
-
-  const banner43Palettes = [
-    { top: '#312e81', bottom: '#6366f1', card: '#c084fc' },
-    { top: '#164e63', bottom: '#0891b2', card: '#22d3ee' },
-    { top: '#365314', bottom: '#84cc16', card: '#facc15' },
-  ];
-
-  banner43Palettes.forEach((palette, index) => {
-    generateBanner(path.join(BANNER_4_3_DIR, `banner-4-3-${index + 1}.png`), 1200, 900, palette);
-  });
+  ensureDir(TECH_BRAND_HERO_DIR);
+  ensureDir(FLUID_BACKGROUND_DIR);
+  ensureDir(REAL_AVATAR_DIR);
 }
 
 function getMimeType(filename) {
@@ -302,8 +267,8 @@ interface PackedImageAsset {
 interface PackedImageAssetMap {
   avatarReal: PackedImageAsset[];
   avatarCartoon: PackedImageAsset[];
-  banner16x9: PackedImageAsset[];
-  banner4x3: PackedImageAsset[];
+  techBrandHero: PackedImageAsset[];
+  fluidBackground: PackedImageAsset[];
 }
 
 const PACKED_IMAGE_ASSETS: PackedImageAssetMap = ${JSON.stringify(assets, null, 2)};
@@ -315,14 +280,14 @@ function main() {
 
   const avatarReal = readImageFiles(REAL_AVATAR_DIR, REAL_AVATAR_LIMIT);
   const avatarCartoon = readImageFiles(CARTOON_AVATAR_DIR);
-  const banner16x9 = readImageFiles(BANNER_16_9_DIR);
-  const banner4x3 = readImageFiles(BANNER_4_3_DIR);
+  const techBrandHero = readImageFiles(TECH_BRAND_HERO_DIR);
+  const fluidBackground = readImageFiles(FLUID_BACKGROUND_DIR);
 
-  const source = buildModuleSource({ avatarReal, avatarCartoon, banner16x9, banner4x3 });
+  const source = buildModuleSource({ avatarReal, avatarCartoon, techBrandHero, fluidBackground });
   fs.writeFileSync(OUTPUT_FILE, source, 'utf8');
 
   console.log(
-    `Generated ${path.relative(ROOT_DIR, OUTPUT_FILE)} with ${avatarReal.length} real avatars, ${avatarCartoon.length} cartoon avatars, ${banner16x9.length} 16:9 banners and ${banner4x3.length} 4:3 banners.`
+    `Generated ${path.relative(ROOT_DIR, OUTPUT_FILE)} with ${avatarCartoon.length} cartoon avatars, ${techBrandHero.length} tech hero images, ${fluidBackground.length} fluid backgrounds and ${avatarReal.length} real avatars.`
   );
 }
 
